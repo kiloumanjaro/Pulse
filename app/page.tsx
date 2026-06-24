@@ -331,10 +331,10 @@ export default function Home() {
           left="50%"
           top={80}
           zIndex={30}
-          borderRadius={9999}
-          backgroundColor="rgba(39,39,42,0.9)"
-          paddingHorizontal={16}
-          paddingVertical={8}
+          borderRadius="$round"
+          backgroundColor="$panel"
+          paddingHorizontal="$s4"
+          paddingVertical="$s2"
           // -translate-x-1/2, shadow-lg, backdrop-blur
           style={{
             transform: "translateX(-50%)",
@@ -346,7 +346,7 @@ export default function Home() {
           <Text
             fontSize={14}
             lineHeight={20}
-            color="#f4f4f5"
+            color="$zinc100"
             style={{ fontFamily: "inherit" }}
           >
             {notice}
@@ -361,11 +361,11 @@ export default function Home() {
           top={80}
           zIndex={30}
           alignItems="center"
-          gap={12}
-          borderRadius={9999}
-          backgroundColor="rgba(39,39,42,0.9)"
-          paddingHorizontal={16}
-          paddingVertical={8}
+          gap="$s3"
+          borderRadius="$round"
+          backgroundColor="$panel"
+          paddingHorizontal="$s4"
+          paddingVertical="$s2"
           style={{
             transform: "translateX(-50%)",
             boxShadow:
@@ -376,25 +376,25 @@ export default function Home() {
           <Text
             fontSize={14}
             lineHeight={20}
-            color="#f4f4f5"
+            color="$zinc100"
             style={{ fontFamily: "inherit" }}
           >
             Requesting connection…
           </Text>
-          {/* unstyled Button: Tamagui style props reproduce the Tailwind look 1:1 */}
+          {/* unstyled Button: Tamagui token-driven style props reproduce the look 1:1 */}
           <Button
             unstyled
             onPress={cancelRequest}
             cursor="pointer"
             alignItems="center"
             justifyContent="center"
-            borderRadius={9999}
-            backgroundColor="#3f3f46"
-            paddingHorizontal={12}
-            paddingVertical={4}
+            borderRadius="$round"
+            backgroundColor="$zinc700"
+            paddingHorizontal="$s3"
+            paddingVertical="$s1"
             fontSize={12}
-            color="#f4f4f5"
-            hoverStyle={{ backgroundColor: "#52525b" }}
+            color="$zinc100"
+            hoverStyle={{ backgroundColor: "$zinc600" }}
             style={{ fontFamily: "inherit" }}
           >
             Cancel
@@ -432,10 +432,10 @@ export default function Home() {
           bottom={96}
           left="50%"
           zIndex={30}
-          borderRadius={9999}
-          backgroundColor="rgba(39,39,42,0.9)"
-          paddingHorizontal={16}
-          paddingVertical={8}
+          borderRadius="$round"
+          backgroundColor="$panel"
+          paddingHorizontal="$s4"
+          paddingVertical="$s2"
           style={{
             transform: "translateX(-50%)",
             boxShadow:
@@ -446,7 +446,7 @@ export default function Home() {
           <Text
             fontSize={14}
             lineHeight={20}
-            color="#f4f4f5"
+            color="$zinc100"
             style={{ fontFamily: "inherit" }}
           >
             Waiting for stranger to accept video…

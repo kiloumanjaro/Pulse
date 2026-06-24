@@ -29,15 +29,15 @@ export default function ConnectionPrompt({
       zIndex={20}
       alignItems="center"
       justifyContent="center"
-      backgroundColor="rgba(0,0,0,0.6)"
-      padding={24}
+      backgroundColor="$scrim"
+      padding="$s6"
     >
       <YStack
         width="100%"
         maxWidth={320}
-        borderRadius={16}
-        backgroundColor="#18181b"
-        padding={24}
+        borderRadius="$card"
+        backgroundColor="$zinc900"
+        padding="$s6"
         // shadow-xl
         style={{
           boxShadow:
@@ -48,7 +48,7 @@ export default function ConnectionPrompt({
           fontSize={18}
           lineHeight={28}
           fontWeight="600"
-          color="#f4f4f5"
+          color="$zinc100"
           textAlign="center"
           margin={0}
           style={{ fontFamily: "inherit" }}
@@ -57,18 +57,18 @@ export default function ConnectionPrompt({
         </H2>
         {subtitle && (
           <Paragraph
-            marginTop={4}
+            marginTop="$s1"
             fontSize={14}
             lineHeight={20}
-            color="#a1a1aa"
+            color="$zinc400"
             textAlign="center"
             style={{ fontFamily: "inherit" }}
           >
             {subtitle}
           </Paragraph>
         )}
-        <XStack marginTop={20} gap={12}>
-          {/* unstyled Button: Tamagui style props reproduce the Tailwind look 1:1 */}
+        <XStack marginTop="$s5" gap="$s3">
+          {/* unstyled Button: Tamagui token-driven style props reproduce the look 1:1 */}
           <Button
             unstyled
             onPress={onDecline}
@@ -76,16 +76,16 @@ export default function ConnectionPrompt({
             cursor="pointer"
             alignItems="center"
             justifyContent="center"
-            borderRadius={9999}
+            borderRadius="$round"
             borderWidth={1}
-            borderColor="#3f3f46"
+            borderColor="$zinc700"
             backgroundColor="transparent"
-            paddingHorizontal={16}
-            paddingVertical={8}
+            paddingHorizontal="$s4"
+            paddingVertical="$s2"
             fontSize={14}
             fontWeight="500"
-            color="#d4d4d8"
-            hoverStyle={{ borderColor: "#71717a" }}
+            color="$zinc300"
+            hoverStyle={{ borderColor: "$zinc500" }}
             style={{ fontFamily: "inherit" }}
           >
             {declineLabel}
@@ -97,14 +97,14 @@ export default function ConnectionPrompt({
             cursor="pointer"
             alignItems="center"
             justifyContent="center"
-            borderRadius={9999}
-            backgroundColor="#34d399"
-            paddingHorizontal={16}
-            paddingVertical={8}
+            borderRadius="$round"
+            backgroundColor="$emerald400"
+            paddingHorizontal="$s4"
+            paddingVertical="$s2"
             fontSize={14}
             fontWeight="600"
-            color="#09090b"
-            hoverStyle={{ backgroundColor: "#6ee7b7" }}
+            color="$zinc950"
+            hoverStyle={{ backgroundColor: "$emerald300" }}
             style={{ fontFamily: "inherit" }}
           >
             {acceptLabel}

@@ -168,25 +168,25 @@ export default function WorldMap({
           bottom={0}
           alignItems="center"
           justifyContent="center"
-          padding={24}
+          padding="$s6"
         >
           <Paragraph
             maxWidth={448}
-            borderRadius={8}
-            backgroundColor="#27272a"
-            padding={16}
+            borderRadius="$box"
+            backgroundColor="$zinc800"
+            padding="$s4"
             fontSize={14}
             lineHeight={20}
-            color="#e4e4e7"
+            color="$zinc200"
             textAlign="center"
             style={{ fontFamily: "inherit" }}
           >
             Set{" "}
-            <Text tag="code" color="#34d399" style={{ fontFamily: "monospace" }}>
+            <Text tag="code" color="$emerald400" style={{ fontFamily: "monospace" }}>
               NEXT_PUBLIC_MAPBOX_TOKEN
             </Text>{" "}
             in{" "}
-            <Text tag="code" color="#e4e4e7" style={{ fontFamily: "monospace" }}>
+            <Text tag="code" color="$zinc200" style={{ fontFamily: "monospace" }}>
               .env
             </Text>{" "}
             to load the map.
@@ -199,17 +199,17 @@ export default function WorldMap({
         position="absolute"
         bottom={16}
         left={16}
-        borderRadius={9999}
-        backgroundColor="rgba(24,24,27,0.8)"
-        paddingHorizontal={12}
-        paddingVertical={6}
+        borderRadius="$round"
+        backgroundColor="$chip"
+        paddingHorizontal="$s3"
+        paddingVertical="$s1_5"
         // backdrop-blur
         style={{ backdropFilter: "blur(8px)" }}
       >
         <Text
           fontSize={12}
           lineHeight={16}
-          color="#d4d4d8"
+          color="$zinc300"
           style={{ fontFamily: "inherit" }}
         >
           {peers.length} online

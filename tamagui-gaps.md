@@ -10,6 +10,17 @@ Components that could not be migrated to Tamagui due to no direct equivalent and
 | app/components/VideoPanel.tsx | `<video>` (×2: remote full-screen + local PiP) | Tamagui has no media/`<video>` primitive. Each element needs a raw `HTMLVideoElement` ref so the WebRTC `MediaStream` can be assigned to `.srcObject`. | Keep the two `<video>` elements as raw HTML (done). Their containers and the "End video" button were migrated to Tamagui; the elements remain styled by their existing Tailwind classes. |
 | app/components/ChatPanel.tsx | `<div ref={endRef} />` scroll anchor | Non-visual, zero-size layout marker used only as a `scrollIntoView` target. `endRef` is typed `HTMLDivElement` and calls the DOM `scrollIntoView`; routing it through a Tamagui `<View>` ref changes the ref type with no visual or functional benefit. | Keep the bare `<div>` scroll anchor (done). |
 
+## Notes — design tokens
+
+Colors, border radii, and spacing (padding/margin/gap) are driven by Tamagui
+**design tokens** defined in `tamagui.config.ts` (`$zinc100`, `$emerald400`,
+`$round`, `$card`, `$s4`, `$s8`, …) — a single source of truth, theme-ready, and
+mapped to the exact original Tailwind values so visuals are unchanged. Layout
+geometry (position offsets, widths, `zIndex`) and **typography (`fontSize` /
+`lineHeight` / `letterSpacing`) remain numeric `px`** — type scale tokens live in
+Tamagui's `fonts` config (a larger change) and were left as exact literals to
+preserve pixel parity. Tokenizing the type scale is the natural next step.
+
 ## Notes — migrated with a Tamagui web `style` escape hatch (not gaps)
 
 These Tailwind utilities have no first-class Tamagui style prop, so they were reproduced via Tamagui's web-only `style` prop (which Tamagui merges as inline CSS). They are migrated, not gaps, but are listed for transparency:

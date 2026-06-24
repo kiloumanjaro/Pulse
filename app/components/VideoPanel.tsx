@@ -35,7 +35,7 @@ export default function VideoPanel({
       right={0}
       bottom={0}
       zIndex={30}
-      backgroundColor="#000000"
+      backgroundColor="$black"
     >
       <YStack position="relative" flex={1}>
         {/* Remote (full screen) — <video> has no Tamagui equivalent (see tamagui-gaps.md) */}
@@ -58,7 +58,7 @@ export default function VideoPanel({
             <Text
               fontSize={16}
               lineHeight={24}
-              color="#71717a"
+              color="$zinc500"
               style={{ fontFamily: "inherit" }}
             >
               Waiting for stranger&rsquo;s video…
@@ -74,22 +74,22 @@ export default function VideoPanel({
           className="absolute bottom-4 right-4 h-40 w-28 rounded-lg border border-zinc-700 bg-zinc-800 object-cover"
         />
       </YStack>
-      <XStack justifyContent="center" backgroundColor="#09090b" padding={16}>
-        {/* unstyled Button: Tamagui style props reproduce the Tailwind look 1:1 */}
+      <XStack justifyContent="center" backgroundColor="$zinc950" padding="$s4">
+        {/* unstyled Button: Tamagui token-driven style props reproduce the look 1:1 */}
         <Button
           unstyled
           onPress={onEnd}
           cursor="pointer"
           alignItems="center"
           justifyContent="center"
-          borderRadius={9999}
-          backgroundColor="#ef4444"
-          paddingHorizontal={32}
-          paddingVertical={12}
+          borderRadius="$round"
+          backgroundColor="$red500"
+          paddingHorizontal="$s8"
+          paddingVertical="$s3"
           fontSize={16}
           fontWeight="600"
-          color="#ffffff"
-          hoverStyle={{ backgroundColor: "#f87171" }}
+          color="$white"
+          hoverStyle={{ backgroundColor: "$red400" }}
           style={{ fontFamily: "inherit" }}
         >
           End video

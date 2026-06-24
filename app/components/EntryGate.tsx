@@ -41,8 +41,8 @@ export default function EntryGate({
       height="100vh"
       alignItems="center"
       justifyContent="center"
-      gap={32}
-      padding={24}
+      gap="$s8"
+      padding="$s6"
     >
       <YStack position="absolute" top={0} left={0} right={0} bottom={0}>
         <Radar
@@ -63,14 +63,14 @@ export default function EntryGate({
         />
       </YStack>
 
-      <YStack position="relative" zIndex={10} alignItems="center" gap={32}>
+      <YStack position="relative" zIndex={10} alignItems="center" gap="$s8">
         <YStack alignItems="center">
           <H1
             fontSize={36}
             lineHeight={40}
             fontWeight="700"
             letterSpacing={-0.9}
-            color="#f4f4f5"
+            color="$zinc100"
             textAlign="center"
             margin={0}
             style={{ fontFamily: "inherit" }}
@@ -78,11 +78,11 @@ export default function EntryGate({
             Pulse
           </H1>
           <Paragraph
-            marginTop={8}
+            marginTop="$s2"
             maxWidth={384}
             fontSize={16}
             lineHeight={24}
-            color="#a1a1aa"
+            color="$zinc400"
             textAlign="center"
             style={{ fontFamily: "inherit" }}
           >
@@ -90,7 +90,7 @@ export default function EntryGate({
           </Paragraph>
         </YStack>
 
-        {/* unstyled Button: Tamagui style props reproduce the Tailwind look 1:1.
+        {/* unstyled Button: Tamagui token-driven style props reproduce the look 1:1.
             Font props (color/size/weight) are forwarded to the wrapped label text. */}
         <Button
           unstyled
@@ -99,14 +99,14 @@ export default function EntryGate({
           cursor="pointer"
           alignItems="center"
           justifyContent="center"
-          borderRadius={9999}
-          backgroundColor="#34d399"
-          paddingHorizontal={32}
-          paddingVertical={12}
+          borderRadius="$round"
+          backgroundColor="$emerald400"
+          paddingHorizontal="$s8"
+          paddingVertical="$s3"
           fontSize={16}
           fontWeight="600"
-          color="#09090b"
-          hoverStyle={{ backgroundColor: "#6ee7b7" }}
+          color="$zinc950"
+          hoverStyle={{ backgroundColor: "$emerald300" }}
           disabledStyle={{ opacity: 0.6 }}
           style={{ fontFamily: "inherit", transition: "background-color 150ms" }}
         >
@@ -118,7 +118,7 @@ export default function EntryGate({
             maxWidth={384}
             fontSize={14}
             lineHeight={20}
-            color="#f87171"
+            color="$red400"
             textAlign="center"
             style={{ fontFamily: "inherit" }}
           >
@@ -130,7 +130,7 @@ export default function EntryGate({
           maxWidth={384}
           fontSize={12}
           lineHeight={16}
-          color="#71717a"
+          color="$zinc500"
           textAlign="center"
           style={{ fontFamily: "inherit" }}
         >

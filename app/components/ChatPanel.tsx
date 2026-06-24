@@ -49,8 +49,8 @@ export default function ChatPanel({
       width="100%"
       maxWidth={448}
       borderLeftWidth={1}
-      borderColor="#27272a"
-      backgroundColor="#09090b"
+      borderColor="$zinc800"
+      backgroundColor="$zinc950"
       // shadow-2xl
       style={{ boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)" }}
     >
@@ -59,16 +59,16 @@ export default function ChatPanel({
         alignItems="center"
         justifyContent="space-between"
         borderBottomWidth={1}
-        borderColor="#27272a"
-        paddingHorizontal={16}
-        paddingVertical={12}
+        borderColor="$zinc800"
+        paddingHorizontal="$s4"
+        paddingVertical="$s3"
       >
         <YStack>
           <Paragraph
             fontSize={16}
             lineHeight={24}
             fontWeight="600"
-            color="#f4f4f5"
+            color="$zinc100"
             style={{ fontFamily: "inherit" }}
           >
             Stranger
@@ -76,14 +76,14 @@ export default function ChatPanel({
           <Paragraph
             fontSize={12}
             lineHeight={16}
-            color="#71717a"
+            color="$zinc500"
             style={{ fontFamily: "inherit" }}
           >
             {connected ? "Connected" : "Connecting…"}
           </Paragraph>
         </YStack>
-        <XStack gap={8}>
-          {/* unstyled Button: Tamagui style props reproduce the Tailwind look 1:1 */}
+        <XStack gap="$s2">
+          {/* unstyled Button: Tamagui token-driven style props reproduce the look 1:1 */}
           <Button
             unstyled
             onPress={onStartVideo}
@@ -91,15 +91,15 @@ export default function ChatPanel({
             cursor="pointer"
             alignItems="center"
             justifyContent="center"
-            borderRadius={9999}
+            borderRadius="$round"
             borderWidth={1}
-            borderColor="#3f3f46"
+            borderColor="$zinc700"
             backgroundColor="transparent"
-            paddingHorizontal={12}
-            paddingVertical={6}
+            paddingHorizontal="$s3"
+            paddingVertical="$s1_5"
             fontSize={14}
-            color="#f4f4f5"
-            hoverStyle={{ borderColor: "#71717a" }}
+            color="$zinc100"
+            hoverStyle={{ borderColor: "$zinc500" }}
             disabledStyle={{ opacity: 0.4 }}
             style={{ fontFamily: "inherit" }}
           >
@@ -111,14 +111,14 @@ export default function ChatPanel({
             cursor="pointer"
             alignItems="center"
             justifyContent="center"
-            borderRadius={9999}
-            backgroundColor="#ef4444"
-            paddingHorizontal={12}
-            paddingVertical={6}
+            borderRadius="$round"
+            backgroundColor="$red500"
+            paddingHorizontal="$s3"
+            paddingVertical="$s1_5"
             fontSize={14}
             fontWeight="500"
-            color="#ffffff"
-            hoverStyle={{ backgroundColor: "#f87171" }}
+            color="$white"
+            hoverStyle={{ backgroundColor: "$red400" }}
             style={{ fontFamily: "inherit" }}
           >
             End
@@ -128,16 +128,16 @@ export default function ChatPanel({
 
       <YStack
         flex={1}
-        gap={8}
-        padding={16}
+        gap="$s2"
+        padding="$s4"
         style={{ overflowY: "auto" }}
       >
         {messages.length === 0 && (
           <Paragraph
-            marginTop={32}
+            marginTop="$s8"
             fontSize={14}
             lineHeight={20}
-            color="#71717a"
+            color="$zinc500"
             textAlign="center"
             style={{ fontFamily: "inherit" }}
           >
@@ -151,13 +151,13 @@ export default function ChatPanel({
           >
             <Text
               maxWidth="80%"
-              borderRadius={16}
-              paddingHorizontal={12}
-              paddingVertical={8}
+              borderRadius="$card"
+              paddingHorizontal="$s3"
+              paddingVertical="$s2"
               fontSize={14}
               lineHeight={20}
-              backgroundColor={m.mine ? "#34d399" : "#27272a"}
-              color={m.mine ? "#09090b" : "#f4f4f5"}
+              backgroundColor={m.mine ? "$emerald400" : "$zinc800"}
+              color={m.mine ? "$zinc950" : "$zinc100"}
               style={{ fontFamily: "inherit" }}
             >
               {m.text}
@@ -171,31 +171,31 @@ export default function ChatPanel({
       <XStack
         tag="form"
         onSubmit={submit}
-        gap={8}
+        gap="$s2"
         borderTopWidth={1}
-        borderColor="#27272a"
-        padding={12}
+        borderColor="$zinc800"
+        padding="$s3"
       >
-        {/* unstyled Input: Tamagui style props reproduce the Tailwind look 1:1.
+        {/* unstyled Input: Tamagui token-driven style props reproduce the look 1:1.
             focus:ring is approximated with a 1px emerald outline (see tamagui-gaps.md) */}
         <Input
           unstyled
           value={draft}
           onChangeText={(text) => setDraft(text)}
           placeholder={connected ? "Type a message…" : "Connecting…"}
-          placeholderTextColor={"#52525b" as never}
+          placeholderTextColor="$zinc600"
           disabled={!connected}
           flex={1}
-          borderRadius={9999}
-          backgroundColor="#18181b"
-          paddingHorizontal={16}
-          paddingVertical={8}
+          borderRadius="$round"
+          backgroundColor="$zinc900"
+          paddingHorizontal="$s4"
+          paddingVertical="$s2"
           fontSize={14}
-          color="#f4f4f5"
+          color="$zinc100"
           outlineWidth={0}
           focusStyle={{
             outlineWidth: 1,
-            outlineColor: "#34d399",
+            outlineColor: "$emerald400",
             outlineStyle: "solid",
           }}
           disabledStyle={{ opacity: 0.5 }}
@@ -208,13 +208,13 @@ export default function ChatPanel({
           cursor="pointer"
           alignItems="center"
           justifyContent="center"
-          borderRadius={9999}
-          backgroundColor="#34d399"
-          paddingHorizontal={16}
-          paddingVertical={8}
+          borderRadius="$round"
+          backgroundColor="$emerald400"
+          paddingHorizontal="$s4"
+          paddingVertical="$s2"
           fontSize={14}
           fontWeight="600"
-          color="#09090b"
+          color="$zinc950"
           disabledStyle={{ opacity: 0.4 }}
           style={{ fontFamily: "inherit" }}
         >

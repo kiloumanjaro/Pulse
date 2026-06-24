@@ -53,6 +53,13 @@ function useSidebar() {
   return context;
 }
 
+// Non-throwing variant: returns null when no SidebarProvider is mounted, so
+// components that merely want to nudge the sidebar (e.g. close it before
+// navigating) can degrade to a no-op outside a provider instead of crashing.
+function useSidebarOptional() {
+  return React.useContext(SidebarContext);
+}
+
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -723,4 +730,5 @@ export {
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
+  useSidebarOptional,
 };

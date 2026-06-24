@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { YStack, XStack, Text, Button } from "tamagui";
+import { YStack, XStack } from "tamagui";
+import { Body, Button } from "./ui";
 
 export default function VideoPanel({
   localStream,
@@ -35,15 +36,16 @@ export default function VideoPanel({
       right={0}
       bottom={0}
       zIndex={30}
-      backgroundColor="$black"
+      backgroundColor="$background"
     >
       <YStack position="relative" flex={1}>
-        {/* Remote (full screen) — <video> has no Tamagui equivalent (see tamagui-gaps.md) */}
+        {/* Remote (full screen) — <video> has no Tamagui equivalent (see design-system.md §14) */}
         <video
           ref={remoteRef}
           autoPlay
           playsInline
-          className="h-full w-full bg-zinc-900 object-cover"
+          className="h-full w-full object-cover"
+          style={{ backgroundColor: "#121317" }}
         />
         {!remoteStream && (
           <YStack
@@ -55,43 +57,21 @@ export default function VideoPanel({
             alignItems="center"
             justifyContent="center"
           >
-            <Text
-              fontSize={16}
-              lineHeight={24}
-              color="$zinc500"
-              style={{ fontFamily: "inherit" }}
-            >
-              Waiting for stranger&rsquo;s video…
-            </Text>
+            <Body tone="muted">Waiting for stranger&rsquo;s video…</Body>
           </YStack>
         )}
-        {/* Local (picture-in-picture) — <video> has no Tamagui equivalent (see tamagui-gaps.md) */}
+        {/* Local (picture-in-picture) — square, gray-20 border to match the system */}
         <video
           ref={localRef}
           autoPlay
           playsInline
           muted
-          className="absolute bottom-4 right-4 h-40 w-28 rounded-lg border border-zinc-700 bg-zinc-800 object-cover"
+          className="absolute bottom-4 right-4 h-40 w-28 object-cover"
+          style={{ border: "1px solid #2e3038", backgroundColor: "#121317" }}
         />
       </YStack>
-      <XStack justifyContent="center" backgroundColor="$zinc950" padding="$s4">
-        {/* unstyled Button: Tamagui token-driven style props reproduce the look 1:1 */}
-        <Button
-          unstyled
-          onPress={onEnd}
-          cursor="pointer"
-          alignItems="center"
-          justifyContent="center"
-          borderRadius="$round"
-          backgroundColor="$red500"
-          paddingHorizontal="$s8"
-          paddingVertical="$s3"
-          fontSize={16}
-          fontWeight="600"
-          color="$white"
-          hoverStyle={{ backgroundColor: "$red400" }}
-          style={{ fontFamily: "inherit" }}
-        >
+      <XStack justifyContent="center" backgroundColor="$background" padding={16}>
+        <Button variant="danger" size="md" onPress={onEnd}>
           End video
         </Button>
       </XStack>

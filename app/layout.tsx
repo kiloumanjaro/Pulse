@@ -1,15 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { NextTamaguiProvider } from "./NextTamaguiProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Body voice. §3
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Mono / eyebrow-label voice. §3
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+});
+
+// Free geometric substitute for the paid Articulat CF display face. The config
+// names `articulat-cf` first, so this only renders until a licensed kit is added.
+const display = Hanken_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"],
 });
 
@@ -27,9 +36,12 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${display.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body
+        className="min-h-full flex flex-col"
+        style={{ backgroundColor: "#040406", color: "#ffffff" }}
+      >
         <NextTamaguiProvider>{children}</NextTamaguiProvider>
       </body>
     </html>

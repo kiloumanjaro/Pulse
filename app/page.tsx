@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { YStack, XStack, Text, Button } from "tamagui";
+import { YStack, XStack } from "tamagui";
+import { Body, Button } from "./components/ui";
 import EntryGate from "./components/EntryGate";
 import WorldMap from "./components/WorldMap";
 import ConnectionPrompt from "./components/ConnectionPrompt";
@@ -331,26 +332,19 @@ export default function Home() {
           left="50%"
           top={80}
           zIndex={30}
-          borderRadius="$round"
-          backgroundColor="$panel"
-          paddingHorizontal="$s4"
-          paddingVertical="$s2"
-          // -translate-x-1/2, shadow-lg, backdrop-blur
+          borderWidth={1}
+          borderColor="$gray20"
+          backgroundColor="$gray8"
+          paddingHorizontal={16}
+          paddingVertical={8}
           style={{
             transform: "translateX(-50%)",
-            boxShadow:
-              "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
             backdropFilter: "blur(8px)",
           }}
         >
-          <Text
-            fontSize={14}
-            lineHeight={20}
-            color="$zinc100"
-            style={{ fontFamily: "inherit" }}
-          >
+          <Body size="sm" color="$foreground">
             {notice}
-          </Text>
+          </Body>
         </YStack>
       )}
 
@@ -361,41 +355,25 @@ export default function Home() {
           top={80}
           zIndex={30}
           alignItems="center"
-          gap="$s3"
-          borderRadius="$round"
-          backgroundColor="$panel"
-          paddingHorizontal="$s4"
-          paddingVertical="$s2"
+          gap={12}
+          borderWidth={1}
+          borderColor="$gray20"
+          backgroundColor="$gray8"
+          paddingHorizontal={16}
+          paddingVertical={8}
           style={{
             transform: "translateX(-50%)",
-            boxShadow:
-              "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
             backdropFilter: "blur(8px)",
           }}
         >
-          <Text
-            fontSize={14}
-            lineHeight={20}
-            color="$zinc100"
-            style={{ fontFamily: "inherit" }}
-          >
+          <Body size="sm" color="$foreground">
             Requesting connection…
-          </Text>
-          {/* unstyled Button: Tamagui token-driven style props reproduce the look 1:1 */}
+          </Body>
           <Button
-            unstyled
+            variant="outline"
+            height={30}
+            paddingHorizontal={12}
             onPress={cancelRequest}
-            cursor="pointer"
-            alignItems="center"
-            justifyContent="center"
-            borderRadius="$round"
-            backgroundColor="$zinc700"
-            paddingHorizontal="$s3"
-            paddingVertical="$s1"
-            fontSize={12}
-            color="$zinc100"
-            hoverStyle={{ backgroundColor: "$zinc600" }}
-            style={{ fontFamily: "inherit" }}
           >
             Cancel
           </Button>
@@ -432,25 +410,19 @@ export default function Home() {
           bottom={96}
           left="50%"
           zIndex={30}
-          borderRadius="$round"
-          backgroundColor="$panel"
-          paddingHorizontal="$s4"
-          paddingVertical="$s2"
+          borderWidth={1}
+          borderColor="$gray20"
+          backgroundColor="$gray8"
+          paddingHorizontal={16}
+          paddingVertical={8}
           style={{
             transform: "translateX(-50%)",
-            boxShadow:
-              "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
             backdropFilter: "blur(8px)",
           }}
         >
-          <Text
-            fontSize={14}
-            lineHeight={20}
-            color="$zinc100"
-            style={{ fontFamily: "inherit" }}
-          >
+          <Body size="sm" color="$foreground">
             Waiting for stranger to accept video…
-          </Text>
+          </Body>
         </YStack>
       )}
 

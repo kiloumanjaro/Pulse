@@ -8,7 +8,7 @@ import { TamaguiProvider } from "tamagui";
 import tamaguiConfig from "../tamagui.config";
 
 export function NextTamaguiProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useRootTheme();
+  const [, setTheme] = useRootTheme();
 
   useServerInsertedHTML(() => {
     const rnwStyle = StyleSheet.getSheet();
@@ -33,6 +33,8 @@ export function NextTamaguiProvider({ children }: { children: ReactNode }) {
   return (
     <NextThemeProvider
       skipNextHead
+      defaultTheme="dark"
+      forcedTheme="dark"
       onChangeTheme={(next) => {
         setTheme(next as "light" | "dark");
       }}
@@ -40,7 +42,7 @@ export function NextTamaguiProvider({ children }: { children: ReactNode }) {
       <TamaguiProvider
         config={tamaguiConfig}
         disableRootThemeClass
-        defaultTheme={theme}
+        defaultTheme="dark"
       >
         {children}
       </TamaguiProvider>

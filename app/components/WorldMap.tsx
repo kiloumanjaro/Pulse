@@ -157,7 +157,11 @@ export default function WorldMap({
   return (
     <YStack position="absolute" top={0} left={0} right={0} bottom={0}>
       {/* Mapbox GL owns this node imperatively — must stay a raw <div> (see tamagui-gaps.md) */}
-      <div ref={containerRef} className="h-full w-full bg-zinc-900" />
+      <div
+        ref={containerRef}
+        className="h-full w-full"
+        style={{ backgroundColor: "#040406" }}
+      />
 
       {!TOKEN && (
         <YStack
@@ -168,25 +172,27 @@ export default function WorldMap({
           bottom={0}
           alignItems="center"
           justifyContent="center"
-          padding="$s6"
+          padding={24}
         >
           <Paragraph
             maxWidth={448}
-            borderRadius="$box"
-            backgroundColor="$zinc800"
-            padding="$s4"
+            borderRadius={0}
+            borderWidth={1}
+            borderColor="$gray20"
+            backgroundColor="$gray8"
+            padding={16}
+            fontFamily="$body"
             fontSize={14}
             lineHeight={20}
-            color="$zinc200"
+            color="$gray90"
             textAlign="center"
-            style={{ fontFamily: "inherit" }}
           >
             Set{" "}
-            <Text tag="code" color="$emerald400" style={{ fontFamily: "monospace" }}>
+            <Text tag="code" fontFamily="$mono" color="$yellow">
               NEXT_PUBLIC_MAPBOX_TOKEN
             </Text>{" "}
             in{" "}
-            <Text tag="code" color="$zinc200" style={{ fontFamily: "monospace" }}>
+            <Text tag="code" fontFamily="$mono" color="$gray90">
               .env
             </Text>{" "}
             to load the map.
@@ -199,18 +205,19 @@ export default function WorldMap({
         position="absolute"
         bottom={16}
         left={16}
-        borderRadius="$round"
-        backgroundColor="$chip"
-        paddingHorizontal="$s3"
-        paddingVertical="$s1_5"
+        borderWidth={1}
+        borderColor="$gray20"
+        backgroundColor="$gray8"
+        paddingHorizontal={12}
+        paddingVertical={6}
         // backdrop-blur
         style={{ backdropFilter: "blur(8px)" }}
       >
         <Text
+          fontFamily="$mono"
           fontSize={12}
           lineHeight={16}
-          color="$zinc300"
-          style={{ fontFamily: "inherit" }}
+          color="$gray80"
         >
           {peers.length} online
         </Text>

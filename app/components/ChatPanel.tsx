@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { YStack, XStack, Paragraph, Text, Button, Input } from "tamagui";
+import { YStack, XStack, Text } from "tamagui";
+import { Body, Button, Input } from "./ui";
 
 export interface ChatMessage {
   id: number;
@@ -49,116 +50,74 @@ export default function ChatPanel({
       width="100%"
       maxWidth={448}
       borderLeftWidth={1}
-      borderColor="$zinc800"
-      backgroundColor="$zinc950"
-      // shadow-2xl
-      style={{ boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)" }}
+      borderColor="$gray20"
+      backgroundColor="$background"
     >
       <XStack
         tag="header"
         alignItems="center"
         justifyContent="space-between"
         borderBottomWidth={1}
-        borderColor="$zinc800"
-        paddingHorizontal="$s4"
-        paddingVertical="$s3"
+        borderColor="$gray20"
+        paddingHorizontal={16}
+        paddingVertical={12}
       >
         <YStack>
-          <Paragraph
+          <Text
+            fontFamily="$body"
             fontSize={16}
             lineHeight={24}
-            fontWeight="600"
-            color="$zinc100"
-            style={{ fontFamily: "inherit" }}
+            fontWeight="500"
+            color="$foreground"
           >
             Stranger
-          </Paragraph>
-          <Paragraph
-            fontSize={12}
-            lineHeight={16}
-            color="$zinc500"
-            style={{ fontFamily: "inherit" }}
-          >
+          </Text>
+          <Text fontFamily="$mono" fontSize={12} lineHeight={16} color="$gray50">
             {connected ? "Connected" : "Connecting…"}
-          </Paragraph>
+          </Text>
         </YStack>
-        <XStack gap="$s2">
-          {/* unstyled Button: Tamagui token-driven style props reproduce the look 1:1 */}
+        <XStack gap={8}>
           <Button
-            unstyled
+            variant="outline"
+            height={36}
+            paddingHorizontal={14}
             onPress={onStartVideo}
             disabled={!connected || videoBusy}
-            cursor="pointer"
-            alignItems="center"
-            justifyContent="center"
-            borderRadius="$round"
-            borderWidth={1}
-            borderColor="$zinc700"
-            backgroundColor="transparent"
-            paddingHorizontal="$s3"
-            paddingVertical="$s1_5"
-            fontSize={14}
-            color="$zinc100"
-            hoverStyle={{ borderColor: "$zinc500" }}
-            disabledStyle={{ opacity: 0.4 }}
-            style={{ fontFamily: "inherit" }}
+            opacity={!connected || videoBusy ? 0.4 : 1}
           >
             Video
           </Button>
           <Button
-            unstyled
+            variant="danger"
+            height={36}
+            paddingHorizontal={14}
             onPress={onEnd}
-            cursor="pointer"
-            alignItems="center"
-            justifyContent="center"
-            borderRadius="$round"
-            backgroundColor="$red500"
-            paddingHorizontal="$s3"
-            paddingVertical="$s1_5"
-            fontSize={14}
-            fontWeight="500"
-            color="$white"
-            hoverStyle={{ backgroundColor: "$red400" }}
-            style={{ fontFamily: "inherit" }}
           >
             End
           </Button>
         </XStack>
       </XStack>
 
-      <YStack
-        flex={1}
-        gap="$s2"
-        padding="$s4"
-        style={{ overflowY: "auto" }}
-      >
+      <YStack flex={1} gap={8} padding={16} style={{ overflowY: "auto" }}>
         {messages.length === 0 && (
-          <Paragraph
-            marginTop="$s8"
-            fontSize={14}
-            lineHeight={20}
-            color="$zinc500"
-            textAlign="center"
-            style={{ fontFamily: "inherit" }}
-          >
+          <Body size="sm" tone="muted" textAlign="center" marginTop={32}>
             Say hello. Messages are peer-to-peer and never stored.
-          </Paragraph>
+          </Body>
         )}
         {messages.map((m) => (
-          <XStack
-            key={m.id}
-            justifyContent={m.mine ? "flex-end" : "flex-start"}
-          >
+          <XStack key={m.id} justifyContent={m.mine ? "flex-end" : "flex-start"}>
             <Text
               maxWidth="80%"
-              borderRadius="$card"
-              paddingHorizontal="$s3"
-              paddingVertical="$s2"
+              borderRadius={0}
+              borderWidth={m.mine ? 0 : 1}
+              borderColor="$gray20"
+              paddingHorizontal={12}
+              paddingVertical={8}
+              fontFamily="$body"
               fontSize={14}
               lineHeight={20}
-              backgroundColor={m.mine ? "$emerald400" : "$zinc800"}
-              color={m.mine ? "$zinc950" : "$zinc100"}
-              style={{ fontFamily: "inherit" }}
+              backgroundColor={m.mine ? "$foreground" : "$gray12"}
+              color={m.mine ? "$background" : "$foreground"}
             >
               {m.text}
             </Text>
@@ -171,52 +130,24 @@ export default function ChatPanel({
       <XStack
         tag="form"
         onSubmit={submit}
-        gap="$s2"
+        gap={8}
         borderTopWidth={1}
-        borderColor="$zinc800"
-        padding="$s3"
+        borderColor="$gray20"
+        padding={12}
       >
-        {/* unstyled Input: Tamagui token-driven style props reproduce the look 1:1.
-            focus:ring is approximated with a 1px emerald outline (see tamagui-gaps.md) */}
         <Input
-          unstyled
           value={draft}
-          onChangeText={(text) => setDraft(text)}
+          onChangeText={(text: string) => setDraft(text)}
           placeholder={connected ? "Type a message…" : "Connecting…"}
-          placeholderTextColor="$zinc600"
           disabled={!connected}
           flex={1}
-          borderRadius="$round"
-          backgroundColor="$zinc900"
-          paddingHorizontal="$s4"
-          paddingVertical="$s2"
-          fontSize={14}
-          color="$zinc100"
-          outlineWidth={0}
-          focusStyle={{
-            outlineWidth: 1,
-            outlineColor: "$emerald400",
-            outlineStyle: "solid",
-          }}
-          disabledStyle={{ opacity: 0.5 }}
-          style={{ fontFamily: "inherit" }}
+          opacity={connected ? 1 : 0.5}
         />
         <Button
-          unstyled
+          variant="primary"
           type="submit"
           disabled={!connected || !draft.trim()}
-          cursor="pointer"
-          alignItems="center"
-          justifyContent="center"
-          borderRadius="$round"
-          backgroundColor="$emerald400"
-          paddingHorizontal="$s4"
-          paddingVertical="$s2"
-          fontSize={14}
-          fontWeight="600"
-          color="$zinc950"
-          disabledStyle={{ opacity: 0.4 }}
-          style={{ fontFamily: "inherit" }}
+          opacity={!connected || !draft.trim() ? 0.4 : 1}
         >
           Send
         </Button>

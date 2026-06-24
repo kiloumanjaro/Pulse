@@ -84,23 +84,36 @@ model Signal {
 ### Component Tree
 
 ```
-page.tsx  (state machine: gate → live; idle → requesting → connecting → connected)
-├── EntryGate         location permission + join (renders Header)
-├── WorldMap          Mapbox GL, peer dots, click handler
-├── ConnectionPrompt  accept / decline modal
-├── ChatPanel         text input + message history
-└── VideoPanel        local + remote video, call controls
+page.tsx  (/)            landing — renders EntryGate, no live state
+└── EntryGate            scrollable marketing page; "Enter" → router.push("/live")
+    ├── Hero             full-viewport radar + floating Header
+    ├── Partners         reserved logo grid (empty cells hatched)
+    ├── (statement)      vertical-rule cell — the why-Pulse copy
+    └── StickyScrollScrub  two-column sticky-scrub of the 5-step lifecycle
+                           (scrollspy tracks the active step; the pinned
+                            top nav highlights it)
+
+live/page.tsx  (/live)   (geo: locating → live; conn: idle → requesting → connecting → connected)
+├── (on mount)           location permission + join
+├── WorldMap             Mapbox GL, peer dots, click handler
+├── ConnectionPrompt     accept / decline modal
+├── ChatPanel            text input + message history
+└── VideoPanel           local + remote video, call controls
 
 Header        frosted sticky nav: brand → home, About / How it works / Privacy,
-              live pill, Enter (geolocation on gate, otherwise → home)
+              live pill, Enter (→ /live on the landing, otherwise → home)
 PageShell     shared chrome (Header + centered container) for the static pages
 ```
+
+Splitting the live map onto its own `/live` route (reached via `router.push`,
+not `replace`) gives the map a real address and a history entry, so the browser
+Back button returns to the landing page instead of an empty view.
 
 ### Static Pages (App Router routes)
 
 Concept pages reachable from the `Header`. They render no live data and hold no
 state — pure design-system content. The `Header` is shown on these and on the
-gate, but **not** on the live map (`page.tsx` "live" phase is full-screen).
+landing page, but **not** on the live map (`/live` is full-screen).
 
 | Route | Purpose |
 |-------|---------|
@@ -111,7 +124,7 @@ gate, but **not** on the live map (`page.tsx` "live" phase is full-screen).
 ### State Machine (simplified)
 
 ```
-gate ──(permission granted)──▶ live/idle
+/live mount ──(permission granted)──▶ live/idle
                                   │
               ┌───────────────────┼───────────────────┐
         click dot           receive request       (nothing)

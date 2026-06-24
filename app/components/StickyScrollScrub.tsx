@@ -7,9 +7,10 @@ import { Body, Display, Hatch, Placeholder } from "./ui";
 // Sticky-scroll scrub (design-system.md). A bordered box whose full-width step
 // nav pins to the top and highlights the active section as the left-column copy
 // scrolls. Each section is text (left) + image (right); sections are separated
-// by a full-width band of 135° diagonal hatch (§8). Active tab uses the $gray8
-// "selected cell" fill — monochrome, no colored accent. Scroll tracking is
-// IntersectionObserver only (no scroll listeners).
+// by a full-width band of 135° diagonal hatch (§8). Active tab uses the gray-8
+// "selected cell" fill (#121317, literal — the $gray8 *token* collides with
+// Tamagui's built-in theme gray8 and resolves to a mid-gray). Scroll tracking
+// is IntersectionObserver only (no scroll listeners).
 
 type Section = {
   id: string;
@@ -147,8 +148,8 @@ export default function StickyScrollScrub() {
               animation="quick"
               borderLeftWidth={i > 0 ? 1 : 0}
               borderColor="$gray20"
-              backgroundColor={isActive ? "$gray8" : "transparent"}
-              hoverStyle={{ backgroundColor: isActive ? "$gray8" : "transparent" }}
+              backgroundColor={isActive ? "#121317" : "transparent"}
+              hoverStyle={{ backgroundColor: isActive ? "#121317" : "transparent" }}
               onPress={() => goTo(s.id)}
             >
               <Text

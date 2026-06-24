@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { YStack } from "tamagui";
-import { Body, Button, Display, Eyebrow } from "./ui";
+import { XStack, YStack } from "tamagui";
+import { Body, Button, Display } from "./ui";
+import Header from "./Header";
 import Radar from "./Radar";
+
+const GITHUB_URL = "https://github.com/kiloumanjaro/Pulse";
 
 export default function EntryGate({
   onReady,
@@ -40,10 +43,7 @@ export default function EntryGate({
     <YStack
       position="relative"
       height="100vh"
-      alignItems="center"
-      justifyContent="center"
-      gap={32}
-      padding={24}
+      overflow="hidden"
       backgroundColor="$background"
     >
       <YStack position="absolute" top={0} left={0} right={0} bottom={0}>
@@ -65,47 +65,69 @@ export default function EntryGate({
         />
       </YStack>
 
-      <YStack position="relative" zIndex={10} alignItems="center" gap={32}>
-        <YStack alignItems="center" gap={16}>
-          <Eyebrow>Anonymous · Ephemeral</Eyebrow>
-          <Display
-            tag="h1"
-            size="xl"
-            textAlign="center"
-            $sm={{ fontSize: 64, lineHeight: 72, letterSpacing: -1.3 }}
-          >
-            Pulse
-          </Display>
-          <Body
-            size="lg"
-            tone="muted"
-            maxWidth={384}
-            textAlign="center"
-          >
-            A living globe of anonymous strangers. Drop onto the map and connect.
-          </Body>
-        </YStack>
+      <Header onEnter={enter} />
 
-        <Button
-          variant="primary"
-          size="md"
-          onPress={enter}
-          disabled={status === "locating"}
-          opacity={status === "locating" ? 0.6 : 1}
+      <YStack
+        flex={1}
+        position="relative"
+        zIndex={10}
+        justifyContent="flex-end"
+        paddingHorizontal={24}
+        paddingBottom={32}
+        $sm={{ paddingHorizontal: 48, paddingBottom: 48 }}
+      >
+        <XStack
+          alignItems="flex-end"
+          justifyContent="space-between"
+          gap={32}
+          flexWrap="wrap"
         >
-          {status === "locating" ? "Locating…" : "Enter Pulse"}
-        </Button>
+          <YStack gap={16} maxWidth={480} flexShrink={1}>
+            <Display
+              tag="h1"
+              size="xl"
+              $sm={{ fontSize: 64, lineHeight: 72, letterSpacing: -1.3 }}
+            >
+              Pulse
+            </Display>
+            <Body size="md" tone="muted" maxWidth={420}>
+              A living globe of anonymous strangers. No sign-up, nothing
+              stored — gone the moment you leave.
+            </Body>
+          </YStack>
 
-        {status === "error" && (
-          <Body size="sm" maxWidth={384} textAlign="center" color="$danger">
-            {error}
-          </Body>
-        )}
-
-        <Body size="sm" tone="muted" maxWidth={384} textAlign="center">
-          No sign-up. Your dot is placed 1–3&nbsp;km from your real location.
-          Nothing is stored — closing the tab ends everything.
-        </Body>
+          <YStack alignItems="flex-start" gap={12}>
+            {status === "error" && (
+              <Body size="sm" maxWidth={320} color="$danger">
+                {error}
+              </Body>
+            )}
+            <XStack alignItems="center" gap={12} flexWrap="wrap">
+              <Button
+                variant="primary"
+                size="md"
+                onPress={enter}
+                disabled={status === "locating"}
+                opacity={status === "locating" ? 0.6 : 1}
+              >
+                {status === "locating" ? "Locating…" : "Enter Pulse"}
+              </Button>
+              <Button
+                variant="outline"
+                size="md"
+                tag="a"
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noreferrer"
+                backgroundColor="$black"
+                hoverStyle={{ backgroundColor: "$gray8" }}
+                pressStyle={{ backgroundColor: "$gray5" }}
+              >
+                View on GitHub
+              </Button>
+            </XStack>
+          </YStack>
+        </XStack>
       </YStack>
     </YStack>
   );

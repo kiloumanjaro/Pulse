@@ -85,12 +85,28 @@ model Signal {
 
 ```
 page.tsx  (state machine: gate → live; idle → requesting → connecting → connected)
-├── EntryGate         location permission + join
+├── EntryGate         location permission + join (renders Header)
 ├── WorldMap          Mapbox GL, peer dots, click handler
 ├── ConnectionPrompt  accept / decline modal
 ├── ChatPanel         text input + message history
 └── VideoPanel        local + remote video, call controls
+
+Header        frosted sticky nav: brand → home, About / How it works / Privacy,
+              live pill, Enter (geolocation on gate, otherwise → home)
+PageShell     shared chrome (Header + centered container) for the static pages
 ```
+
+### Static Pages (App Router routes)
+
+Concept pages reachable from the `Header`. They render no live data and hold no
+state — pure design-system content. The `Header` is shown on these and on the
+gate, but **not** on the live map (`page.tsx` "live" phase is full-screen).
+
+| Route | Purpose |
+|-------|---------|
+| `/about` | What Pulse is — anonymous, ephemeral, location-aware, peer-to-peer |
+| `/how-it-works` | The 8-step session lifecycle (permission → P2P → tab close) |
+| `/privacy` | What is protected and how; "stateless by design" |
 
 ### State Machine (simplified)
 

@@ -49,19 +49,33 @@ const NavLabel = styled(Text, {
 // Square 3px tick between nav items — the reference's separator, kept hard-cornered.
 const Sep = () => <View width={3} height={3} backgroundColor="$foreground" />;
 
-// Radar/pulse glyph: concentric rings + a chartreuse sweep, echoing the entry radar.
-function RadarMark() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" stroke="#abaebb" strokeWidth="1.25" opacity="0.45" />
-      <circle cx="12" cy="12" r="6" stroke="#abaebb" strokeWidth="1.25" opacity="0.7" />
-      <line x1="12" y1="12" x2="21" y2="6.5" stroke="#def135" strokeWidth="1.25" strokeLinecap="round" />
-      <circle cx="12" cy="12" r="2.4" fill="#def135" />
-    </svg>
-  );
-}
+// Pulse wordmark glyph. Inlined (not <img>) so its fill follows the theme:
+// `color="$yellow"` cascades to the path's `fill="currentColor"`, so recoloring
+// the brand is a one-line change to the `yellow` token in tamagui.config.ts.
+// viewBox is cropped to the glyph's true bounds so it fills the rendered height.
+const PULSE_PATH =
+  "M495.2,252.8c4.8-1.1,10-1,14.8,0.3c9.4,3.1,14.6,14.1,12.3,23.6c-7.5,38-15,75.9-22.3,114c10.4-8.8,18.8-19.7,29.4-28.3c2.5-0.9,5.3-0.5,8-0.6c18.2,0.1,36.4,0,54.5,0c7.8-0.3,16.1,3.3,19.7,10.5c6.5,11.3-1.3,28.8-14.9,29.4c-15.4,0.4-30.8-0.2-46.3,0.2c-3.1-0.1-6,1.3-8,3.7c-17.6,18.7-36.1,36.5-53.9,55.1c-5,5.1-9.9,11.2-17.3,12.8c-13.3,3.4-28.3-9.8-24.7-23.6c6.9-34.3,13.3-68.7,20.2-103c0.5-3.1,0.7-6.2,1-9.3c-19.2,19.3-37.6,39.5-56.4,59.1c-32.8,34.3-65.5,68.8-98.1,103.3c-6.5,6.8-12.8,16.6-23.5,15.8c-9.1,1.3-18-5-20.6-13.6c-2-8.9,1.5-17.7,3.7-26.2c8.5-29.9,16.1-60.1,24.9-90c-10.7,10-21.5,19.9-31.8,30.4c-4.4,5.3-12,6.4-18.3,4.5c-9.2-4.6-16.3-12.3-25.1-17.4c-2.1-1.1-4.6-1.3-6.9-1.5c-15.4-0.5-30.7,0.4-46.1-0.3c-13.2-1.9-20-19.2-12.7-30c4-5.6,10.2-10.1,17.3-9.7c19.8,0.1,39.6-0.4,59.4,0.2c6.6,2.9,11.7,8.5,17.9,12.1c19.2-19.5,39.6-37.6,58.8-57c7.4-6.2,13.2-16.5,24-16.8c10.1-1.4,20.1,6,22,15.9c1.5,7.8-1.7,15.4-3.8,22.8c-7.4,28.2-15.2,56.3-23,84.4c10.6-9.6,19.4-21,29.6-31c39.5-40.3,77.3-82.2,116.8-122.5C482,263.7,487.2,256.3,495.2,252.8z";
 
-export default function Header({ onEnter }: { onEnter?: () => void }) {
+const PulseMark = () => (
+  <View color="$yellow">
+    <svg
+      viewBox="150 248 468 272"
+      fill="currentColor"
+      aria-hidden="true"
+      style={{ height: 40, width: "auto", display: "block" }}
+    >
+      <path d={PULSE_PATH} />
+    </svg>
+  </View>
+);
+
+export default function Header({
+  onEnter,
+  paddingHorizontal = 16,
+}: {
+  onEnter?: () => void;
+  paddingHorizontal?: number;
+}) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -76,22 +90,17 @@ export default function Header({ onEnter }: { onEnter?: () => void }) {
       zIndex={60}
       width="100%"
       paddingTop={16}
-      paddingHorizontal={16}
+      paddingHorizontal={paddingHorizontal}
       alignItems="center"
       pointerEvents="box-none"
     >
       <XStack flex={1} justifyContent="flex-start" pointerEvents="box-none">
-        <Link href="/" style={{ textDecoration: "none" }} aria-label="Pulse — home">
-          <FloatBox
-            className="nav-glass"
-            width={42}
-            paddingHorizontal={0}
-            justifyContent="center"
-            cursor="pointer"
-            hoverStyle={{ borderColor: "$gray30" }}
-          >
-            <RadarMark />
-          </FloatBox>
+        <Link
+          href="/"
+          style={{ textDecoration: "none", display: "block", cursor: "pointer" }}
+          aria-label="Pulse — home"
+        >
+          <PulseMark />
         </Link>
       </XStack>
 

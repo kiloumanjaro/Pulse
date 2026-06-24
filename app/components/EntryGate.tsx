@@ -5,6 +5,8 @@ import { Section } from "./ui";
 import HeroSection from "./HeroSection";
 import PartnersSection from "./PartnersSection";
 import StatementSection from "./StatementSection";
+import BentoSection from "./BentoSection";
+import FooterSection from "./FooterSection";
 import StickyScrollScrub from "./StickyScrollScrub";
 
 export default function EntryGate() {
@@ -21,9 +23,11 @@ export default function EntryGate() {
       <HeroSection onEnter={enter} />
       <PartnersSection />
       <StatementSection />
-      <Section className="pt-24 pb-[140px]">
+      <Section className="pt-24">
         <StickyScrollScrub />
       </Section>
+      <BentoSection />
+      <FooterSection />
     </div>
   );
 }

@@ -1,14 +1,13 @@
-import { Body, Display, Eyebrow, Section } from "./ui";
+import { Body, Display, Section } from "./ui";
 import { STATEMENT } from "../content/landing";
 
 // The statement — the why-Pulse copy.
 export default function StatementSection() {
   return (
-    <Section>
+    <Section id="why-pulse">
       <div className="flex flex-col py-20 px-7 sm:px-16 gap-5">
         <div className="flex flex-row flex-wrap items-start gap-12 sm:gap-20">
           <div className="flex flex-col grow-[1.6] shrink basis-[420px] gap-5">
-            <Eyebrow>{STATEMENT.eyebrow}</Eyebrow>
             <Display as="h2" size="lg">
               {STATEMENT.headline}
             </Display>

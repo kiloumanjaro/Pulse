@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { YStack, Paragraph, Text } from "tamagui";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Map as MapboxMap, Marker } from "mapbox-gl";
 import type { PeerDot } from "@/lib/types";
@@ -154,23 +155,66 @@ export default function WorldMap({
   }, [peers, ready]);
 
   return (
-    <div className="absolute inset-0">
+    <YStack position="absolute" top={0} left={0} right={0} bottom={0}>
+      {/* Mapbox GL owns this node imperatively — must stay a raw <div> (see tamagui-gaps.md) */}
       <div ref={containerRef} className="h-full w-full bg-zinc-900" />
 
       {!TOKEN && (
-        <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
-          <p className="max-w-md rounded-lg bg-zinc-800 p-4 text-sm text-zinc-200">
+        <YStack
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          alignItems="center"
+          justifyContent="center"
+          padding={24}
+        >
+          <Paragraph
+            maxWidth={448}
+            borderRadius={8}
+            backgroundColor="#27272a"
+            padding={16}
+            fontSize={14}
+            lineHeight={20}
+            color="#e4e4e7"
+            textAlign="center"
+            style={{ fontFamily: "inherit" }}
+          >
             Set{" "}
-            <code className="text-emerald-400">NEXT_PUBLIC_MAPBOX_TOKEN</code> in{" "}
-            <code>.env</code> to load the map.
-          </p>
-        </div>
+            <Text tag="code" color="#34d399" style={{ fontFamily: "monospace" }}>
+              NEXT_PUBLIC_MAPBOX_TOKEN
+            </Text>{" "}
+            in{" "}
+            <Text tag="code" color="#e4e4e7" style={{ fontFamily: "monospace" }}>
+              .env
+            </Text>{" "}
+            to load the map.
+          </Paragraph>
+        </YStack>
       )}
 
       {/* Online count */}
-      <div className="absolute bottom-4 left-4 rounded-full bg-zinc-900/80 px-3 py-1.5 text-xs text-zinc-300 backdrop-blur">
-        {peers.length} online
-      </div>
-    </div>
+      <YStack
+        position="absolute"
+        bottom={16}
+        left={16}
+        borderRadius={9999}
+        backgroundColor="rgba(24,24,27,0.8)"
+        paddingHorizontal={12}
+        paddingVertical={6}
+        // backdrop-blur
+        style={{ backdropFilter: "blur(8px)" }}
+      >
+        <Text
+          fontSize={12}
+          lineHeight={16}
+          color="#d4d4d8"
+          style={{ fontFamily: "inherit" }}
+        >
+          {peers.length} online
+        </Text>
+      </YStack>
+    </YStack>
   );
 }

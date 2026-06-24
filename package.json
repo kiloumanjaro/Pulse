@@ -3,20 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "npx prisma generate && next build",
+    "dev": "next dev --webpack",
+    "build": "npx prisma generate && next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@tamagui/config": "^2.3.3",
+    "@tamagui/core": "^2.3.3",
+    "@tamagui/next-plugin": "^2.3.3",
+    "@tamagui/next-theme": "^2.3.3",
     "mapbox-gl": "^3.24.0",
     "next": "16.2.7",
     "ogl": "^1.0.11",
     "pg": "^8.21.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-native-web": "^0.21.2",
+    "tamagui": "^2.3.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

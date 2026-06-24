@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { YStack, XStack, Paragraph, Text, Button, Input } from "tamagui";
 
 export interface ChatMessage {
   id: number;
@@ -39,72 +40,187 @@ export default function ChatPanel({
   }
 
   return (
-    <div className="absolute inset-y-0 right-0 z-20 flex w-full max-w-md flex-col border-l border-zinc-800 bg-zinc-950 text-zinc-100 shadow-2xl">
-      <header className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
-        <div>
-          <p className="font-semibold">Stranger</p>
-          <p className="text-xs text-zinc-500">
+    <YStack
+      position="absolute"
+      top={0}
+      bottom={0}
+      right={0}
+      zIndex={20}
+      width="100%"
+      maxWidth={448}
+      borderLeftWidth={1}
+      borderColor="#27272a"
+      backgroundColor="#09090b"
+      // shadow-2xl
+      style={{ boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)" }}
+    >
+      <XStack
+        tag="header"
+        alignItems="center"
+        justifyContent="space-between"
+        borderBottomWidth={1}
+        borderColor="#27272a"
+        paddingHorizontal={16}
+        paddingVertical={12}
+      >
+        <YStack>
+          <Paragraph
+            fontSize={16}
+            lineHeight={24}
+            fontWeight="600"
+            color="#f4f4f5"
+            style={{ fontFamily: "inherit" }}
+          >
+            Stranger
+          </Paragraph>
+          <Paragraph
+            fontSize={12}
+            lineHeight={16}
+            color="#71717a"
+            style={{ fontFamily: "inherit" }}
+          >
             {connected ? "Connected" : "Connecting…"}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={onStartVideo}
+          </Paragraph>
+        </YStack>
+        <XStack gap={8}>
+          {/* unstyled Button: Tamagui style props reproduce the Tailwind look 1:1 */}
+          <Button
+            unstyled
+            onPress={onStartVideo}
             disabled={!connected || videoBusy}
-            className="rounded-full border border-zinc-700 px-3 py-1.5 text-sm hover:border-zinc-500 disabled:opacity-40"
+            cursor="pointer"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius={9999}
+            borderWidth={1}
+            borderColor="#3f3f46"
+            backgroundColor="transparent"
+            paddingHorizontal={12}
+            paddingVertical={6}
+            fontSize={14}
+            color="#f4f4f5"
+            hoverStyle={{ borderColor: "#71717a" }}
+            disabledStyle={{ opacity: 0.4 }}
+            style={{ fontFamily: "inherit" }}
           >
             Video
-          </button>
-          <button
-            onClick={onEnd}
-            className="rounded-full bg-red-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-400"
+          </Button>
+          <Button
+            unstyled
+            onPress={onEnd}
+            cursor="pointer"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius={9999}
+            backgroundColor="#ef4444"
+            paddingHorizontal={12}
+            paddingVertical={6}
+            fontSize={14}
+            fontWeight="500"
+            color="#ffffff"
+            hoverStyle={{ backgroundColor: "#f87171" }}
+            style={{ fontFamily: "inherit" }}
           >
             End
-          </button>
-        </div>
-      </header>
+          </Button>
+        </XStack>
+      </XStack>
 
-      <div className="flex-1 space-y-2 overflow-y-auto p-4">
+      <YStack
+        flex={1}
+        gap={8}
+        padding={16}
+        style={{ overflowY: "auto" }}
+      >
         {messages.length === 0 && (
-          <p className="mt-8 text-center text-sm text-zinc-500">
+          <Paragraph
+            marginTop={32}
+            fontSize={14}
+            lineHeight={20}
+            color="#71717a"
+            textAlign="center"
+            style={{ fontFamily: "inherit" }}
+          >
             Say hello. Messages are peer-to-peer and never stored.
-          </p>
+          </Paragraph>
         )}
         {messages.map((m) => (
-          <div
+          <XStack
             key={m.id}
-            className={`flex ${m.mine ? "justify-end" : "justify-start"}`}
+            justifyContent={m.mine ? "flex-end" : "flex-start"}
           >
-            <span
-              className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
-                m.mine
-                  ? "bg-emerald-400 text-zinc-950"
-                  : "bg-zinc-800 text-zinc-100"
-              }`}
+            <Text
+              maxWidth="80%"
+              borderRadius={16}
+              paddingHorizontal={12}
+              paddingVertical={8}
+              fontSize={14}
+              lineHeight={20}
+              backgroundColor={m.mine ? "#34d399" : "#27272a"}
+              color={m.mine ? "#09090b" : "#f4f4f5"}
+              style={{ fontFamily: "inherit" }}
             >
               {m.text}
-            </span>
-          </div>
+            </Text>
+          </XStack>
         ))}
+        {/* Plain scroll anchor for scrollIntoView — non-visual layout marker, not a UI primitive */}
         <div ref={endRef} />
-      </div>
+      </YStack>
 
-      <form onSubmit={submit} className="flex gap-2 border-t border-zinc-800 p-3">
-        <input
+      <XStack
+        tag="form"
+        onSubmit={submit}
+        gap={8}
+        borderTopWidth={1}
+        borderColor="#27272a"
+        padding={12}
+      >
+        {/* unstyled Input: Tamagui style props reproduce the Tailwind look 1:1.
+            focus:ring is approximated with a 1px emerald outline (see tamagui-gaps.md) */}
+        <Input
+          unstyled
           value={draft}
-          onChange={(e) => setDraft(e.target.value)}
+          onChangeText={(text) => setDraft(text)}
           placeholder={connected ? "Type a message…" : "Connecting…"}
+          placeholderTextColor={"#52525b" as never}
           disabled={!connected}
-          className="flex-1 rounded-full bg-zinc-900 px-4 py-2 text-sm outline-none placeholder:text-zinc-600 focus:ring-1 focus:ring-emerald-400 disabled:opacity-50"
+          flex={1}
+          borderRadius={9999}
+          backgroundColor="#18181b"
+          paddingHorizontal={16}
+          paddingVertical={8}
+          fontSize={14}
+          color="#f4f4f5"
+          outlineWidth={0}
+          focusStyle={{
+            outlineWidth: 1,
+            outlineColor: "#34d399",
+            outlineStyle: "solid",
+          }}
+          disabledStyle={{ opacity: 0.5 }}
+          style={{ fontFamily: "inherit" }}
         />
-        <button
+        <Button
+          unstyled
           type="submit"
           disabled={!connected || !draft.trim()}
-          className="rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-950 disabled:opacity-40"
+          cursor="pointer"
+          alignItems="center"
+          justifyContent="center"
+          borderRadius={9999}
+          backgroundColor="#34d399"
+          paddingHorizontal={16}
+          paddingVertical={8}
+          fontSize={14}
+          fontWeight="600"
+          color="#09090b"
+          disabledStyle={{ opacity: 0.4 }}
+          style={{ fontFamily: "inherit" }}
         >
           Send
-        </button>
-      </form>
-    </div>
+        </Button>
+      </XStack>
+    </YStack>
   );
 }

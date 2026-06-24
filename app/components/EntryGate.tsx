@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { YStack, H1, Paragraph, Button } from "tamagui";
 import Radar from "./Radar";
 
 export default function EntryGate({
@@ -35,8 +36,15 @@ export default function EntryGate({
   }
 
   return (
-    <div className="relative flex h-screen flex-col items-center justify-center gap-8 p-6 text-zinc-100">
-      <div className="absolute inset-0">
+    <YStack
+      position="relative"
+      height="100vh"
+      alignItems="center"
+      justifyContent="center"
+      gap={32}
+      padding={24}
+    >
+      <YStack position="absolute" top={0} left={0} right={0} bottom={0}>
         <Radar
           speed={0.7}
           scale={0.60}
@@ -53,33 +61,83 @@ export default function EntryGate({
           brightness={0.4}
           enableMouseInteraction={false}
         />
-      </div>
+      </YStack>
 
-      <div className="relative z-10 flex flex-col items-center gap-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold tracking-tight">Pulse</h1>
-          <p className="mt-2 max-w-sm text-zinc-400">
+      <YStack position="relative" zIndex={10} alignItems="center" gap={32}>
+        <YStack alignItems="center">
+          <H1
+            fontSize={36}
+            lineHeight={40}
+            fontWeight="700"
+            letterSpacing={-0.9}
+            color="#f4f4f5"
+            textAlign="center"
+            margin={0}
+            style={{ fontFamily: "inherit" }}
+          >
+            Pulse
+          </H1>
+          <Paragraph
+            marginTop={8}
+            maxWidth={384}
+            fontSize={16}
+            lineHeight={24}
+            color="#a1a1aa"
+            textAlign="center"
+            style={{ fontFamily: "inherit" }}
+          >
             A living globe of anonymous strangers. Drop onto the map and connect.
-          </p>
-        </div>
+          </Paragraph>
+        </YStack>
 
-        <button
-          onClick={enter}
+        {/* unstyled Button: Tamagui style props reproduce the Tailwind look 1:1.
+            Font props (color/size/weight) are forwarded to the wrapped label text. */}
+        <Button
+          unstyled
+          onPress={enter}
           disabled={status === "locating"}
-          className="rounded-full bg-emerald-400 px-8 py-3 font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:opacity-60"
+          cursor="pointer"
+          alignItems="center"
+          justifyContent="center"
+          borderRadius={9999}
+          backgroundColor="#34d399"
+          paddingHorizontal={32}
+          paddingVertical={12}
+          fontSize={16}
+          fontWeight="600"
+          color="#09090b"
+          hoverStyle={{ backgroundColor: "#6ee7b7" }}
+          disabledStyle={{ opacity: 0.6 }}
+          style={{ fontFamily: "inherit", transition: "background-color 150ms" }}
         >
           {status === "locating" ? "Locating…" : "Enter Pulse"}
-        </button>
+        </Button>
 
         {status === "error" && (
-          <p className="max-w-sm text-center text-sm text-red-400">{error}</p>
+          <Paragraph
+            maxWidth={384}
+            fontSize={14}
+            lineHeight={20}
+            color="#f87171"
+            textAlign="center"
+            style={{ fontFamily: "inherit" }}
+          >
+            {error}
+          </Paragraph>
         )}
 
-        <p className="max-w-sm text-center text-xs text-zinc-500">
+        <Paragraph
+          maxWidth={384}
+          fontSize={12}
+          lineHeight={16}
+          color="#71717a"
+          textAlign="center"
+          style={{ fontFamily: "inherit" }}
+        >
           No sign-up. Your dot is placed 1–3&nbsp;km from your real location.
           Nothing is stored — closing the tab ends everything.
-        </p>
-      </div>
-    </div>
+        </Paragraph>
+      </YStack>
+    </YStack>
   );
 }

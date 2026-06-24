@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { YStack, XStack, Text, Button } from "tamagui";
 import EntryGate from "./components/EntryGate";
 import WorldMap from "./components/WorldMap";
 import ConnectionPrompt from "./components/ConnectionPrompt";
@@ -316,7 +317,7 @@ export default function Home() {
   const inChat = conn.kind === "connecting" || conn.kind === "connected";
 
   return (
-    <main className="fixed inset-0 overflow-hidden">
+    <YStack tag="main" position="fixed" top={0} left={0} right={0} bottom={0} overflow="hidden">
       <WorldMap
         peers={peers}
         me={myLocation}
@@ -325,21 +326,80 @@ export default function Home() {
       />
 
       {notice && (
-        <div className="absolute left-1/2 top-20 z-30 -translate-x-1/2 rounded-full bg-zinc-800/90 px-4 py-2 text-sm text-zinc-100 shadow-lg backdrop-blur">
-          {notice}
-        </div>
+        <YStack
+          position="absolute"
+          left="50%"
+          top={80}
+          zIndex={30}
+          borderRadius={9999}
+          backgroundColor="rgba(39,39,42,0.9)"
+          paddingHorizontal={16}
+          paddingVertical={8}
+          // -translate-x-1/2, shadow-lg, backdrop-blur
+          style={{
+            transform: "translateX(-50%)",
+            boxShadow:
+              "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <Text
+            fontSize={14}
+            lineHeight={20}
+            color="#f4f4f5"
+            style={{ fontFamily: "inherit" }}
+          >
+            {notice}
+          </Text>
+        </YStack>
       )}
 
       {conn.kind === "requesting" && (
-        <div className="absolute left-1/2 top-20 z-30 flex -translate-x-1/2 items-center gap-3 rounded-full bg-zinc-800/90 px-4 py-2 text-sm text-zinc-100 shadow-lg backdrop-blur">
-          <span>Requesting connection…</span>
-          <button
-            onClick={cancelRequest}
-            className="rounded-full bg-zinc-700 px-3 py-1 text-xs hover:bg-zinc-600"
+        <XStack
+          position="absolute"
+          left="50%"
+          top={80}
+          zIndex={30}
+          alignItems="center"
+          gap={12}
+          borderRadius={9999}
+          backgroundColor="rgba(39,39,42,0.9)"
+          paddingHorizontal={16}
+          paddingVertical={8}
+          style={{
+            transform: "translateX(-50%)",
+            boxShadow:
+              "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <Text
+            fontSize={14}
+            lineHeight={20}
+            color="#f4f4f5"
+            style={{ fontFamily: "inherit" }}
+          >
+            Requesting connection…
+          </Text>
+          {/* unstyled Button: Tamagui style props reproduce the Tailwind look 1:1 */}
+          <Button
+            unstyled
+            onPress={cancelRequest}
+            cursor="pointer"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius={9999}
+            backgroundColor="#3f3f46"
+            paddingHorizontal={12}
+            paddingVertical={4}
+            fontSize={12}
+            color="#f4f4f5"
+            hoverStyle={{ backgroundColor: "#52525b" }}
+            style={{ fontFamily: "inherit" }}
           >
             Cancel
-          </button>
-        </div>
+          </Button>
+        </XStack>
       )}
 
       {conn.kind === "incoming" && (
@@ -367,9 +427,31 @@ export default function Home() {
       )}
 
       {video === "requesting" && (
-        <div className="absolute bottom-24 left-1/2 z-30 -translate-x-1/2 rounded-full bg-zinc-800/90 px-4 py-2 text-sm text-zinc-100 shadow-lg backdrop-blur">
-          Waiting for stranger to accept video…
-        </div>
+        <YStack
+          position="absolute"
+          bottom={96}
+          left="50%"
+          zIndex={30}
+          borderRadius={9999}
+          backgroundColor="rgba(39,39,42,0.9)"
+          paddingHorizontal={16}
+          paddingVertical={8}
+          style={{
+            transform: "translateX(-50%)",
+            boxShadow:
+              "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <Text
+            fontSize={14}
+            lineHeight={20}
+            color="#f4f4f5"
+            style={{ fontFamily: "inherit" }}
+          >
+            Waiting for stranger to accept video…
+          </Text>
+        </YStack>
       )}
 
       {video === "incoming" && (
@@ -390,6 +472,6 @@ export default function Home() {
           onEnd={endVideo}
         />
       )}
-    </main>
+    </YStack>
   );
 }

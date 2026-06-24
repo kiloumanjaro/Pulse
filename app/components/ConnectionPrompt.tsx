@@ -1,5 +1,7 @@
 "use client";
 
+import { YStack, XStack, H2, Paragraph, Button } from "tamagui";
+
 // Reusable centered prompt for "someone wants to connect" and
 // "someone wants to start video".
 export default function ConnectionPrompt({
@@ -18,25 +20,97 @@ export default function ConnectionPrompt({
   onDecline: () => void;
 }) {
   return (
-    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 p-6">
-      <div className="w-full max-w-xs rounded-2xl bg-zinc-900 p-6 text-center text-zinc-100 shadow-xl">
-        <h2 className="text-lg font-semibold">{title}</h2>
-        {subtitle && <p className="mt-1 text-sm text-zinc-400">{subtitle}</p>}
-        <div className="mt-5 flex gap-3">
-          <button
-            onClick={onDecline}
-            className="flex-1 rounded-full border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 hover:border-zinc-500"
+    <YStack
+      position="absolute"
+      top={0}
+      left={0}
+      right={0}
+      bottom={0}
+      zIndex={20}
+      alignItems="center"
+      justifyContent="center"
+      backgroundColor="rgba(0,0,0,0.6)"
+      padding={24}
+    >
+      <YStack
+        width="100%"
+        maxWidth={320}
+        borderRadius={16}
+        backgroundColor="#18181b"
+        padding={24}
+        // shadow-xl
+        style={{
+          boxShadow:
+            "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+        }}
+      >
+        <H2
+          fontSize={18}
+          lineHeight={28}
+          fontWeight="600"
+          color="#f4f4f5"
+          textAlign="center"
+          margin={0}
+          style={{ fontFamily: "inherit" }}
+        >
+          {title}
+        </H2>
+        {subtitle && (
+          <Paragraph
+            marginTop={4}
+            fontSize={14}
+            lineHeight={20}
+            color="#a1a1aa"
+            textAlign="center"
+            style={{ fontFamily: "inherit" }}
+          >
+            {subtitle}
+          </Paragraph>
+        )}
+        <XStack marginTop={20} gap={12}>
+          {/* unstyled Button: Tamagui style props reproduce the Tailwind look 1:1 */}
+          <Button
+            unstyled
+            onPress={onDecline}
+            flex={1}
+            cursor="pointer"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius={9999}
+            borderWidth={1}
+            borderColor="#3f3f46"
+            backgroundColor="transparent"
+            paddingHorizontal={16}
+            paddingVertical={8}
+            fontSize={14}
+            fontWeight="500"
+            color="#d4d4d8"
+            hoverStyle={{ borderColor: "#71717a" }}
+            style={{ fontFamily: "inherit" }}
           >
             {declineLabel}
-          </button>
-          <button
-            onClick={onAccept}
-            className="flex-1 rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-300"
+          </Button>
+          <Button
+            unstyled
+            onPress={onAccept}
+            flex={1}
+            cursor="pointer"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius={9999}
+            backgroundColor="#34d399"
+            paddingHorizontal={16}
+            paddingVertical={8}
+            fontSize={14}
+            fontWeight="600"
+            color="#09090b"
+            hoverStyle={{ backgroundColor: "#6ee7b7" }}
+            style={{ fontFamily: "inherit" }}
           >
             {acceptLabel}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </XStack>
+      </YStack>
+    </YStack>
   );
 }

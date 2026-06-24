@@ -1,7 +1,7 @@
 'use client';
 
 import type { SVGProps } from 'react';
-import { View, YStack } from 'tamagui';
+import { cn } from '@/lib/utils';
 import {
   IconSquaresFilled,
   IconFolderFilled,
@@ -55,48 +55,36 @@ export function SideNavigation({ activeTab, onTabChange }: SideNavigationProps) 
       // Full-width button so the active indicator can hug the rail's right edge
       // while the icon stays centered. currentColor drives the icon: white when
       // active, gray-40 otherwise, brightening to white on hover (§2, §10).
-      <View
+      <button
         key={tab.id}
-        tag="button"
-        role="button"
-        onPress={() => onTabChange(tab.id)}
-        position="relative"
-        width="100%"
-        cursor="pointer"
-        alignItems="center"
-        justifyContent="center"
-        animation="quick"
-        color={isActive ? '$foreground' : '$gray40'}
-        hoverStyle={{ color: '$foreground' }}
+        onClick={() => onTabChange(tab.id)}
+        className={cn(
+          'relative flex w-full cursor-pointer items-center justify-center transition-colors duration-200 hover:text-foreground',
+          isActive ? 'text-foreground' : 'text-gray-40',
+        )}
       >
         <Icon className="h-5 w-5" />
 
         {isActive && (
-          <View
-            position="absolute"
-            right={0}
-            height={36}
-            width={2}
-            backgroundColor="$foreground"
-          />
+          <span className="absolute right-0 h-9 w-0.5 bg-foreground" />
         )}
-      </View>
+      </button>
     );
   };
 
   return (
-    <YStack height="100%" width="100%" alignItems="center" paddingTop={6}>
+    <div className="flex flex-col h-full w-full items-center pt-1.5">
       {/* Chatbot tab pinned to the top */}
-      <YStack width="100%" alignItems="center">
+      <div className="flex flex-col w-full items-center">
         {chatbotTab && renderTab(chatbotTab)}
-      </YStack>
+      </div>
 
       {/* Spacer pushes the rest to the bottom */}
-      <YStack flex={1} />
+      <div className="flex-1" />
 
-      <YStack width="100%" alignItems="center" gap={20}>
+      <div className="flex flex-col w-full items-center gap-5">
         {otherTabs.map((tab) => renderTab(tab))}
-      </YStack>
-    </YStack>
+      </div>
+    </div>
   );
 }

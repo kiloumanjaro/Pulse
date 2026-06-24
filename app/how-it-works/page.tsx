@@ -1,6 +1,4 @@
-"use client";
-
-import { XStack, YStack } from "tamagui";
+import { cn } from "@/lib/utils";
 import { Body, Eyebrow } from "../components/ui";
 import PageShell from "../components/PageShell";
 
@@ -22,24 +20,22 @@ export default function HowItWorksPage() {
       title="From a dot to a conversation."
       intro="From permission to peer-to-peer in a few seconds. Here is the full lifecycle of a Pulse session — no accounts, no waiting rooms, no traces left behind."
     >
-      <YStack borderWidth={1} borderColor="$gray20">
+      <div className="flex flex-col border border-gray-20">
         {STEPS.map((step, i) => (
-          <XStack
+          <div
             key={i}
-            alignItems="center"
-            gap={20}
-            paddingHorizontal={24}
-            paddingVertical={18}
-            borderTopWidth={i === 0 ? 0 : 1}
-            borderColor="$gray20"
+            className={cn(
+              "flex flex-row items-center gap-5 px-6 py-[18px] border-gray-20",
+              i !== 0 && "border-t",
+            )}
           >
-            <Eyebrow minWidth={28} color="$yellow">
+            <Eyebrow className="min-w-7 text-yellow">
               {String(i + 1).padStart(2, "0")}
             </Eyebrow>
-            <Body flex={1}>{step}</Body>
-          </XStack>
+            <Body className="flex-1">{step}</Body>
+          </div>
         ))}
-      </YStack>
+      </div>
     </PageShell>
   );
 }

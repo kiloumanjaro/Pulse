@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
-import { NextTamaguiProvider } from "./NextTamaguiProvider";
 
 // Body voice. §3
 const inter = Inter({
@@ -42,7 +41,7 @@ export default function RootLayout({
         className="min-h-full flex flex-col"
         style={{ backgroundColor: "#040406", color: "#ffffff" }}
       >
-        <NextTamaguiProvider>{children}</NextTamaguiProvider>
+        {children}
       </body>
     </html>
   );

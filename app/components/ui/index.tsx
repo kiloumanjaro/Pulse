@@ -1,306 +1,295 @@
-"use client";
-
-import type { ReactNode } from "react";
-import {
-  GetProps,
-  Input as TamaguiInput,
-  styled,
-  Text,
-  View,
-  YStack,
-} from "tamagui";
+import type {
+  ComponentPropsWithoutRef,
+  CSSProperties,
+  ElementType,
+  ReactNode,
+} from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Design-system primitives (see design-system.md). Square corners, 1px
 // gray-20 borders, white-on-dark fills, mono uppercase eyebrows, flat (no
-// shadows). All tokens resolve from tamagui.config.ts.
+// shadows). Colors resolve from the Tailwind theme tokens in globals.css.
 // ---------------------------------------------------------------------------
 
 // --- Buttons (§9) -- 44px tall, square, hover = bg flip, 200ms ease-in-out ---
-export const ButtonFrame = styled(View, {
-  name: "Button",
-  tag: "button",
-  role: "button",
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 4,
-  height: 44,
-  borderWidth: 1,
-  borderColor: "transparent",
-  borderRadius: 0,
-  cursor: "pointer",
-  userSelect: "none",
-  animation: "quick",
-
-  variants: {
-    variant: {
-      primary: {
-        backgroundColor: "$foreground",
-        hoverStyle: { backgroundColor: "$gray90" },
-        pressStyle: { backgroundColor: "$gray80" },
+const button = cva(
+  "inline-flex flex-row items-center justify-center gap-1 h-11 border border-transparent rounded-none cursor-pointer select-none transition-colors duration-200 ease-in-out font-sans text-sm font-medium tracking-[-0.35px]",
+  {
+    variants: {
+      variant: {
+        primary:
+          "bg-foreground text-background hover:bg-gray-90 active:bg-gray-80",
+        outline:
+          "bg-background text-foreground border-foreground hover:bg-gray-12 active:bg-gray-8",
+        ghost:
+          "bg-transparent text-foreground hover:bg-gray-12 active:bg-gray-8",
+        danger:
+          "bg-danger text-foreground hover:bg-danger-hover active:bg-danger-hover",
       },
-      outline: {
-        backgroundColor: "$background",
-        borderColor: "$foreground",
-        hoverStyle: { backgroundColor: "$gray12" },
-        pressStyle: { backgroundColor: "$gray8" },
+      size: {
+        sm: "px-6",
+        md: "px-5",
+        icon: "w-11 px-0",
       },
-      ghost: {
-        backgroundColor: "transparent",
-        hoverStyle: { backgroundColor: "$gray12" },
-        pressStyle: { backgroundColor: "$gray8" },
-      },
-      danger: {
-        backgroundColor: "$danger",
-        hoverStyle: { backgroundColor: "$dangerHover" },
-        pressStyle: { backgroundColor: "$dangerHover" },
-      },
+      full: { true: "w-full" },
     },
-    size: {
-      sm: { paddingHorizontal: 24 }, // text-sm
-      md: { paddingHorizontal: 20 }, // text-base
-      icon: { width: 44, paddingHorizontal: 0 },
-    },
-    full: {
-      true: { width: "100%" },
-    },
-  } as const,
+    defaultVariants: { variant: "primary", size: "sm" },
+  },
+);
 
-  defaultVariants: { variant: "primary", size: "sm" },
-});
+type ButtonProps = VariantProps<typeof button> & {
+  className?: string;
+  children?: ReactNode;
+  href?: string;
+} & ComponentPropsWithoutRef<"button"> &
+  Pick<ComponentPropsWithoutRef<"a">, "href" | "target" | "rel">;
 
-export const ButtonText = styled(Text, {
-  name: "ButtonText",
-  fontFamily: "$body",
-  fontSize: 14,
-  fontWeight: "500",
-  letterSpacing: -0.35, // tracking-tight
-  userSelect: "none",
-
-  variants: {
-    variant: {
-      primary: { color: "$background" },
-      outline: { color: "$foreground" },
-      ghost: { color: "$foreground" },
-      danger: { color: "$foreground" },
-    },
-  } as const,
-
-  defaultVariants: { variant: "primary" },
-});
-
-type ButtonProps = GetProps<typeof ButtonFrame>;
-
-export function Button({ children, variant, ...props }: ButtonProps) {
+export function Button({
+  variant,
+  size,
+  full,
+  className,
+  href,
+  children,
+  target,
+  rel,
+  ...props
+}: ButtonProps) {
+  const cls = cn(button({ variant, size, full }), className);
+  if (href != null) {
+    return (
+      <a href={href} target={target} rel={rel} className={cls}>
+        {children}
+      </a>
+    );
+  }
   return (
-    <ButtonFrame variant={variant} {...props}>
-      {typeof children === "string" ? (
-        <ButtonText variant={variant}>{children}</ButtonText>
-      ) : (
-        children
-      )}
-    </ButtonFrame>
+    <button type="button" className={cls} {...props}>
+      {children}
+    </button>
   );
 }
 
 // --- Card / grid cell (§9) -- bordered, square, flat ---
-export const Card = styled(View, {
-  name: "Card",
-  backgroundColor: "$background",
-  borderWidth: 1,
-  borderColor: "$gray20",
-  borderRadius: 0,
-  padding: 20,
-
+const card = cva("border border-gray-20 rounded-none", {
   variants: {
-    pad: {
-      sm: { padding: 16 },
-      md: { padding: 24 },
-      lg: { padding: 32 },
-    },
+    pad: { sm: "p-4", md: "p-6", lg: "p-8" },
     surface: {
-      base: { backgroundColor: "$background" },
-      raised: { backgroundColor: "$gray8" },
-      popover: { backgroundColor: "$popover" },
+      base: "bg-background",
+      raised: "bg-gray-8",
+      popover: "bg-[#09090b]",
     },
-  } as const,
+  },
+  defaultVariants: { pad: undefined, surface: "base" },
 });
+
+type CardProps = VariantProps<typeof card> &
+  ComponentPropsWithoutRef<"div"> & { className?: string };
+
+export function Card({ pad, surface, className, ...props }: CardProps) {
+  return (
+    <div
+      className={cn(card({ surface }), pad ? card({ pad }) : "p-5", className)}
+      {...props}
+    />
+  );
+}
 
 // --- Badge / tag (§9) -- the only rounded component (6px) ---
-export const BadgeFrame = styled(View, {
-  name: "Badge",
-  flexDirection: "row",
-  alignItems: "center",
-  alignSelf: "flex-start",
-  gap: 10,
-  borderWidth: 1,
-  borderColor: "$gray20",
-  borderRadius: 6,
-  paddingHorizontal: 12,
-  paddingVertical: 7,
-});
-
-export const BadgeText = styled(Text, {
-  name: "BadgeText",
-  fontFamily: "$body",
-  fontSize: 14,
-  lineHeight: 19,
-  letterSpacing: 0.42, // +0.03em
-  color: "$gray80",
-});
-
 export function Badge({
+  className,
   children,
   ...props
-}: GetProps<typeof BadgeFrame> & { children?: ReactNode }) {
+}: ComponentPropsWithoutRef<"div"> & { className?: string }) {
   return (
-    <BadgeFrame {...props}>
+    <div
+      className={cn(
+        "flex flex-row items-center self-start gap-2.5 border border-gray-20 rounded-md px-3 py-[7px]",
+        className,
+      )}
+      {...props}
+    >
       {typeof children === "string" ? (
-        <BadgeText>{children}</BadgeText>
+        <span className="font-sans text-sm leading-[19px] tracking-[0.42px] text-gray-80">
+          {children}
+        </span>
       ) : (
         children
       )}
-    </BadgeFrame>
+    </div>
   );
 }
 
 // --- Typography (§3) ---
-// Display = Articulat substitute, weight 400, leading 1.125, theme-aware ink.
-export const Display = styled(Text, {
-  name: "Display",
-  tag: "h2",
-  fontFamily: "$heading",
-  color: "$color",
-  fontWeight: "400",
-
+// Display = Articulat substitute, weight 400, theme-aware ink (white on dark).
+const display = cva("font-heading font-normal text-foreground", {
   variants: {
     size: {
-      hero: { fontSize: 64, lineHeight: 72, letterSpacing: -1.3 },
-      xl: { fontSize: 52, lineHeight: 58, letterSpacing: -1 },
-      lg: { fontSize: 40, lineHeight: 45, letterSpacing: -0.8 },
-      md: { fontSize: 30, lineHeight: 34, letterSpacing: -0.6 },
-      sm: { fontSize: 24, lineHeight: 27, letterSpacing: -0.5 },
-      xs: { fontSize: 22, lineHeight: 25, letterSpacing: -0.4 },
+      hero: "text-[64px] leading-[72px] tracking-[-1.3px]",
+      xl: "text-[52px] leading-[58px] tracking-[-1px]",
+      lg: "text-[40px] leading-[45px] tracking-[-0.8px]",
+      md: "text-[30px] leading-[34px] tracking-[-0.6px]",
+      sm: "text-[24px] leading-[27px] tracking-[-0.5px]",
+      xs: "text-[22px] leading-[25px] tracking-[-0.4px]",
     },
-  } as const,
-
+  },
   defaultVariants: { size: "md" },
 });
 
+type DisplayProps<T extends ElementType = "h2"> = VariantProps<typeof display> & {
+  as?: T;
+  className?: string;
+  children?: ReactNode;
+} & Omit<ComponentPropsWithoutRef<T>, "as" | "className" | "children">;
+
+export function Display<T extends ElementType = "h2">({
+  as,
+  size,
+  className,
+  ...props
+}: DisplayProps<T>) {
+  const Tag = (as ?? "h2") as ElementType;
+  return <Tag className={cn(display({ size }), className)} {...props} />;
+}
+
 // Eyebrow = JetBrains Mono, UPPERCASE label. §3
-export const Eyebrow = styled(Text, {
-  name: "Eyebrow",
-  fontFamily: "$mono",
-  fontSize: 13,
-  lineHeight: 16,
-  letterSpacing: 0.39,
-  textTransform: "uppercase",
-  color: "$gray40",
-});
+export function Eyebrow({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"span"> & { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "font-mono text-[13px] leading-4 tracking-[0.39px] uppercase text-gray-40",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 // Body = Inter, leading-snug, slight negative tracking, gray ink. §3
-export const Body = styled(Text, {
-  name: "Body",
-  tag: "p",
-  fontFamily: "$body",
-  fontSize: 16,
-  lineHeight: 22,
-  letterSpacing: -0.16,
-  color: "$gray70",
-
+const body = cva("font-sans tracking-[-0.16px] text-gray-70", {
   variants: {
     size: {
-      sm: { fontSize: 14, lineHeight: 20 },
-      md: { fontSize: 16, lineHeight: 22 },
-      lg: { fontSize: 18, lineHeight: 25 },
-      xl: { fontSize: 20, lineHeight: 28 },
+      sm: "text-sm leading-5",
+      md: "text-base leading-[22px]",
+      lg: "text-lg leading-[25px]",
+      xl: "text-xl leading-7",
     },
     tone: {
-      muted: { color: "$gray60" },
-      default: { color: "$gray70" },
-      bright: { color: "$gray90" },
+      muted: "text-gray-60",
+      default: "text-gray-70",
+      bright: "text-gray-90",
     },
-  } as const,
+  },
+  defaultVariants: { size: "md" },
 });
 
-// --- Divider (§9) -- 1px hairline ---
-export const Divider = styled(View, {
-  name: "Divider",
-  backgroundColor: "$gray20",
+type BodyProps<T extends ElementType = "p"> = VariantProps<typeof body> & {
+  as?: T;
+  className?: string;
+  children?: ReactNode;
+} & Omit<ComponentPropsWithoutRef<T>, "as" | "className" | "children">;
 
+export function Body<T extends ElementType = "p">({
+  as,
+  size,
+  tone,
+  className,
+  ...props
+}: BodyProps<T>) {
+  const Tag = (as ?? "p") as ElementType;
+  return <Tag className={cn(body({ size, tone }), className)} {...props} />;
+}
+
+// --- Divider (§9) -- 1px hairline ---
+const divider = cva("", {
   variants: {
     orientation: {
-      horizontal: { height: 1, width: "100%" },
-      vertical: { width: 1, alignSelf: "stretch" },
+      horizontal: "h-px w-full",
+      vertical: "w-px self-stretch",
     },
     tone: {
-      strong: { backgroundColor: "$gray20" },
-      faint: { backgroundColor: "$foregroundA10" },
-      white: { backgroundColor: "$foreground" },
+      strong: "bg-gray-20",
+      faint: "bg-white/10",
+      white: "bg-foreground",
     },
-  } as const,
-
+  },
   defaultVariants: { orientation: "horizontal", tone: "strong" },
 });
 
-// --- Hatch (§8) -- diagonal pencil-hatch fill, web-only. Use as an absolute
-// fill or fixed-size block to texture "empty" grid cells. ---
-export const Hatch = styled(View, {
-  name: "Hatch",
-  backgroundImage:
-    "repeating-linear-gradient(135deg, rgba(46,48,56,0.45) 0 1px, rgba(0,0,0,0) 1px 8px)",
-});
+type DividerProps = VariantProps<typeof divider> & { className?: string };
+
+export function Divider({ orientation, tone, className }: DividerProps) {
+  return <div className={cn(divider({ orientation, tone }), className)} />;
+}
+
+// --- Hatch (§8) -- diagonal pencil-hatch fill. Use as an absolute fill or
+// fixed-size block to texture "empty" grid cells. ---
+const HATCH_IMAGE =
+  "repeating-linear-gradient(135deg, rgba(46,48,56,0.45) 0 1px, rgba(0,0,0,0) 1px 8px)";
+
+export function Hatch({
+  className,
+  style,
+  ...props
+}: ComponentPropsWithoutRef<"div"> & { className?: string; style?: CSSProperties }) {
+  return (
+    <div
+      className={className}
+      style={{ backgroundImage: HATCH_IMAGE, ...style }}
+      {...props}
+    />
+  );
+}
+
+// --- Input (§9) -- square, gray-8 fill, gray-20 border, focus -> gray-50 ---
+export function Input({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"input"> & { className?: string }) {
+  return (
+    <input
+      className={cn(
+        "bg-gray-8 border border-gray-20 rounded-none text-foreground placeholder:text-gray-50 font-sans text-[15px] h-11 px-4 outline-none focus:border-gray-50",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 // --- Section -- page band with the standard responsive gutter (24 -> 48 @sm).
 // Every full-width landing band wraps in one so margins stay consistent. ---
-export const Section = styled(YStack, {
-  name: "Section",
-  width: "100%",
-  paddingHorizontal: 24,
-  $sm: { paddingHorizontal: 48 },
-});
+export function Section({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"div"> & { className?: string }) {
+  return (
+    <div className={cn("flex flex-col w-full px-6 sm:px-12", className)} {...props} />
+  );
+}
 
 // --- Placeholder (§8) -- hatched empty cell with a centered mono label. Used
 // for reserved logo slots and image-less media slots. ---
 export function Placeholder({
   label,
+  className,
   ...props
-}: GetProps<typeof View> & { label: string }) {
+}: ComponentPropsWithoutRef<"div"> & { label: string; className?: string }) {
   return (
-    <View
-      position="relative"
-      overflow="hidden"
-      alignItems="center"
-      justifyContent="center"
+    <div
+      className={cn(
+        "relative overflow-hidden flex items-center justify-center",
+        className,
+      )}
       {...props}
     >
-      <Hatch
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        opacity={0.5}
-      />
-      <Eyebrow color="$gray30">{label}</Eyebrow>
-    </View>
+      <Hatch className="absolute inset-0 opacity-50" />
+      <Eyebrow className="relative text-gray-30">{label}</Eyebrow>
+    </div>
   );
 }
-
-// --- Input (§9) -- square, gray-8 fill, gray-20 border, focus -> gray-50 ---
-export const Input = styled(TamaguiInput, {
-  name: "Input",
-  backgroundColor: "$gray8",
-  borderWidth: 1,
-  borderColor: "$gray20",
-  borderRadius: 0,
-  color: "$foreground",
-  placeholderTextColor: "$gray50",
-  fontFamily: "$body",
-  fontSize: 15,
-  height: 44,
-  paddingHorizontal: 16,
-  outlineWidth: 0,
-  focusStyle: { borderColor: "$gray50" },
-});

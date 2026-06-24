@@ -1,6 +1,5 @@
 "use client";
 
-import { XStack, YStack } from "tamagui";
 import { Body, Button, Display, Section } from "./ui";
 import Header from "./Header";
 import Radar from "./Radar";
@@ -9,14 +8,8 @@ import { GITHUB_URL, HERO, RADAR_BACKGROUND, RADAR_COLOR } from "../content/land
 // Full-viewport radar with the floating header over it.
 export default function HeroSection({ onEnter }: { onEnter: () => void }) {
   return (
-    <YStack
-      position="relative"
-      height="100vh"
-      overflow="hidden"
-      borderBottomWidth={1}
-      borderColor="$gray20"
-    >
-      <YStack position="absolute" top={0} left={0} right={0} bottom={0}>
+    <div className="relative flex flex-col h-screen overflow-hidden border-b border-gray-20">
+      <div className="absolute inset-0 flex flex-col">
         <Radar
           speed={0.7}
           scale={0.6}
@@ -33,59 +26,46 @@ export default function HeroSection({ onEnter }: { onEnter: () => void }) {
           brightness={0.4}
           enableMouseInteraction={false}
         />
-      </YStack>
+      </div>
 
-      <Section flex={1} position="relative" zIndex={10}>
-        <Header onEnter={onEnter} paddingHorizontal={0} />
+      <Section className="flex-1 relative z-10">
+        <Header onEnter={onEnter} className="px-0" />
 
-        <YStack
-          flex={1}
-          justifyContent="flex-end"
-          paddingBottom={32}
-          $sm={{ paddingBottom: 48 }}
-        >
-          <XStack
-            alignItems="flex-end"
-            justifyContent="space-between"
-            gap={32}
-            flexWrap="wrap"
-          >
-            <YStack gap={16} maxWidth={480} flexShrink={1}>
+        <div className="flex flex-col flex-1 justify-end pb-8 sm:pb-12">
+          <div className="flex flex-row items-end justify-between gap-8 flex-wrap">
+            <div className="flex flex-col gap-4 max-w-[480px] shrink">
               <Display
-                tag="h1"
+                as="h1"
                 size="xl"
-                $sm={{ fontSize: 64, lineHeight: 72, letterSpacing: -1.3 }}
+                className="sm:text-[64px] sm:leading-[72px] sm:tracking-[-1.3px]"
               >
                 {HERO.title}
               </Display>
-              <Body size="md" tone="muted" maxWidth={420}>
+              <Body size="md" tone="muted" className="max-w-[420px]">
                 {HERO.body}
               </Body>
-            </YStack>
+            </div>
 
-            <YStack alignItems="flex-start" gap={12}>
-              <XStack alignItems="center" gap={12} flexWrap="wrap">
-                <Button variant="primary" size="md" onPress={onEnter}>
+            <div className="flex flex-col items-start gap-3">
+              <div className="flex flex-row items-center gap-3 flex-wrap">
+                <Button variant="primary" size="md" onClick={onEnter}>
                   Enter Pulse
                 </Button>
                 <Button
                   variant="outline"
                   size="md"
-                  tag="a"
                   href={GITHUB_URL}
                   target="_blank"
                   rel="noreferrer"
-                  backgroundColor="$black"
-                  hoverStyle={{ backgroundColor: "$gray8" }}
-                  pressStyle={{ backgroundColor: "$gray5" }}
+                  className="bg-black hover:bg-gray-8 active:bg-gray-5"
                 >
                   View on GitHub
                 </Button>
-              </XStack>
-            </YStack>
-          </XStack>
-        </YStack>
+              </div>
+            </div>
+          </div>
+        </div>
       </Section>
-    </YStack>
+    </div>
   );
 }

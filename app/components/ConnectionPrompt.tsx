@@ -1,6 +1,5 @@
 "use client";
 
-import { YStack, XStack } from "tamagui";
 import { Body, Button, Card, Display } from "./ui";
 
 // Reusable centered prompt for "someone wants to connect" and
@@ -21,41 +20,25 @@ export default function ConnectionPrompt({
   onDecline: () => void;
 }) {
   return (
-    <YStack
-      position="absolute"
-      top={0}
-      left={0}
-      right={0}
-      bottom={0}
-      zIndex={20}
-      alignItems="center"
-      justifyContent="center"
-      backgroundColor="$scrim"
-      padding={24}
-    >
-      <Card
-        surface="popover"
-        pad="md"
-        width="100%"
-        maxWidth={320}
-      >
-        <Display tag="h2" size="xs" textAlign="center">
+    <div className="absolute inset-0 z-20 flex items-center justify-center bg-scrim p-6">
+      <Card surface="popover" pad="md" className="flex flex-col w-full max-w-[320px]">
+        <Display as="h2" size="xs" className="text-center">
           {title}
         </Display>
         {subtitle && (
-          <Body size="sm" tone="muted" textAlign="center" marginTop={4}>
+          <Body size="sm" tone="muted" className="text-center mt-1">
             {subtitle}
           </Body>
         )}
-        <XStack marginTop={20} gap={12}>
-          <Button variant="outline" size="md" full flex={1} onPress={onDecline}>
+        <div className="flex flex-row mt-5 gap-3">
+          <Button variant="outline" size="md" full className="flex-1" onClick={onDecline}>
             {declineLabel}
           </Button>
-          <Button variant="primary" size="md" full flex={1} onPress={onAccept}>
+          <Button variant="primary" size="md" full className="flex-1" onClick={onAccept}>
             {acceptLabel}
           </Button>
-        </XStack>
+        </div>
       </Card>
-    </YStack>
+    </div>
   );
 }

@@ -1,15 +1,13 @@
-import { config } from "../../tamagui.config";
-
 // Marketing copy + palette for the landing page (EntryGate). Kept out of the
 // section components so wording can change without touching layout — mirrors how
 // StickyScrollScrub keeps its lifecycle steps in a data array.
 
 export const GITHUB_URL = "https://github.com/kiloumanjaro/Pulse";
 
-// Radar colors resolved from design tokens so a brand recolor in
-// tamagui.config.ts stays in sync (Radar takes plain color strings, not tokens).
-export const RADAR_COLOR = config.tokens.color.yellow.val as string;
-export const RADAR_BACKGROUND = config.tokens.color.background.val as string;
+// Radar takes plain color strings (not CSS vars). Keep these in sync with the
+// --color-yellow / --color-background tokens in app/globals.css.
+export const RADAR_COLOR = "#def135";
+export const RADAR_BACKGROUND = "#040406";
 
 export const HERO = {
   title: "Pulse",

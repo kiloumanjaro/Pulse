@@ -1,6 +1,5 @@
 'use client';
 
-import { XStack, YStack } from 'tamagui';
 import type { ControlPanelProps } from './types';
 import { Sidebar } from './sidebar';
 import { TopBar } from './top-bar';
@@ -14,25 +13,15 @@ export function ControlPanel({
   onSearch,
 }: ControlPanelProps) {
   return (
-    <XStack
-      position="absolute"
-      margin={20}
-      height={600}
-      width={384}
-      overflow="hidden"
-      borderRadius={0}
-      borderWidth={1}
-      borderColor="$gray20"
-      backgroundColor="$background"
-    >
+    <div className="absolute m-5 flex flex-row h-[600px] w-96 overflow-hidden rounded-none border border-gray-20 bg-background">
       <Sidebar activeTab={activeTab} onTabChange={onTabChange} />
 
-      <YStack flex={1} overflow="hidden">
+      <div className="flex flex-col flex-1 overflow-hidden">
         <TopBar activeTab={activeTab} onSearch={onSearch} />
         <div className="control-panel-scroll relative flex-1 overflow-auto">
           <ContentRenderer activeTab={activeTab} />
         </div>
-      </YStack>
-    </XStack>
+      </div>
+    </div>
   );
 }

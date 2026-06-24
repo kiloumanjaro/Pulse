@@ -1,16 +1,15 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Text, XStack, YStack } from "tamagui";
+import { cn } from "@/lib/utils";
 import { Body, Display, Hatch, Placeholder } from "./ui";
 
 // Sticky-scroll scrub (design-system.md). A bordered box whose full-width step
 // nav pins to the top and highlights the active section as the left-column copy
 // scrolls. Each section is text (left) + image (right); sections are separated
 // by a full-width band of 135° diagonal hatch (§8). Active tab uses the gray-8
-// "selected cell" fill (#121317, literal — the $gray8 *token* collides with
-// Tamagui's built-in theme gray8 and resolves to a mid-gray). Scroll tracking
-// is IntersectionObserver only (no scroll listeners).
+// "selected cell" fill (#121317) — monochrome, no colored accent. Scroll
+// tracking uses scroll position only (no IntersectionObserver ratio ambiguity).
 
 type Section = {
   id: string;
@@ -64,13 +63,7 @@ const NAV_OFFSET = 64;
 
 function ImageSlot({ image, label }: { image?: string; label: string }) {
   return (
-    <YStack
-      flex={1}
-      minHeight={260}
-      position="relative"
-      overflow="hidden"
-      backgroundColor="$gray5"
-    >
+    <div className="flex flex-col flex-1 min-h-[260px] relative overflow-hidden bg-gray-5">
       {image ? (
         <img
           src={image}
@@ -79,9 +72,9 @@ function ImageSlot({ image, label }: { image?: string; label: string }) {
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
       ) : (
-        <Placeholder flex={1} label={label} />
+        <Placeholder className="flex-1" label={label} />
       )}
-    </YStack>
+    </div>
   );
 }
 
@@ -124,48 +117,33 @@ export default function StickyScrollScrub() {
   }
 
   return (
-    <YStack width="100%" borderWidth={1} borderColor="$gray20">
+    <div className="flex flex-col w-full border border-gray-20">
       {/* Full-width step nav — pins to the top of the viewport while scrolling. */}
-      <XStack
-        width="100%"
-        height={64}
-        borderBottomWidth={1}
-        borderColor="$gray20"
-        backgroundColor="$background"
-        zIndex={20}
-        style={{ position: "sticky", top: 0 }}
-      >
+      <div className="flex flex-row w-full h-16 border-b border-gray-20 bg-background z-20 sticky top-0">
         {SECTIONS.map((s, i) => {
           const isActive = active === s.id;
           return (
-            <YStack
+            <div
               key={s.id}
-              flex={1}
-              alignItems="center"
-              justifyContent="center"
-              paddingHorizontal={8}
-              cursor="pointer"
-              animation="quick"
-              borderLeftWidth={i > 0 ? 1 : 0}
-              borderColor="$gray20"
-              backgroundColor={isActive ? "#121317" : "transparent"}
-              hoverStyle={{ backgroundColor: isActive ? "#121317" : "transparent" }}
-              onPress={() => goTo(s.id)}
+              className={cn(
+                "flex flex-col flex-1 items-center justify-center px-2 cursor-pointer transition-colors duration-200",
+                i > 0 && "border-l border-gray-20",
+                isActive ? "bg-gray-8" : "bg-transparent",
+              )}
+              onClick={() => goTo(s.id)}
             >
-              <Text
-                fontFamily="$body"
-                fontSize={16}
-                $sm={{ fontSize: 19 }}
-                fontWeight="500"
-                letterSpacing={-0.2}
-                color={isActive ? "$foreground" : "$gray60"}
+              <span
+                className={cn(
+                  "font-sans text-base sm:text-[19px] font-medium tracking-[-0.2px]",
+                  isActive ? "text-foreground" : "text-gray-60",
+                )}
               >
                 {s.label}
-              </Text>
-            </YStack>
+              </span>
+            </div>
           );
         })}
-      </XStack>
+      </div>
 
       {/* Sections: text (left) + image (right), hatch band between each. */}
       {SECTIONS.map((s, i) => (
@@ -177,52 +155,32 @@ export default function StickyScrollScrub() {
             }}
             style={{ minHeight: "80vh", scrollMarginTop: NAV_OFFSET }}
           >
-            <XStack width="100%" minHeight="80vh" flexDirection="column" $sm={{ flexDirection: "row" }}>
-              <YStack
-                width="100%"
-                justifyContent="center"
-                gap={14}
-                paddingVertical={56}
-                paddingHorizontal={32}
-                $sm={{ width: "50%", paddingHorizontal: 48 }}
-              >
-                <Display tag="h3" size="md">
+            <div className="flex w-full min-h-[80vh] flex-col sm:flex-row">
+              <div className="flex flex-col w-full justify-center gap-[14px] py-14 px-8 sm:w-1/2 sm:px-12">
+                <Display as="h3" size="md">
                   {s.headline}
                 </Display>
                 <Body size="lg" tone="muted">
                   {s.subheadline}
                 </Body>
-                <Body size="md" color="$gray60" maxWidth={440}>
+                <Body size="md" className="text-gray-60 max-w-[440px]">
                   {s.body}
                 </Body>
-              </YStack>
+              </div>
 
-              <YStack
-                width="100%"
-                borderTopWidth={1}
-                borderColor="$gray20"
-                $sm={{ width: "50%", borderTopWidth: 0, borderLeftWidth: 1 }}
-              >
+              <div className="flex flex-col w-full border-t border-gray-20 sm:w-1/2 sm:border-t-0 sm:border-l">
                 <ImageSlot image={s.image} label="Image" />
-              </YStack>
-            </XStack>
+              </div>
+            </div>
           </section>
 
           {i < SECTIONS.length - 1 && (
-            <YStack
-              width="100%"
-              height={64}
-              position="relative"
-              overflow="hidden"
-              borderTopWidth={1}
-              borderBottomWidth={1}
-              borderColor="$gray20"
-            >
-              <Hatch position="absolute" top={0} left={0} right={0} bottom={0} />
-            </YStack>
+            <div className="flex flex-col w-full h-16 relative overflow-hidden border-t border-b border-gray-20">
+              <Hatch className="absolute inset-0" />
+            </div>
           )}
         </Fragment>
       ))}
-    </YStack>
+    </div>
   );
 }

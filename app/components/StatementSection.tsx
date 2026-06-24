@@ -1,6 +1,3 @@
-"use client";
-
-import { XStack, YStack } from "tamagui";
 import { Body, Display, Eyebrow, Section } from "./ui";
 import { STATEMENT } from "../content/landing";
 
@@ -8,31 +5,21 @@ import { STATEMENT } from "../content/landing";
 export default function StatementSection() {
   return (
     <Section>
-      <YStack
-        paddingVertical={80}
-        paddingHorizontal={28}
-        $sm={{ paddingHorizontal: 64 }}
-        gap={20}
-      >
-        <XStack
-          gap={48}
-          $sm={{ gap: 80 }}
-          flexWrap="wrap"
-          alignItems="flex-start"
-        >
-          <YStack flexGrow={1.6} flexBasis={420} flexShrink={1} gap={20}>
+      <div className="flex flex-col py-20 px-7 sm:px-16 gap-5">
+        <div className="flex flex-row flex-wrap items-start gap-12 sm:gap-20">
+          <div className="flex flex-col grow-[1.6] shrink basis-[420px] gap-5">
             <Eyebrow>{STATEMENT.eyebrow}</Eyebrow>
-            <Display tag="h2" size="lg">
+            <Display as="h2" size="lg">
               {STATEMENT.headline}
             </Display>
-          </YStack>
-          <YStack flexGrow={1} flexBasis={280} flexShrink={1}>
+          </div>
+          <div className="flex flex-col grow shrink basis-[280px]">
             <Body size="lg" tone="muted">
               {STATEMENT.body}
             </Body>
-          </YStack>
-        </XStack>
-      </YStack>
+          </div>
+        </div>
+      </div>
     </Section>
   );
 }

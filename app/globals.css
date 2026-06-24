@@ -17,6 +17,36 @@
 }
 
 /* ============================================================================
+ * Design-system palette (design-system.md) — the single source of truth for
+ * marketing/landing colors, replacing tamagui.config.ts. Generates bg-/text-/
+ * border- utilities (e.g. bg-gray-8, text-gray-60, border-gray-20). Near-black
+ * canvas, white ink, cool blue-violet gray scale, one chartreuse accent.
+ * ========================================================================== */
+@theme {
+  --color-gray-5: #0b0c0e;
+  --color-gray-8: #121317; /* active/raised cell fill */
+  --color-gray-12: #1c1d22; /* outline/ghost hover fill */
+  --color-gray-20: #2e3038; /* primary structural border + divider */
+  --color-gray-30: #464853;
+  --color-gray-40: #60606c; /* muted/meta text; mono eyebrows */
+  --color-gray-50: #777a88; /* focus ring; placeholder */
+  --color-gray-60: #9194a1; /* secondary text */
+  --color-gray-70: #abaebb; /* body ink */
+  --color-gray-80: #c7c9d1;
+  --color-gray-90: #e3e4e9; /* primary button hover fill */
+  --color-gray-94: #eeeff1;
+  --color-yellow: #def135; /* chartreuse accent / brand mark */
+  --color-yellow-glow: #c29500;
+  --color-danger: #ff573d; /* leave/end actions */
+  --color-danger-hover: #f87272;
+  --color-scrim: rgba(4, 4, 6, 0.72); /* dim layer over content */
+  --color-glass: rgba(4, 4, 6, 0.6); /* frosted floating-chrome fill */
+
+  /* Display voice: Articulat CF (paid) → free Hanken Grotesk substitute. §3 */
+  --font-heading: articulat-cf, var(--font-display), system-ui, sans-serif;
+}
+
+/* ============================================================================
  * Control Panel (control-panel-portable) — look-only theme.
  * Scoped to `.control-panel-theme` so the shadcn light palette and base resets
  * apply ONLY inside the panel subtree and never clobber the global dark canvas.

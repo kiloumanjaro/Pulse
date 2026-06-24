@@ -1,6 +1,4 @@
-"use client";
-
-import { XStack, YStack } from "tamagui";
+import { cn } from "@/lib/utils";
 import { Body, Display, Eyebrow } from "../components/ui";
 import PageShell from "../components/PageShell";
 
@@ -34,30 +32,27 @@ export default function AboutPage() {
       title="A living globe of anonymous strangers."
       intro="Pulse is an anonymous, real-time connection app. Every online user appears as a dot on a world map. Tap a dot, get connected for text chat or a video call — no accounts, no history, nothing stored."
     >
-      <YStack borderWidth={1} borderColor="$gray20">
+      <div className="flex flex-col border border-gray-20">
         {PREMISE.map((p, i) => (
-          <XStack
+          <div
             key={p.k}
-            padding={24}
-            gap={20}
-            borderTopWidth={i === 0 ? 0 : 1}
-            borderColor="$gray20"
-            $xs={{ flexDirection: "column", gap: 8 }}
+            className={cn(
+              "flex flex-row p-6 gap-5 border-gray-20 min-[460px]:flex-col min-[460px]:gap-2",
+              i !== 0 && "border-t",
+            )}
           >
-            <Eyebrow marginTop={3} minWidth={28}>
-              {p.k}
-            </Eyebrow>
-            <YStack gap={6} flex={1}>
-              <Display size="xs" tag="h2">
+            <Eyebrow className="mt-[3px] min-w-7">{p.k}</Eyebrow>
+            <div className="flex flex-col gap-1.5 flex-1">
+              <Display as="h2" size="xs">
                 {p.t}
               </Display>
-              <Body tone="muted" maxWidth={620}>
+              <Body tone="muted" className="max-w-[620px]">
                 {p.d}
               </Body>
-            </YStack>
-          </XStack>
+            </div>
+          </div>
         ))}
-      </YStack>
+      </div>
     </PageShell>
   );
 }

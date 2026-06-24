@@ -3,61 +3,49 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Text, View, XStack, styled } from "tamagui";
+import { cn } from "@/lib/utils";
 import { Button } from "./ui";
 
 // The essentials only (the site is deliberately tiny): brand → home, three
-// concept pages, a live heartbeat, and one way in. No e-commerce-style menu.
+// concept pages, and one way in. No e-commerce-style menu.
 const NAV = [
   { href: "/about", label: "About" },
   { href: "/how-it-works", label: "How it works" },
   { href: "/privacy", label: "Privacy" },
 ];
 
-// A floating, detached chip — frosted dark fill, 1px gray-20 border, square.
-// Each segment of the header is one of these (brand / nav / live), echoing the
-// reference's separated boxes but kept in our dark style.
-const FloatBox = styled(XStack, {
-  name: "FloatBox",
-  alignItems: "center",
-  height: 42,
-  paddingHorizontal: 14,
-  borderWidth: 1,
-  borderColor: "$gray20",
-  backgroundColor: "$glass",
-  animation: "quick",
-});
-
 // Mono UPPERCASE link, gray → white on hover. The signature eyebrow voice (§3).
-const NavLabel = styled(Text, {
-  name: "NavLabel",
-  fontFamily: "$mono",
-  fontSize: 12,
-  lineHeight: 15,
-  letterSpacing: 0.36,
-  textTransform: "uppercase",
-  color: "$gray60",
-  cursor: "pointer",
-  animation: "quick",
-  hoverStyle: { color: "$foreground" },
+function NavLabel({
+  active,
+  children,
+}: {
+  active?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <span
+      className={cn(
+        "font-mono text-xs leading-[15px] tracking-[0.36px] uppercase cursor-pointer transition-colors duration-200 hover:text-foreground",
+        active ? "text-foreground" : "text-gray-60",
+      )}
+    >
+      {children}
+    </span>
+  );
+}
 
-  variants: {
-    active: { true: { color: "$foreground" } },
-  } as const,
-});
-
-// Square 3px tick between nav items — the reference's separator, kept hard-cornered.
-const Sep = () => <View width={3} height={3} backgroundColor="$foreground" />;
+// Square 3px tick between nav items — the reference's separator, hard-cornered.
+const Sep = () => <div className="w-[3px] h-[3px] bg-foreground" />;
 
 // Pulse wordmark glyph. Inlined (not <img>) so its fill follows the theme:
-// `color="$yellow"` cascades to the path's `fill="currentColor"`, so recoloring
-// the brand is a one-line change to the `yellow` token in tamagui.config.ts.
+// `text-yellow` cascades to the path's `fill="currentColor"`, so recoloring the
+// brand is a one-line change to the `--color-yellow` token in globals.css.
 // viewBox is cropped to the glyph's true bounds so it fills the rendered height.
 const PULSE_PATH =
   "M495.2,252.8c4.8-1.1,10-1,14.8,0.3c9.4,3.1,14.6,14.1,12.3,23.6c-7.5,38-15,75.9-22.3,114c10.4-8.8,18.8-19.7,29.4-28.3c2.5-0.9,5.3-0.5,8-0.6c18.2,0.1,36.4,0,54.5,0c7.8-0.3,16.1,3.3,19.7,10.5c6.5,11.3-1.3,28.8-14.9,29.4c-15.4,0.4-30.8-0.2-46.3,0.2c-3.1-0.1-6,1.3-8,3.7c-17.6,18.7-36.1,36.5-53.9,55.1c-5,5.1-9.9,11.2-17.3,12.8c-13.3,3.4-28.3-9.8-24.7-23.6c6.9-34.3,13.3-68.7,20.2-103c0.5-3.1,0.7-6.2,1-9.3c-19.2,19.3-37.6,39.5-56.4,59.1c-32.8,34.3-65.5,68.8-98.1,103.3c-6.5,6.8-12.8,16.6-23.5,15.8c-9.1,1.3-18-5-20.6-13.6c-2-8.9,1.5-17.7,3.7-26.2c8.5-29.9,16.1-60.1,24.9-90c-10.7,10-21.5,19.9-31.8,30.4c-4.4,5.3-12,6.4-18.3,4.5c-9.2-4.6-16.3-12.3-25.1-17.4c-2.1-1.1-4.6-1.3-6.9-1.5c-15.4-0.5-30.7,0.4-46.1-0.3c-13.2-1.9-20-19.2-12.7-30c4-5.6,10.2-10.1,17.3-9.7c19.8,0.1,39.6-0.4,59.4,0.2c6.6,2.9,11.7,8.5,17.9,12.1c19.2-19.5,39.6-37.6,58.8-57c7.4-6.2,13.2-16.5,24-16.8c10.1-1.4,20.1,6,22,15.9c1.5,7.8-1.7,15.4-3.8,22.8c-7.4,28.2-15.2,56.3-23,84.4c10.6-9.6,19.4-21,29.6-31c39.5-40.3,77.3-82.2,116.8-122.5C482,263.7,487.2,256.3,495.2,252.8z";
 
 const PulseMark = () => (
-  <View color="$yellow">
+  <div className="text-yellow">
     <svg
       viewBox="150 248 468 272"
       fill="currentColor"
@@ -66,15 +54,15 @@ const PulseMark = () => (
     >
       <path d={PULSE_PATH} />
     </svg>
-  </View>
+  </div>
 );
 
 export default function Header({
   onEnter,
-  paddingHorizontal = 16,
+  className,
 }: {
   onEnter?: () => void;
-  paddingHorizontal?: number;
+  className?: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -83,54 +71,43 @@ export default function Header({
   const handleEnter = () => (onEnter ? onEnter() : router.push("/"));
 
   return (
-    <XStack
-      tag="header"
-      position="sticky"
-      top={0}
-      zIndex={60}
-      width="100%"
-      paddingTop={16}
-      paddingHorizontal={paddingHorizontal}
-      alignItems="center"
-      pointerEvents="box-none"
+    <header
+      className={cn(
+        "sticky top-0 z-[60] w-full pt-4 px-4 flex flex-row items-center pointer-events-none",
+        className,
+      )}
     >
-      <XStack flex={1} justifyContent="flex-start" pointerEvents="box-none">
-        <Link
-          href="/"
-          style={{ textDecoration: "none", display: "block", cursor: "pointer" }}
-          aria-label="Pulse — home"
-        >
+      <div className="flex flex-1 justify-start pointer-events-auto">
+        <Link href="/" aria-label="Pulse — home" className="block cursor-pointer">
           <PulseMark />
         </Link>
-      </XStack>
+      </div>
 
-      <XStack justifyContent="center" pointerEvents="box-none" display="none" $sm={{ display: "flex" }}>
-        <FloatBox className="nav-glass" gap={34} paddingHorizontal={30}>
+      <div className="hidden sm:flex justify-center pointer-events-auto">
+        <div className="nav-glass flex flex-row items-center h-[42px] gap-[34px] px-[30px] border border-gray-20 bg-glass transition-colors duration-200">
           {NAV.map((item, i) => (
             <Fragment key={item.href}>
               {i > 0 && <Sep />}
-              <Link href={item.href} style={{ textDecoration: "none" }}>
+              <Link href={item.href} className="no-underline">
                 <NavLabel active={pathname === item.href}>{item.label}</NavLabel>
               </Link>
             </Fragment>
           ))}
-        </FloatBox>
-      </XStack>
+        </div>
+      </div>
 
-      <XStack flex={1} justifyContent="flex-end" pointerEvents="box-none">
-        <Button variant="primary" size="sm" height={42} onPress={handleEnter}>
-          <Text
-            fontFamily="$mono"
-            fontSize={12}
-            lineHeight={15}
-            letterSpacing={0.36}
-            textTransform="uppercase"
-            color="$background"
-          >
+      <div className="flex flex-1 justify-end pointer-events-auto">
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={handleEnter}
+          className="h-[42px]"
+        >
+          <span className="font-mono text-xs leading-[15px] tracking-[0.36px] uppercase text-background">
             Enter
-          </Text>
+          </span>
         </Button>
-      </XStack>
-    </XStack>
+      </div>
+    </header>
   );
 }

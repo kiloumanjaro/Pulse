@@ -19,8 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "react-native": ["./app/react-native.d.ts"]
+      "@/*": ["./*"]
     }
   },
   "include": [

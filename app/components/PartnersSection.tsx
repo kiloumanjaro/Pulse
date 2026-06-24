@@ -1,33 +1,19 @@
-"use client";
-
-import { XStack } from "tamagui";
 import { Placeholder, Section } from "./ui";
 import { PARTNERS } from "../content/landing";
 
 // Future partners — reserved logo grid, empty cells hatched (§8).
 export default function PartnersSection() {
   return (
-    <Section paddingTop={120} paddingBottom={96} gap={32} alignItems="center">
-      <XStack
-        width="100%"
-        borderTopWidth={1}
-        borderLeftWidth={1}
-        borderColor="$gray20"
-        flexWrap="wrap"
-      >
+    <Section className="items-center gap-8 pt-[120px] pb-24">
+      <div className="flex flex-row flex-wrap w-full border-t border-l border-gray-20">
         {Array.from({ length: PARTNERS.count }).map((_, i) => (
           <Placeholder
             key={i}
             label={PARTNERS.label}
-            width="50%"
-            $sm={{ width: "25%" }}
-            height={120}
-            borderRightWidth={1}
-            borderBottomWidth={1}
-            borderColor="$gray20"
+            className="w-1/2 sm:w-1/4 h-[120px] border-r border-b border-gray-20"
           />
         ))}
-      </XStack>
+      </div>
     </Section>
   );
 }

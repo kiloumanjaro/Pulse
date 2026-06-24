@@ -1,6 +1,5 @@
 "use client";
 
-import { YStack } from "tamagui";
 import { useRouter } from "next/navigation";
 import { Section } from "./ui";
 import HeroSection from "./HeroSection";
@@ -18,13 +17,13 @@ export default function EntryGate() {
   }
 
   return (
-    <YStack backgroundColor="$background">
+    <div className="flex flex-col bg-background">
       <HeroSection onEnter={enter} />
       <PartnersSection />
       <StatementSection />
-      <Section paddingTop={96} paddingBottom={140}>
+      <Section className="pt-24 pb-[140px]">
         <StickyScrollScrub />
       </Section>
-    </YStack>
+    </div>
   );
 }

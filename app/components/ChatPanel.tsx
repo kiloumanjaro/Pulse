@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { YStack, XStack, Text } from "tamagui";
+import { cn } from "@/lib/utils";
 import { Body, Button, Input } from "./ui";
 
 export interface ChatMessage {
@@ -40,118 +40,82 @@ export default function ChatPanel({
     setDraft("");
   }
 
+  const videoDisabled = !connected || videoBusy;
+  const sendDisabled = !connected || !draft.trim();
+
   return (
-    <YStack
-      position="absolute"
-      top={0}
-      bottom={0}
-      right={0}
-      zIndex={20}
-      width="100%"
-      maxWidth={448}
-      borderLeftWidth={1}
-      borderColor="$gray20"
-      backgroundColor="$background"
-    >
-      <XStack
-        tag="header"
-        alignItems="center"
-        justifyContent="space-between"
-        borderBottomWidth={1}
-        borderColor="$gray20"
-        paddingHorizontal={16}
-        paddingVertical={12}
-      >
-        <YStack>
-          <Text
-            fontFamily="$body"
-            fontSize={16}
-            lineHeight={24}
-            fontWeight="500"
-            color="$foreground"
-          >
+    <div className="absolute top-0 bottom-0 right-0 z-20 flex flex-col w-full max-w-[448px] border-l border-gray-20 bg-background">
+      <header className="flex flex-row items-center justify-between border-b border-gray-20 px-4 py-3">
+        <div className="flex flex-col">
+          <span className="font-sans text-base leading-6 font-medium text-foreground">
             Stranger
-          </Text>
-          <Text fontFamily="$mono" fontSize={12} lineHeight={16} color="$gray50">
+          </span>
+          <span className="font-mono text-xs leading-4 text-gray-50">
             {connected ? "Connected" : "Connecting…"}
-          </Text>
-        </YStack>
-        <XStack gap={8}>
+          </span>
+        </div>
+        <div className="flex flex-row gap-2">
           <Button
             variant="outline"
-            height={36}
-            paddingHorizontal={14}
-            onPress={onStartVideo}
-            disabled={!connected || videoBusy}
-            opacity={!connected || videoBusy ? 0.4 : 1}
+            onClick={onStartVideo}
+            disabled={videoDisabled}
+            className={cn("h-9 px-3.5", videoDisabled ? "opacity-40" : "opacity-100")}
           >
             Video
           </Button>
-          <Button
-            variant="danger"
-            height={36}
-            paddingHorizontal={14}
-            onPress={onEnd}
-          >
+          <Button variant="danger" onClick={onEnd} className="h-9 px-3.5">
             End
           </Button>
-        </XStack>
-      </XStack>
+        </div>
+      </header>
 
-      <YStack flex={1} gap={8} padding={16} style={{ overflowY: "auto" }}>
+      <div className="flex flex-col flex-1 gap-2 p-4 overflow-y-auto">
         {messages.length === 0 && (
-          <Body size="sm" tone="muted" textAlign="center" marginTop={32}>
+          <Body size="sm" tone="muted" className="text-center mt-8">
             Say hello. Messages are peer-to-peer and never stored.
           </Body>
         )}
         {messages.map((m) => (
-          <XStack key={m.id} justifyContent={m.mine ? "flex-end" : "flex-start"}>
-            <Text
-              maxWidth="80%"
-              borderRadius={0}
-              borderWidth={m.mine ? 0 : 1}
-              borderColor="$gray20"
-              paddingHorizontal={12}
-              paddingVertical={8}
-              fontFamily="$body"
-              fontSize={14}
-              lineHeight={20}
-              backgroundColor={m.mine ? "$foreground" : "$gray12"}
-              color={m.mine ? "$background" : "$foreground"}
+          <div
+            key={m.id}
+            className={cn("flex flex-row", m.mine ? "justify-end" : "justify-start")}
+          >
+            <span
+              className={cn(
+                "max-w-[80%] rounded-none px-3 py-2 font-sans text-sm leading-5",
+                m.mine
+                  ? "bg-foreground text-background"
+                  : "border border-gray-20 bg-gray-12 text-foreground",
+              )}
             >
               {m.text}
-            </Text>
-          </XStack>
+            </span>
+          </div>
         ))}
-        {/* Plain scroll anchor for scrollIntoView — non-visual layout marker, not a UI primitive */}
+        {/* Plain scroll anchor for scrollIntoView — non-visual layout marker. */}
         <div ref={endRef} />
-      </YStack>
+      </div>
 
-      <XStack
-        tag="form"
+      <form
         onSubmit={submit}
-        gap={8}
-        borderTopWidth={1}
-        borderColor="$gray20"
-        padding={12}
+        className="flex flex-row gap-2 border-t border-gray-20 p-3"
       >
         <Input
           value={draft}
-          onChangeText={(text: string) => setDraft(text)}
+          onChange={(e) => setDraft(e.target.value)}
           placeholder={connected ? "Type a message…" : "Connecting…"}
           disabled={!connected}
-          flex={1}
-          opacity={connected ? 1 : 0.5}
+          className={cn("flex-1", connected ? "opacity-100" : "opacity-50")}
         />
         <Button
           variant="primary"
           type="submit"
-          disabled={!connected || !draft.trim()}
-          opacity={!connected || !draft.trim() ? 0.4 : 1}
+          disabled={sendDisabled}
+          className={sendDisabled ? "opacity-40" : "opacity-100"}
         >
           Send
         </Button>
-      </XStack>
-    </YStack>
+      </form>
+    </div>
   );
 }

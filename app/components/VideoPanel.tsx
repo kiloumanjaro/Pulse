@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { YStack, XStack } from "tamagui";
 import { Body, Button } from "./ui";
 
 export default function VideoPanel({
@@ -29,52 +28,34 @@ export default function VideoPanel({
   }, [remoteStream]);
 
   return (
-    <YStack
-      position="absolute"
-      top={0}
-      left={0}
-      right={0}
-      bottom={0}
-      zIndex={30}
-      backgroundColor="$background"
-    >
-      <YStack position="relative" flex={1}>
-        {/* Remote (full screen) — <video> has no Tamagui equivalent (see design-system.md §14) */}
+    <div className="absolute inset-0 z-30 flex flex-col bg-background">
+      <div className="relative flex flex-col flex-1">
+        {/* Remote (full screen). */}
         <video
           ref={remoteRef}
           autoPlay
           playsInline
-          className="h-full w-full object-cover"
-          style={{ backgroundColor: "#121317" }}
+          className="h-full w-full object-cover bg-gray-8"
         />
         {!remoteStream && (
-          <YStack
-            position="absolute"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <div className="absolute inset-0 flex items-center justify-center">
             <Body tone="muted">Waiting for stranger&rsquo;s video…</Body>
-          </YStack>
+          </div>
         )}
-        {/* Local (picture-in-picture) — square, gray-20 border to match the system */}
+        {/* Local (picture-in-picture) — square, gray-20 border to match the system. */}
         <video
           ref={localRef}
           autoPlay
           playsInline
           muted
-          className="absolute bottom-4 right-4 h-40 w-28 object-cover"
-          style={{ border: "1px solid #2e3038", backgroundColor: "#121317" }}
+          className="absolute bottom-4 right-4 h-40 w-28 object-cover border border-gray-20 bg-gray-8"
         />
-      </YStack>
-      <XStack justifyContent="center" backgroundColor="$background" padding={16}>
-        <Button variant="danger" size="md" onPress={onEnd}>
+      </div>
+      <div className="flex flex-row justify-center bg-background p-4">
+        <Button variant="danger" size="md" onClick={onEnd}>
           End video
         </Button>
-      </XStack>
-    </YStack>
+      </div>
+    </div>
   );
 }

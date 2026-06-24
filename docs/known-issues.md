@@ -23,8 +23,8 @@ Track bugs and fixes here. Add an entry when a problem is found; mark it resolve
 **Status:** Fixed (commit pending)
 **Phase:** Landing
 **Symptom:** The active step tab in `StickyScrollScrub` renders `#606060` instead of the intended `#121317`.
-**Root cause:** `$gray8` resolves against the active theme before the token table. `tamagui.config.ts` spreads `...defaultConfig.themes.dark`, which injects its own `gray8` (≈ rgb(96,96,96)); that shadows `tokens.color.gray8` (#121317). Introduced when the literal was swapped for the token in commit 0f9cefe. Affects every `$grayN` reference app-wide.
-**Fix:** Reverted the active-tab fill to the literal `#121317`. Systemic fix (define the gray ramp inside the themes) still open.
+**Root cause:** `$gray8` resolves against the active theme before the token table. `tamagui.config.ts` spreads `...defaultConfig.themes.dark`, which injects its own `gray8` (≈ rgb(96,96,96)); that shadows `tokens.color.gray8` (#121317). Introduced when the literal was swapped for the token in commit 0f9cefe. Affected every `$grayN` reference app-wide.
+**Fix:** Short-term, reverted the active-tab fill to the literal `#121317` (commit f3ce0c5). Permanently resolved by removing Tamagui entirely and moving the palette to Tailwind `@theme` tokens in `app/globals.css` — `bg-gray-8` now resolves to #121317 with no theme/token collision possible.
 
 ---
 

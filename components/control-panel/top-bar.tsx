@@ -1,6 +1,5 @@
 'use client';
 
-import { XStack } from 'tamagui';
 import { SearchBar } from './search-bar';
 import { LinkBar } from './link-bar';
 import {
@@ -27,16 +26,9 @@ export function TopBar({ activeTab, onSearch }: TopBarProps) {
   const showLinkBar = activeTab === 'simulations' || activeTab === 'chatbot';
 
   return (
-    // Top bar chrome — Tamagui shell with a 1px gray-20 hairline below it,
-    // echoing the blueprint grid (§5, §9). Controls inside stay shadcn/Radix.
-    <XStack
-      alignItems="center"
-      gap={8}
-      paddingVertical={12}
-      paddingHorizontal={16}
-      borderBottomWidth={1}
-      borderColor="$gray20"
-    >
+    // Top bar chrome — a 1px gray-20 hairline below it, echoing the blueprint
+    // grid (§5, §9). Controls inside are shadcn/Radix.
+    <div className="flex flex-row items-center gap-2 py-3 px-4 border-b border-gray-20">
       {showSearchBar && <SearchBar onSearch={onSearch ?? (() => {})} />}
 
       {showProfileProgress && (
@@ -52,6 +44,6 @@ export function TopBar({ activeTab, onSearch }: TopBarProps) {
           <LinkBar link="project-drain.vercel.app/simulation" />
         </div>
       )}
-    </XStack>
+    </div>
   );
 }

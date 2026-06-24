@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { YStack, XStack } from "tamagui";
 import { Body, Button, Display } from "../components/ui";
 import WorldMap from "../components/WorldMap";
 import ConnectionPrompt from "../components/ConnectionPrompt";
@@ -346,49 +345,34 @@ export default function Live() {
 
   if (geo === "locating") {
     return (
-      <YStack
-        flex={1}
-        height="100vh"
-        alignItems="center"
-        justifyContent="center"
-        gap={12}
-        backgroundColor="$background"
-      >
-        <Display tag="h1" size="md">
+      <div className="flex flex-col flex-1 h-screen items-center justify-center gap-3 bg-background">
+        <Display as="h1" size="md">
           Pulse
         </Display>
         <Body size="md" tone="muted">
           Finding your location…
         </Body>
-      </YStack>
+      </div>
     );
   }
 
   if (geo === "error") {
     return (
-      <YStack
-        flex={1}
-        height="100vh"
-        alignItems="center"
-        justifyContent="center"
-        gap={16}
-        paddingHorizontal={24}
-        backgroundColor="$background"
-      >
-        <Body size="md" color="$danger" maxWidth={360} textAlign="center">
+      <div className="flex flex-col flex-1 h-screen items-center justify-center gap-4 px-6 bg-background">
+        <Body size="md" className="text-danger max-w-[360px] text-center">
           {geoError}
         </Body>
-        <Button variant="outline" size="md" tag="a" href="/">
+        <Button variant="outline" size="md" href="/">
           Back to home
         </Button>
-      </YStack>
+      </div>
     );
   }
 
   const inChat = conn.kind === "connecting" || conn.kind === "connected";
 
   return (
-    <YStack tag="main" position="fixed" top={0} left={0} right={0} bottom={0} overflow="hidden">
+    <main className="fixed inset-0 overflow-hidden">
       <WorldMap
         peers={peers}
         me={myLocation}
@@ -397,57 +381,32 @@ export default function Live() {
       />
 
       {notice && (
-        <YStack
-          position="absolute"
-          left="50%"
-          top={80}
-          zIndex={30}
-          borderWidth={1}
-          borderColor="$gray20"
-          backgroundColor="$gray8"
-          paddingHorizontal={16}
-          paddingVertical={8}
-          style={{
-            transform: "translateX(-50%)",
-            backdropFilter: "blur(8px)",
-          }}
+        <div
+          className="absolute left-1/2 top-20 z-30 flex flex-col border border-gray-20 bg-gray-8 px-4 py-2"
+          style={{ transform: "translateX(-50%)", backdropFilter: "blur(8px)" }}
         >
-          <Body size="sm" color="$foreground">
+          <Body size="sm" className="text-foreground">
             {notice}
           </Body>
-        </YStack>
+        </div>
       )}
 
       {conn.kind === "requesting" && (
-        <XStack
-          position="absolute"
-          left="50%"
-          top={80}
-          zIndex={30}
-          alignItems="center"
-          gap={12}
-          borderWidth={1}
-          borderColor="$gray20"
-          backgroundColor="$gray8"
-          paddingHorizontal={16}
-          paddingVertical={8}
-          style={{
-            transform: "translateX(-50%)",
-            backdropFilter: "blur(8px)",
-          }}
+        <div
+          className="absolute left-1/2 top-20 z-30 flex flex-row items-center gap-3 border border-gray-20 bg-gray-8 px-4 py-2"
+          style={{ transform: "translateX(-50%)", backdropFilter: "blur(8px)" }}
         >
-          <Body size="sm" color="$foreground">
+          <Body size="sm" className="text-foreground">
             Requesting connection…
           </Body>
           <Button
             variant="outline"
-            height={30}
-            paddingHorizontal={12}
-            onPress={cancelRequest}
+            onClick={cancelRequest}
+            className="h-[30px] px-3"
           >
             Cancel
           </Button>
-        </XStack>
+        </div>
       )}
 
       {conn.kind === "incoming" && (
@@ -475,25 +434,14 @@ export default function Live() {
       )}
 
       {video === "requesting" && (
-        <YStack
-          position="absolute"
-          bottom={96}
-          left="50%"
-          zIndex={30}
-          borderWidth={1}
-          borderColor="$gray20"
-          backgroundColor="$gray8"
-          paddingHorizontal={16}
-          paddingVertical={8}
-          style={{
-            transform: "translateX(-50%)",
-            backdropFilter: "blur(8px)",
-          }}
+        <div
+          className="absolute bottom-24 left-1/2 z-30 flex flex-col border border-gray-20 bg-gray-8 px-4 py-2"
+          style={{ transform: "translateX(-50%)", backdropFilter: "blur(8px)" }}
         >
-          <Body size="sm" color="$foreground">
+          <Body size="sm" className="text-foreground">
             Waiting for stranger to accept video…
           </Body>
-        </YStack>
+        </div>
       )}
 
       {video === "incoming" && (
@@ -514,6 +462,6 @@ export default function Live() {
           onEnd={endVideo}
         />
       )}
-    </YStack>
+    </main>
   );
 }

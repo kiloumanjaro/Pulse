@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { XStack, YStack } from "tamagui";
 import { Body, Button, Display, Eyebrow } from "./ui";
 import Header from "./Header";
 
@@ -22,36 +21,27 @@ export default function PageShell({
   const router = useRouter();
 
   return (
-    <YStack minHeight="100vh" backgroundColor="$background">
+    <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <YStack
-        flex={1}
-        width="100%"
-        maxWidth={1080}
-        alignSelf="center"
-        paddingHorizontal={24}
-        paddingTop={112}
-        paddingBottom={120}
-        gap={48}
-      >
-        <YStack gap={16} maxWidth={680}>
+      <div className="flex flex-col flex-1 w-full max-w-[1080px] self-center px-6 pt-28 pb-[120px] gap-12">
+        <div className="flex flex-col gap-4 max-w-[680px]">
           <Eyebrow>{eyebrow}</Eyebrow>
-          <Display tag="h1" size="lg">
+          <Display as="h1" size="lg">
             {title}
           </Display>
           <Body size="lg" tone="muted">
             {intro}
           </Body>
-        </YStack>
+        </div>
 
         {children}
 
-        <XStack paddingTop={8}>
-          <Button variant="primary" onPress={() => router.push("/")}>
+        <div className="flex flex-row pt-2">
+          <Button variant="primary" onClick={() => router.push("/")}>
             Enter Pulse
           </Button>
-        </XStack>
-      </YStack>
-    </YStack>
+        </div>
+      </div>
+    </div>
   );
 }

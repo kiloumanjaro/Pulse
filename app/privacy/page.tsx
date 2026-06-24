@@ -1,6 +1,4 @@
-"use client";
-
-import { XStack, YStack } from "tamagui";
+import { cn } from "@/lib/utils";
 import { Body, Display, Eyebrow } from "../components/ui";
 import PageShell from "../components/PageShell";
 
@@ -19,39 +17,34 @@ export default function PrivacyPage() {
       title="Built to forget you."
       intro="Privacy isn't a setting in Pulse — it's the architecture. Here is exactly what is protected, and how."
     >
-      <YStack borderWidth={1} borderColor="$gray20">
+      <div className="flex flex-col border border-gray-20">
         {ROWS.map((r, i) => (
-          <XStack
+          <div
             key={r.what}
-            borderTopWidth={i === 0 ? 0 : 1}
-            borderColor="$gray20"
-            $xs={{ flexDirection: "column" }}
+            className={cn(
+              "flex flex-row border-gray-20 min-[460px]:flex-col",
+              i !== 0 && "border-t",
+            )}
           >
-            <YStack padding={20} width="36%" $xs={{ width: "100%" }}>
+            <div className="flex flex-col p-5 w-[36%] min-[460px]:w-full">
               <Eyebrow>{r.what}</Eyebrow>
-            </YStack>
-            <YStack
-              flex={1}
-              padding={20}
-              borderLeftWidth={1}
-              borderColor="$gray20"
-              $xs={{ borderLeftWidth: 0, borderTopWidth: 1 }}
-            >
+            </div>
+            <div className="flex flex-col flex-1 p-5 border-l border-gray-20 min-[460px]:border-l-0 min-[460px]:border-t">
               <Body tone="muted">{r.how}</Body>
-            </YStack>
-          </XStack>
+            </div>
+          </div>
         ))}
-      </YStack>
+      </div>
 
-      <YStack backgroundColor="$gray8" borderWidth={1} borderColor="$gray20" padding={28} gap={10}>
-        <Display size="xs" tag="h2">
+      <div className="flex flex-col bg-gray-8 border border-gray-20 p-7 gap-2.5">
+        <Display as="h2" size="xs">
           Stateless by design
         </Display>
-        <Body tone="muted" maxWidth={680}>
+        <Body tone="muted" className="max-w-[680px]">
           No message history, no call history, no connection history. Every session starts completely
           fresh — the server holds no data about you once your session ends.
         </Body>
-      </YStack>
+      </div>
     </PageShell>
   );
 }

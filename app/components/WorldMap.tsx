@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { YStack, Paragraph, Text } from "tamagui";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Map as MapboxMap, Marker } from "mapbox-gl";
 import type { PeerDot } from "@/lib/types";
@@ -191,73 +190,28 @@ export default function WorldMap({
   }, [peers, ready]);
 
   return (
-    <YStack position="absolute" top={0} left={0} right={0} bottom={0}>
-      {/* Mapbox GL owns this node imperatively — must stay a raw <div> (see tamagui-gaps.md) */}
-      <div
-        ref={containerRef}
-        className="h-full w-full"
-        style={{ backgroundColor: "#040406" }}
-      />
+    <div className="absolute inset-0">
+      {/* Mapbox GL owns this node imperatively — must stay a raw <div>. */}
+      <div ref={containerRef} className="h-full w-full bg-background" />
 
       {!TOKEN && (
-        <YStack
-          position="absolute"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          alignItems="center"
-          justifyContent="center"
-          padding={24}
-        >
-          <Paragraph
-            maxWidth={448}
-            borderRadius={0}
-            borderWidth={1}
-            borderColor="$gray20"
-            backgroundColor="$gray8"
-            padding={16}
-            fontFamily="$body"
-            fontSize={14}
-            lineHeight={20}
-            color="$gray90"
-            textAlign="center"
-          >
-            Set{" "}
-            <Text tag="code" fontFamily="$mono" color="$yellow">
-              NEXT_PUBLIC_MAPBOX_TOKEN
-            </Text>{" "}
-            in{" "}
-            <Text tag="code" fontFamily="$mono" color="$gray90">
-              .env
-            </Text>{" "}
-            to load the map.
-          </Paragraph>
-        </YStack>
+        <div className="absolute inset-0 flex items-center justify-center p-6">
+          <p className="max-w-[448px] rounded-none border border-gray-20 bg-gray-8 p-4 font-sans text-sm leading-5 text-gray-90 text-center">
+            Set <code className="font-mono text-yellow">NEXT_PUBLIC_MAPBOX_TOKEN</code> in{" "}
+            <code className="font-mono text-gray-90">.env</code> to load the map.
+          </p>
+        </div>
       )}
 
       {/* Online count */}
-      <YStack
-        position="absolute"
-        bottom={16}
-        left={16}
-        borderWidth={1}
-        borderColor="$gray20"
-        backgroundColor="$gray8"
-        paddingHorizontal={12}
-        paddingVertical={6}
-        // backdrop-blur
+      <div
+        className="absolute bottom-4 left-4 flex flex-col border border-gray-20 bg-gray-8 px-3 py-1.5"
         style={{ backdropFilter: "blur(8px)" }}
       >
-        <Text
-          fontFamily="$mono"
-          fontSize={12}
-          lineHeight={16}
-          color="$gray80"
-        >
+        <span className="font-mono text-xs leading-4 text-gray-80">
           {peers.length} online
-        </Text>
-      </YStack>
-    </YStack>
+        </span>
+      </div>
+    </div>
   );
 }

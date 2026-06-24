@@ -8,6 +8,40 @@ import type { PeerDot } from "@/lib/types";
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "pk.eyJ1IjoicHVsc2UtbWFwIiwiYSI6ImNrMDBkZW1vMDAwMDAwMDAifQ.AAAAAAAAAAAAAAAAAAAAAA";
 
+const LAND_COLOR = "#292929";
+const WATER_COLOR = "#202020";
+
+// Flatten the basemap to a clean two-tone silhouette: recolor land/water and
+// strip every administrative line (country = admin-0, state/province = admin-1).
+function simplifyBasemap(map: MapboxMap) {
+  const layers = map.getStyle()?.layers ?? [];
+  const isWater = (id: string) => /water|river|waterway|ocean|sea/i.test(id);
+  for (const layer of layers) {
+    const id = layer.id;
+    try {
+      if (layer.type === "background") {
+        map.setPaintProperty(id, "background-color", LAND_COLOR);
+      } else if (layer.type === "fill") {
+        map.setPaintProperty(
+          id,
+          "fill-color",
+          isWater(id) ? WATER_COLOR : LAND_COLOR,
+        );
+      } else if (layer.type === "line") {
+        // Strip every line — roads, admin (country/state) borders, boundaries —
+        // leaving only water lines so the coastline silhouette survives.
+        if (isWater(id)) {
+          map.setPaintProperty(id, "line-color", WATER_COLOR);
+        } else {
+          map.setLayoutProperty(id, "visibility", "none");
+        }
+      }
+    } catch {
+      // Layer doesn't support the property — skip it.
+    }
+  }
+}
+
 function dotColor(id: string): string {
   let hash = 0;
   for (let i = 0; i < id.length; i++) {
@@ -61,7 +95,9 @@ export default function WorldMap({
         attributionControl: true,
       });
       map.on("load", () => {
-        if (!cancelled) setReady(true);
+        if (cancelled) return;
+        simplifyBasemap(map);
+        setReady(true);
       });
       mapRef.current = map;
     })();

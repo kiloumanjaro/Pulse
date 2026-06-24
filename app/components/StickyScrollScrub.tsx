@@ -2,14 +2,14 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Text, XStack, YStack } from "tamagui";
-import { Body, Display, Eyebrow, Hatch } from "./ui";
+import { Body, Display, Hatch, Placeholder } from "./ui";
 
 // Sticky-scroll scrub (design-system.md). A bordered box whose full-width step
 // nav pins to the top and highlights the active section as the left-column copy
 // scrolls. Each section is text (left) + image (right); sections are separated
-// by a full-width band of 135° diagonal hatch (§8). Active tab uses the gray-8
-// "selected cell" fill (#121317) — monochrome, no colored accent. Scroll
-// tracking is IntersectionObserver only (no scroll listeners).
+// by a full-width band of 135° diagonal hatch (§8). Active tab uses the $gray8
+// "selected cell" fill — monochrome, no colored accent. Scroll tracking is
+// IntersectionObserver only (no scroll listeners).
 
 type Section = {
   id: string;
@@ -78,12 +78,7 @@ function ImageSlot({ image, label }: { image?: string; label: string }) {
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
       ) : (
-        <>
-          <Hatch position="absolute" top={0} left={0} right={0} bottom={0} opacity={0.5} />
-          <YStack flex={1} alignItems="center" justifyContent="center">
-            <Eyebrow color="$gray30">{label}</Eyebrow>
-          </YStack>
-        </>
+        <Placeholder flex={1} label={label} />
       )}
     </YStack>
   );
@@ -152,8 +147,8 @@ export default function StickyScrollScrub() {
               animation="quick"
               borderLeftWidth={i > 0 ? 1 : 0}
               borderColor="$gray20"
-              backgroundColor={isActive ? "#121317" : "transparent"}
-              hoverStyle={{ backgroundColor: isActive ? "#121317" : "transparent" }}
+              backgroundColor={isActive ? "$gray8" : "transparent"}
+              hoverStyle={{ backgroundColor: isActive ? "$gray8" : "transparent" }}
               onPress={() => goTo(s.id)}
             >
               <Text

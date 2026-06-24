@@ -120,6 +120,7 @@ export const config = createTamagui({
       white: "#ffffff",
       black: "#000000",
       // translucent overlays
+      glass: "rgba(4,4,6,0.6)", // frosted floating-chrome fill (header chips)
       scrim: "rgba(4,4,6,0.72)", // dim layer over content
       foregroundA5: "rgba(255,255,255,0.05)", // list-row hover
       foregroundA10: "rgba(255,255,255,0.10)", // menu-row dividers

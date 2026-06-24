@@ -24,7 +24,7 @@ const FloatBox = styled(XStack, {
   paddingHorizontal: 14,
   borderWidth: 1,
   borderColor: "$gray20",
-  backgroundColor: "rgba(4,4,6,0.6)",
+  backgroundColor: "$glass",
   animation: "quick",
 });
 

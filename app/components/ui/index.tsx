@@ -7,6 +7,7 @@ import {
   styled,
   Text,
   View,
+  YStack,
 } from "tamagui";
 
 // ---------------------------------------------------------------------------
@@ -250,6 +251,42 @@ export const Hatch = styled(View, {
   backgroundImage:
     "repeating-linear-gradient(135deg, rgba(46,48,56,0.45) 0 1px, rgba(0,0,0,0) 1px 8px)",
 });
+
+// --- Section -- page band with the standard responsive gutter (24 -> 48 @sm).
+// Every full-width landing band wraps in one so margins stay consistent. ---
+export const Section = styled(YStack, {
+  name: "Section",
+  width: "100%",
+  paddingHorizontal: 24,
+  $sm: { paddingHorizontal: 48 },
+});
+
+// --- Placeholder (§8) -- hatched empty cell with a centered mono label. Used
+// for reserved logo slots and image-less media slots. ---
+export function Placeholder({
+  label,
+  ...props
+}: GetProps<typeof View> & { label: string }) {
+  return (
+    <View
+      position="relative"
+      overflow="hidden"
+      alignItems="center"
+      justifyContent="center"
+      {...props}
+    >
+      <Hatch
+        position="absolute"
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        opacity={0.5}
+      />
+      <Eyebrow color="$gray30">{label}</Eyebrow>
+    </View>
+  );
+}
 
 // --- Input (§9) -- square, gray-8 fill, gray-20 border, focus -> gray-50 ---
 export const Input = styled(TamaguiInput, {

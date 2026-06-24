@@ -1,10 +1,10 @@
-# Design System: Unkey (unkey.com)
+# Design System
 
 > **⚠ PRIMARY MODE: DARK.** The site is hard-locked to dark mode — `<html class="dark">` with no theme toggle. The canvas is a near-black `#040406`. The single most recognizable move is the inversion of this: a **solid white (#fff) horizontal bar** for the nav and white-filled buttons floating on the black page, plus whole sections that flip to light backgrounds with dark text.
 
 ## 1. Design Philosophy
 
-Unkey reads like an **engineering blueprint rendered as a website**: a near-black canvas divided by thin 1px hairline grids into hard-edged rectangular cells, with empty cells filled by a 135° diagonal pencil-hatch to signal "structure, not content." Nothing is rounded where it matters — buttons, cards, the nav bar, and grid cells are all square-cornered, giving it a precise, CAD-like rigor that most SaaS sites soften away. Type is a deliberate three-voice system: a geometric display face (Articulat CF) for headlines, neutral Inter for body, and JetBrains Mono in UPPERCASE for eyebrow labels — the mono labels are what make it feel like documentation/terminal-adjacent rather than marketing. The lone chromatic accent in an otherwise monochrome UI is a chartreuse `#def135` used as a literal highlighter-pen `<mark>` over text. If rebuilt from scratch, the non-negotiables are: the black-canvas/white-bar inversion, the 1px gray-20 bordered-grid layout with diagonal-hatch fillers, square corners everywhere, and the mono uppercase eyebrows.
+The system reads like an **engineering blueprint rendered as a website**: a near-black canvas divided by thin 1px hairline grids into hard-edged rectangular cells, with empty cells filled by a 135° diagonal pencil-hatch to signal "structure, not content." Nothing is rounded where it matters — buttons, cards, the nav bar, and grid cells are all square-cornered, giving it a precise, CAD-like rigor that most SaaS sites soften away. Type is a deliberate three-voice system: a geometric display face (Articulat CF) for headlines, neutral Inter for body, and JetBrains Mono in UPPERCASE for eyebrow labels — the mono labels are what make it feel like documentation/terminal-adjacent rather than marketing. The lone chromatic accent in an otherwise monochrome UI is a chartreuse `#def135` used as a literal highlighter-pen `<mark>` over text. If rebuilt from scratch, the non-negotiables are: the black-canvas/white-bar inversion, the 1px gray-20 bordered-grid layout with diagonal-hatch fillers, square corners everywhere, and the mono uppercase eyebrows.
 
 ## 2. Color Tokens
 
@@ -239,11 +239,11 @@ Preserve all of these — they ARE the brand:
 - **Stack:** Next.js + **Tailwind CSS v4** (`@theme`-style `:root` tokens). Most class names ARE the spec; values above are resolved from the compiled CSS.
 - **Fonts:** Articulat CF / Articulat Heavy CF require an **Adobe Typekit** kit (`tcb4uyw`). Inter and JetBrains Mono are self-hosted via Next font (`--font-inter`, `--font-jetbrains-mono`).
 - **Two coexisting neutral systems:** the custom `gray-N` scale (primary) and zinc tokens (`border #27272a`, `muted-foreground #a1a1aa`, `popover #09090b`). New work should standardize on `gray-N`; the zinc tokens appear to be legacy/shadcn carryover.
-- **Third-party noise:** a large share of the CSS bundle is the **c15t cookie-consent** widget (`--c15t-*`, `--consent-*`, `--accordion-*`, `--button-shadow-*`) and Tailwind Typography `prose`. Its shadows, radii, and inputs are **not** part of Unkey's design language — exclude them when rebuilding.
+- **Third-party noise:** a large share of the CSS bundle is the **c15t cookie-consent** widget (`--c15t-*`, `--consent-*`, `--accordion-*`, `--button-shadow-*`) and Tailwind Typography `prose`. Its shadows, radii, and inputs are **not** part of this design language — exclude them when rebuilding.
 - **`.container` duality:** both a custom 101rem rule and the standard Tailwind responsive `.container` are defined. *[uncertain — confirm which applies per section in devtools]*.
 - **Not verified from static source (verify at runtime):** core form/input styling (none on homepage), exact scroll-reveal and marquee timings, and per-element usage of the extended illustration palette.
 - **Extended palette caveat:** the ~17 saturated hexes in §2 are decorative/data-viz/syntax colors, observed in compiled classes but not mapped to specific UI roles — treat as an accent grab-bag, not a token system.
 
 ---
 
-*Source: live scrape of unkey.com — compiled CSS (`120m7eldozp-x.css`, `05m0gxhcgqfo7.css`), Adobe Typekit (`tcb4uyw.css`), and server-rendered HTML. All values directly observed; uncertain items flagged inline.*
+*Source: live scrape of the reference site — compiled CSS (`120m7eldozp-x.css`, `05m0gxhcgqfo7.css`), Adobe Typekit (`tcb4uyw.css`), and server-rendered HTML. All values directly observed; uncertain items flagged inline.*

@@ -2,7 +2,7 @@
 
 import { XStack, YStack } from "tamagui";
 import { useRouter } from "next/navigation";
-import { Body, Button, Display, Divider, Eyebrow, Hatch } from "./ui";
+import { Body, Button, Display, Eyebrow, Hatch } from "./ui";
 import Header from "./Header";
 import Radar from "./Radar";
 import StickyScrollScrub from "./StickyScrollScrub";
@@ -145,33 +145,31 @@ export default function EntryGate() {
         </XStack>
       </YStack>
 
-      {/* Horizontal rule separating partners from the statement. */}
-      <YStack width="100%" paddingHorizontal={24} $sm={{ paddingHorizontal: 48 }}>
-        <Divider orientation="horizontal" />
-      </YStack>
-
-      {/* The statement — vertical rules enclosing the why-Pulse copy. */}
+      {/* The statement — the why-Pulse copy. */}
       <YStack width="100%" paddingHorizontal={24} $sm={{ paddingHorizontal: 48 }}>
         <YStack
-          borderLeftWidth={1}
-          borderRightWidth={1}
-          borderColor="$gray20"
           paddingVertical={80}
           paddingHorizontal={28}
           $sm={{ paddingHorizontal: 64 }}
           gap={20}
         >
           <Eyebrow>Why Pulse</Eyebrow>
-          <Display tag="h2" size="lg" maxWidth={760}>
-            One living map of real people — with nothing kept, and nothing
-            tracked.
-          </Display>
-          <Body size="lg" tone="muted" maxWidth={620}>
-            Stop trading your identity for a conversation. Most apps make you sign
-            up, build a profile, and leave a permanent trail behind. Pulse drops
-            you onto a global radar as an anonymous dot — talk, video-call
-            peer-to-peer, then disappear without a record.
-          </Body>
+          <XStack gap={48} $sm={{ gap: 80 }} flexWrap="wrap" alignItems="flex-start">
+            <YStack flexGrow={1.6} flexBasis={420} flexShrink={1}>
+              <Display tag="h2" size="lg">
+                One living map of real people — with nothing kept, and nothing
+                tracked.
+              </Display>
+            </YStack>
+            <YStack flexGrow={1} flexBasis={280} flexShrink={1}>
+              <Body size="lg" tone="muted">
+                Stop trading your identity for a conversation. Most apps make you
+                sign up and leave a permanent trail behind. Pulse drops you onto a
+                global radar as an anonymous dot — talk, video-call peer-to-peer,
+                then vanish without a record.
+              </Body>
+            </YStack>
+          </XStack>
         </YStack>
       </YStack>
 

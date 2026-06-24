@@ -3,8 +3,8 @@ import { createAnimations } from "@tamagui/animations-css";
 import { createFont, createTamagui } from "tamagui";
 
 // ---------------------------------------------------------------------------
-// Unkey design system, ported to Tamagui. Single source of truth for the app.
-// Values are taken verbatim from design-system.md (scraped from unkey.com):
+// Design system, ported to Tamagui. Single source of truth for the app.
+// Values are taken verbatim from design-system.md:
 // near-black canvas, white ink, a cool blue-violet gray scale, one chartreuse
 // accent, square corners, and a three-voice type system.
 // ---------------------------------------------------------------------------

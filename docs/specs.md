@@ -34,7 +34,7 @@ Copy `.env.example` to `.env` and fill both values before running locally.
 | `pg` | 8.x | PostgreSQL native driver |
 | `mapbox-gl` | 3.x | Interactive world map |
 | `tailwindcss` | 4.x | Utility CSS (PostCSS plugin) |
-| `tamagui` / `@tamagui/core` / `@tamagui/config` | 2.x | UI primitives + design tokens/themes (Unkey system, see `design-system.md`) |
+| `tamagui` / `@tamagui/core` / `@tamagui/config` | 2.x | UI primitives + design tokens/themes (see `design-system.md`) |
 | `@tamagui/animations-css` | 2.x | CSS transition driver (`animation="quick"` = 200ms ease-in-out) |
 | `@tamagui/next-plugin` / `@tamagui/next-theme` | 2.x | Next.js compiler integration; forced-dark theme provider |
 

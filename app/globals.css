@@ -61,7 +61,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* The panel's raw token values live on the scope class. These are the Unkey
+/* The panel's raw token values live on the scope class. These are the
  * dark design tokens (design-system.md / tamagui.config.ts): near-black canvas,
  * white ink, cool blue-violet gray scale, gray-20 grid borders, chartreuse used
  * only for data-viz, square corners. Mapping the shadcn variable surface to

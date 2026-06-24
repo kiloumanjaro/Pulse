@@ -6,7 +6,7 @@ import { Sidebar } from './sidebar';
 import { TopBar } from './top-bar';
 import { ContentRenderer } from './content-renderer';
 
-// Floating control panel — a square, near-black card (Unkey design system):
+// Floating control panel — a square, near-black card (design system):
 // a nav rail, a top bar, and a (currently blank) content area per tab.
 export function ControlPanel({
   activeTab,

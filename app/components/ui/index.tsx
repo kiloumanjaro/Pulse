@@ -10,7 +10,7 @@ import {
 } from "tamagui";
 
 // ---------------------------------------------------------------------------
-// Unkey design-system primitives (see design-system.md). Square corners, 1px
+// Design-system primitives (see design-system.md). Square corners, 1px
 // gray-20 borders, white-on-dark fills, mono uppercase eyebrows, flat (no
 // shadows). All tokens resolve from tamagui.config.ts.
 // ---------------------------------------------------------------------------

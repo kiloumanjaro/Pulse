@@ -1,7 +1,7 @@
 'use client';
 
 // Preview of the (minimal) control panel. `control-panel-theme` scopes the
-// Unkey dark palette to the panel subtree; the parent owns the active tab.
+// dark palette to the panel subtree; the parent owns the active tab.
 
 import { useState } from 'react';
 import { ControlPanel } from '@/components/control-panel';

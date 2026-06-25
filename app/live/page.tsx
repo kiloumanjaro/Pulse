@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Body, Button, Display } from "../components/ds";
 import WorldMap from "../components/WorldMap";
-import KineticGrid from "../components/KineticGrid";
+import KineticGrid, { type GlowSource } from "../components/KineticGrid";
 import ConnectionPrompt from "../components/ConnectionPrompt";
 import ChatPanel, { type ChatMessage } from "../components/ChatPanel";
 import VideoPanel from "../components/VideoPanel";
@@ -54,6 +54,8 @@ export default function Live() {
 
   const peerRef = useRef<PeerSession | null>(null);
   const msgId = useRef(0);
+  // Globe geometry reported by WorldMap, read by KineticGrid to glow behind it.
+  const glowRef = useRef<GlowSource | null>(null);
   const requestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function showNotice(text: string) {
@@ -374,13 +376,23 @@ export default function Live() {
 
   return (
     <main className="fixed inset-0 overflow-hidden bg-background">
-      <KineticGrid />
+      <KineticGrid
+        glowSourceRef={glowRef}
+        glowStrength={2.2}
+        glowFalloff={4}
+        glowRadiusScale={2.5}
+        glowWarp
+        glowWarpStrength={3.5}
+      />
 
       <WorldMap
         peers={peers}
         me={myLocation}
         onPeerClick={requestConnection}
         canConnect={conn.kind === "idle"}
+        onView={(g) => {
+          glowRef.current = g;
+        }}
       />
 
       {notice && (

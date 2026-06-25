@@ -7,8 +7,8 @@ import type { PeerDot } from "@/lib/types";
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "pk.eyJ1IjoicHVsc2UtbWFwIiwiYSI6ImNrMDBkZW1vMDAwMDAwMDAifQ.AAAAAAAAAAAAAAAAAAAAAA";
 
-const LAND_COLOR = "#3a3a3a";
-const WATER_COLOR = "#141414";
+const LAND_COLOR = "#131313";
+const WATER_COLOR = "#030303";
 const GRATICULE_COLOR = "#2c2c2e";
 const GRATICULE_STEP = 15; // degrees between grid lines
 
@@ -110,11 +110,13 @@ export default function WorldMap({
   me,
   onPeerClick,
   canConnect,
+  onView,
 }: {
   peers: PeerDot[];
   me: { lat: number; lng: number } | null;
   onPeerClick: (id: string) => void;
   canConnect: boolean;
+  onView?: (g: { x: number; y: number; radius: number }) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapboxMap | null>(null);
@@ -126,9 +128,11 @@ export default function WorldMap({
   // connectability through refs (synced in an effect, never during render).
   const onPeerClickRef = useRef(onPeerClick);
   const canConnectRef = useRef(canConnect);
+  const onViewRef = useRef(onView);
   useEffect(() => {
     onPeerClickRef.current = onPeerClick;
     canConnectRef.current = canConnect;
+    onViewRef.current = onView;
   });
 
   // Initialise the map once.
@@ -166,6 +170,26 @@ export default function WorldMap({
         });
         setReady(true);
       });
+
+      // Report the globe's on-screen center + apparent radius so a backdrop
+      // (KineticGrid) can render a glow sized to it. In globe projection the
+      // sphere stays centered in the viewport; its pixel radius tracks zoom:
+      // worldSize (512·2^zoom) / 2π.
+      const reportView = () => {
+        const cb = onViewRef.current;
+        if (!cb) return;
+        const el = map.getContainer();
+        cb({
+          x: el.clientWidth / 2,
+          y: el.clientHeight / 2,
+          radius: (512 * Math.pow(2, map.getZoom())) / (2 * Math.PI),
+        });
+      };
+      map.on("move", reportView);
+      map.on("zoom", reportView);
+      map.on("resize", reportView);
+      map.on("load", reportView);
+
       mapRef.current = map;
     })();
 

@@ -1,6 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type RefObject,
+} from "react";
+
+// A fixed glow source (e.g. centered behind the globe) that brightens the grid
+// like the cursor hover does, but contributes no warp/displacement.
+export interface GlowSource {
+  x: number;
+  y: number;
+  radius: number;
+}
 
 interface ClickProps {
   clickForce?: number;
@@ -34,6 +48,13 @@ interface KineticGridProps {
   clickSoundEnabled?: boolean;
   clickSoundSrc?: string;
   clickSoundVolume?: number;
+  glowSourceRef?: RefObject<GlowSource | null>;
+  glowEnabled?: boolean;
+  glowStrength?: number;
+  glowRadiusScale?: number;
+  glowFalloff?: number;
+  glowWarp?: boolean;
+  glowWarpStrength?: number;
   style?: CSSProperties;
 }
 
@@ -119,6 +140,13 @@ export default function KineticGrid(props: KineticGridProps) {
     clickSoundEnabled = true,
     clickSoundSrc = "/hoverfx2.mp3",
     clickSoundVolume = 0.05,
+    glowSourceRef,
+    glowEnabled = true,
+    glowStrength = 1,
+    glowRadiusScale = 1.8,
+    glowFalloff = 2,
+    glowWarp = false,
+    glowWarpStrength = 0.65,
   } = props;
   const { clickForce = 0.5, motionSpeed = 0.5 } = clickProps;
   const {
@@ -168,6 +196,12 @@ export default function KineticGrid(props: KineticGridProps) {
     trailMode,
     trailLength,
     trailColor,
+    glowEnabled,
+    glowStrength,
+    glowRadiusScale,
+    glowFalloff,
+    glowWarp,
+    glowWarpStrength,
   });
   const prevGridSizeRef = useRef(gridSize);
 
@@ -198,6 +232,12 @@ export default function KineticGrid(props: KineticGridProps) {
       trailMode,
       trailLength,
       trailColor,
+      glowEnabled,
+      glowStrength,
+      glowRadiusScale,
+      glowFalloff,
+      glowWarp,
+      glowWarpStrength,
     };
     if (gridSizeChanged && mounted && canvasRef.current) {
       const canvas = canvasRef.current;
@@ -241,6 +281,12 @@ export default function KineticGrid(props: KineticGridProps) {
     soundVolume,
     clickSoundEnabled,
     clickSoundVolume,
+    glowEnabled,
+    glowStrength,
+    glowRadiusScale,
+    glowFalloff,
+    glowWarp,
+    glowWarpStrength,
   ]);
 
   useEffect(() => {
@@ -350,6 +396,27 @@ export default function KineticGrid(props: KineticGridProps) {
       return Math.pow(1 - dist / hoverRadius, 3.5);
     };
 
+    // Static glow from a fixed source (the globe). Same falloff shape as hover
+    // but its own radius/strength — and it never feeds the push functions, so
+    // it brightens the grid without warping it.
+    const getGlowIntensity = (x: number, y: number) => {
+      const c = colorsRef.current;
+      const g = glowSourceRef?.current;
+      if (!c.glowEnabled || !g) return 0;
+      const r = g.radius * c.glowRadiusScale;
+      if (r <= 0) return 0;
+      const dx = x - g.x,
+        dy = y - g.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > r) return 0;
+      return Math.pow(1 - dist / r, c.glowFalloff) * c.glowStrength;
+    };
+
+    // Combined intensity for COLOR / OPACITY / SIZE only. Push uses the mouse
+    // directly, so the glow contributes brightness but zero displacement.
+    const getVisualIntensity = (x: number, y: number) =>
+      Math.min(1, Math.max(getHoverIntensity(x, y), getGlowIntensity(x, y)));
+
     const mapRepulsion = (value: number) => (value <= 0 ? value * 25 : value * 90);
 
     const getCursorPush = (baseX: number, baseY: number) => {
@@ -380,6 +447,25 @@ export default function KineticGrid(props: KineticGridProps) {
       return { x: (dx / dist) * pushAmount, y: (dy / dist) * pushAmount };
     };
 
+    // Static warp from the globe — pulls dots inward toward its center (pucker),
+    // reach scaled to the globe radius. Independent of the cursor push.
+    const getGlowPush = (baseX: number, baseY: number) => {
+      const c = colorsRef.current;
+      const g = glowSourceRef?.current;
+      if (!c.glowWarp || !g || c.glowWarpStrength === 0) return { x: 0, y: 0 };
+      const reach = g.radius * c.glowRadiusScale;
+      if (reach <= 0) return { x: 0, y: 0 };
+      const dx = baseX - g.x,
+        dy = baseY - g.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist === 0 || dist > reach) return { x: 0, y: 0 };
+      const normalizedDist = dist / reach;
+      const pushAmount =
+        Math.pow(1 - normalizedDist, 2) * c.glowWarpStrength * 25;
+      // Negative direction = toward the center (inward pucker).
+      return { x: -(dx / dist) * pushAmount, y: -(dy / dist) * pushAmount };
+    };
+
     const animate = () => {
       const now = performance.now();
       lastTime = now;
@@ -403,11 +489,11 @@ export default function KineticGrid(props: KineticGridProps) {
           gy = parseInt(gyStr);
         const rightDot = dotsRef.current.get(`${gx + currentGridSize},${gy}`);
         const bottomDot = dotsRef.current.get(`${gx},${gy + currentGridSize}`);
-        const hoverIntensity = getHoverIntensity(dot.x, dot.y);
+        const hoverIntensity = getVisualIntensity(dot.x, dot.y);
 
         if (rightDot) {
           const avgHover =
-            (hoverIntensity + getHoverIntensity(rightDot.x, rightDot.y)) / 2;
+            (hoverIntensity + getVisualIntensity(rightDot.x, rightDot.y)) / 2;
           const r = Math.round(
             gridColorParsed.r + (hoverColorParsed.r - gridColorParsed.r) * avgHover
           );
@@ -428,7 +514,7 @@ export default function KineticGrid(props: KineticGridProps) {
         }
         if (bottomDot) {
           const avgHover =
-            (hoverIntensity + getHoverIntensity(bottomDot.x, bottomDot.y)) / 2;
+            (hoverIntensity + getVisualIntensity(bottomDot.x, bottomDot.y)) / 2;
           const r = Math.round(
             gridColorParsed.r + (hoverColorParsed.r - gridColorParsed.r) * avgHover
           );
@@ -454,15 +540,18 @@ export default function KineticGrid(props: KineticGridProps) {
         const [gxStr, gyStr] = key.split(",");
         const gx = parseInt(gxStr),
           gy = parseInt(gyStr);
-        const targetX = gx + getCursorPush(gx, gy).x + getClickPush(gx, gy).x;
-        const targetY = gy + getCursorPush(gx, gy).y + getClickPush(gx, gy).y;
+        const glowPush = getGlowPush(gx, gy);
+        const targetX =
+          gx + getCursorPush(gx, gy).x + getClickPush(gx, gy).x + glowPush.x;
+        const targetY =
+          gy + getCursorPush(gx, gy).y + getClickPush(gx, gy).y + glowPush.y;
         const forceX = (targetX - dot.x) * springStiffness;
         const forceY = (targetY - dot.y) * springStiffness;
         dot.vx = (dot.vx + forceX) * damping;
         dot.vy = (dot.vy + forceY) * damping;
         dot.x += dot.vx;
         dot.y += dot.vy;
-        const hoverIntensity = getHoverIntensity(dot.x, dot.y);
+        const hoverIntensity = getVisualIntensity(dot.x, dot.y);
         dot.targetSize = currentDotSize + hoverIntensity * currentDotSize;
         dot.size += (dot.targetSize - dot.size) * 0.15;
         const r = Math.round(

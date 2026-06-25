@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Body, Button, Display } from "../components/ds";
+import { Body, Button } from "../components/ds";
+import PulseMark from "../components/PulseMark";
 import WorldMap from "../components/WorldMap";
 import KineticGrid, { type GlowSource } from "../components/KineticGrid";
 import { type ChatMessage } from "../components/ChatPanel";
@@ -402,12 +403,20 @@ export default function Live() {
 
   if (geo === "locating") {
     return (
-      <div className="flex flex-col flex-1 h-screen items-center justify-center gap-3 bg-background">
-        <Display as="h1" size="md">
-          Pulse
-        </Display>
-        <Body size="md" tone="muted">
+      <div className="relative flex flex-col flex-1 h-screen items-center justify-center gap-4 bg-background">
+        <div className="flex size-20 items-center justify-center rounded-2xl bg-brand">
+          <PulseMark className="h-9 w-auto text-background" />
+        </div>
+        <Body size="sm" tone="muted">
           Finding your location…
+        </Body>
+        <Body
+          size="sm"
+          tone="muted"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 max-w-[420px] px-6 text-center opacity-60"
+        >
+          A living globe of anonymous strangers. Nothing stored, gone the
+          moment you leave.
         </Body>
       </div>
     );

@@ -652,25 +652,48 @@ export default function KineticGrid(props: KineticGridProps) {
       src.start(t0);
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
+    // Convert a window mouse event to canvas-local coordinates.
+    const eventToCanvas = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
-      const canvasWidth = canvas.clientWidth || canvas.offsetWidth || 1;
-      const canvasHeight = canvas.clientHeight || canvas.offsetHeight || 1;
-      const scaleX = canvasWidth / rect.width;
-      const scaleY = canvasHeight / rect.height;
-      const x = (e.clientX - rect.left) * scaleX;
-      const y = (e.clientY - rect.top) * scaleY;
+      const cw = canvas.clientWidth || canvas.offsetWidth || 1;
+      const ch = canvas.clientHeight || canvas.offsetHeight || 1;
+      return {
+        x: (e.clientX - rect.left) * (cw / rect.width),
+        y: (e.clientY - rect.top) * (ch / rect.height),
+        width: cw,
+        height: ch,
+      };
+    };
+
+    // True when a canvas-local point falls inside the globe's drawn circle.
+    const isOverGlobe = (x: number, y: number) => {
+      const glow = glowSourceRef?.current;
+      if (!glow) return false;
+      const dx = x - glow.x,
+        dy = y - glow.y;
+      return dx * dx + dy * dy <= glow.radius * glow.radius;
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const { x, y, width: canvasWidth, height: canvasHeight } = eventToCanvas(e);
       // Only track if mouse is within component bounds
       if (x >= 0 && y >= 0 && x <= canvasWidth && y <= canvasHeight) {
         mousePosRef.current = { x, y };
 
         // Tick once per grid cell entered, throttled — pitch jittered ±15%.
+        // But stay silent while the cursor is over the globe itself: there the
+        // grid is hidden behind the sphere, so only the click sound should fire.
+        const overGlobe = isOverGlobe(x, y);
         const gs = colorsRef.current.gridSize;
         const cell = `${Math.floor(x / gs)},${Math.floor(y / gs)}`;
         if (cell !== lastCellRef.current) {
           lastCellRef.current = cell;
           const now3 = performance.now();
-          if (soundRef.current.soundEnabled && now3 - lastTickRef.current > 25) {
+          if (
+            !overGlobe &&
+            soundRef.current.soundEnabled &&
+            now3 - lastTickRef.current > 25
+          ) {
             playTick(0.6 + (Math.random() - 0.5) * 0.08);
             lastTickRef.current = now3;
           }
@@ -690,8 +713,17 @@ export default function KineticGrid(props: KineticGridProps) {
         mousePosRef.current = null;
       }
     };
-    const handleMouseDown = () => {
+    const handleMouseDown = (e: MouseEvent) => {
       isMouseDownRef.current = true;
+      // The click sound only fires for a "valid" press: a peer marker, or
+      // anywhere on the background. Pressing the globe itself (e.g. dragging to
+      // rotate) stays silent — unless it lands on a peer dot.
+      const target = e.target as Element | null;
+      const onPeerMarker = !!target?.closest(".pulse-dot");
+      if (!onPeerMarker) {
+        const { x, y } = eventToCanvas(e);
+        if (isOverGlobe(x, y)) return;
+      }
       playClick();
     };
     const handleMouseUp = () => {

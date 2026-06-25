@@ -424,7 +424,7 @@ export default function WorldMap({
 
       {/* Online count */}
       <div
-        className="absolute bottom-4 left-4 flex flex-col border border-gray-20 bg-gray-8 px-3 py-1.5"
+        className="absolute top-4 right-4 flex flex-col border border-gray-20 bg-gray-8 px-3 py-1.5"
         style={{ backdropFilter: "blur(8px)" }}
       >
         <span className="font-mono text-xs leading-4 text-gray-80">

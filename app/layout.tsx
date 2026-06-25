@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "./components/ui/sonner";
 
 // Body voice. §3
 const inter = Inter({
@@ -42,6 +43,7 @@ export default function RootLayout({
         style={{ backgroundColor: "#040406", color: "#ffffff" }}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

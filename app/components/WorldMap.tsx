@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { ShieldTick } from "iconsax-reactjs";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Map as MapboxMap, Marker } from "mapbox-gl";
 import type { PeerDot } from "@/lib/types";
@@ -206,6 +208,32 @@ export default function WorldMap({
     // `me` is only read for the initial center; we don't want to re-init on change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Once the globe finishes loading, surface the privacy disclaimer as a toast.
+  // The fixed `id` dedupes React's double-invoke in dev so it only shows once.
+  useEffect(() => {
+    if (!ready) return;
+    toast.custom(
+      () => (
+        <div
+          className="flex items-center gap-3 rounded-lg border text-popover-foreground shadow-lg px-4 py-3"
+          style={{ maxWidth: 340, backgroundColor: "#171717", borderColor: "#2e2e2e" }}
+        >
+          <ShieldTick
+            size={40}
+            variant="Bulk"
+            color="currentColor"
+            className="shrink-0 text-muted-foreground"
+          />
+          <p className="text-sm leading-snug text-muted-foreground">
+            Your dot is placed 1–3 km from your real location. Nothing is stored —
+            closing the tab ends everything.
+          </p>
+        </div>
+      ),
+      { id: "privacy-disclaimer", duration: 10000 },
+    );
+  }, [ready]);
 
   // Show / move the user's own "you are here" pin.
   useEffect(() => {

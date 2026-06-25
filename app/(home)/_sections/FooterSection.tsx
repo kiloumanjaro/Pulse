@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { Body, Display, Eyebrow, Section } from "../../components/ds";
+import { Body, Display, Section } from "../../components/ds";
 import PulseMark from "../../components/PulseMark";
 import { FOOTER } from "../../content/landing";
 
@@ -36,9 +36,11 @@ export default function FooterSection() {
 
           {FOOTER.columns.map((col, i) => (
             <Fragment key={col.heading}>
-              <Eyebrow className={`sm:row-start-1 ${COL_START[i]}`}>
+              <span
+                className={`font-sans text-sm tracking-[-0.16px] text-white sm:row-start-1 ${COL_START[i]}`}
+              >
                 {col.heading}
-              </Eyebrow>
+              </span>
               <ul className={`flex flex-col gap-2.5 sm:row-start-2 ${COL_START[i]}`}>
                 {col.links.map((link) => (
                   <li key={link.label}>

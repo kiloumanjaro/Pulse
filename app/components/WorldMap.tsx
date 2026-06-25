@@ -99,14 +99,6 @@ function simplifyBasemap(map: MapboxMap) {
   }
 }
 
-function dotColor(id: string): string {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash * 31 + id.charCodeAt(i)) | 0;
-  }
-  return `hsl(${Math.abs(hash) % 360}, 70%, 60%)`;
-}
-
 export default function WorldMap({
   peers,
   me,
@@ -281,7 +273,6 @@ export default function WorldMap({
         if (!marker) {
           const el = document.createElement("button");
           el.className = "pulse-dot";
-          el.style.background = dotColor(peer.id);
           el.title = "Tap to connect";
           el.addEventListener("click", (e) => {
             e.stopPropagation();

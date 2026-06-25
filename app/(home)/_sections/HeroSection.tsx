@@ -1,9 +1,9 @@
 "use client";
 
-import { Body, Button, Display, Section } from "../components/ds";
-import Header from "../components/Header";
-import Radar from "../components/Radar";
-import { GITHUB_URL, HERO, RADAR_BACKGROUND, RADAR_COLOR } from "../content/landing";
+import { Body, Button, Display, Section } from "../../components/ds";
+import Header from "../../components/Header";
+import Radar from "../../components/Radar";
+import { GITHUB_URL, HERO, RADAR_BACKGROUND, RADAR_COLOR } from "../../content/landing";
 
 // Full-viewport radar with the floating header over it.
 export default function HeroSection({ onEnter }: { onEnter: () => void }) {

@@ -1,5 +1,5 @@
-import { Body, Card, Display, Placeholder, Section } from "../components/ds";
-import { BENTO } from "../content/landing";
+import { Body, Card, Display, Placeholder, Section } from "../../components/ds";
+import { BENTO } from "../../content/landing";
 
 // Explicit grid placement so the center cell (index 2) is the tall rectangle
 // flanked by two stacked squares per side. Mobile collapses to one column.

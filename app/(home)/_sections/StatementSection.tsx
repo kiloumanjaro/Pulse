@@ -1,5 +1,5 @@
-import { Body, Display, Section } from "../components/ds";
-import { STATEMENT } from "../content/landing";
+import { Body, Display, Section } from "../../components/ds";
+import { STATEMENT } from "../../content/landing";
 
 // The statement — the why-Pulse copy.
 export default function StatementSection() {

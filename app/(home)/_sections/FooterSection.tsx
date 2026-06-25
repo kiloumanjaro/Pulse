@@ -1,6 +1,6 @@
 import { Fragment } from "react";
-import { Body, Display, Eyebrow, Section } from "../components/ds";
-import { FOOTER } from "../content/landing";
+import { Body, Display, Eyebrow, Section } from "../../components/ds";
+import { FOOTER } from "../../content/landing";
 
 // Closing band — black canvas, gray-20 top hairline. Laid out as a 2-row grid
 // so row 1 (brand lockup + column headings) and row 2 (tagline + link lists)

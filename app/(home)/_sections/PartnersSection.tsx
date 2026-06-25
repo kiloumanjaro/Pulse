@@ -1,5 +1,5 @@
-import { Placeholder, Section } from "../components/ds";
-import { PARTNERS } from "../content/landing";
+import { Placeholder, Section } from "../../components/ds";
+import { PARTNERS } from "../../content/landing";
 
 // Future partners — reserved logo grid, empty cells hatched (§8).
 export default function PartnersSection() {

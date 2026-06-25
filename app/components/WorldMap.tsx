@@ -7,11 +7,12 @@ import type { PeerDot } from "@/lib/types";
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "pk.eyJ1IjoicHVsc2UtbWFwIiwiYSI6ImNrMDBkZW1vMDAwMDAwMDAifQ.AAAAAAAAAAAAAAAAAAAAAA";
 
-const LAND_COLOR = "#292929";
-const WATER_COLOR = "#202020";
+const LAND_COLOR = "#0b0c0e";
+const WATER_COLOR = "#040406";
 
-// Flatten the basemap to a clean two-tone silhouette: recolor land/water and
-// strip every administrative line (country = admin-0, state/province = admin-1).
+// Flatten the basemap to a clean two-tone silhouette: recolor land/water,
+// strip every administrative line, and hide all place labels so the first
+// view is an uncluttered globe rather than a wall of city/country names.
 function simplifyBasemap(map: MapboxMap) {
   const layers = map.getStyle()?.layers ?? [];
   const isWater = (id: string) => /water|river|waterway|ocean|sea/i.test(id);
@@ -32,6 +33,12 @@ function simplifyBasemap(map: MapboxMap) {
         if (isWater(id)) {
           map.setPaintProperty(id, "line-color", WATER_COLOR);
         } else {
+          map.setLayoutProperty(id, "visibility", "none");
+        }
+      } else if (layer.type === "symbol") {
+        // Symbol layers carry all the text labels. Keep only country names so
+        // the globe reads as a clean silhouette — hide settlements, roads, POIs.
+        if (!/country/i.test(id)) {
           map.setLayoutProperty(id, "visibility", "none");
         }
       }

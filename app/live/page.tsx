@@ -88,6 +88,10 @@ export default function Live() {
       onControl: (ctrl) => handleControl(ctrl),
       onRemoteStream: (stream) => setRemoteStream(stream),
       onConnectionState: (state) => {
+        // "failed" is terminal, so tear down. "disconnected" is usually a
+        // transient ICE blip that recovers on its own, and "closed" is our own
+        // teardown firing back through here — neither should reset the session.
+        // This is the hook point if reconnection logic is added later.
         if (state === "failed") {
           teardown("Connection failed (network).");
         }

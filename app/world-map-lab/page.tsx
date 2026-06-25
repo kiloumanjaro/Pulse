@@ -229,6 +229,11 @@ export default function WorldMapLabPage() {
           onView={(g) => {
             glowRef.current = g;
           }}
+          connection={
+            sim.kind === 'idle'
+              ? null
+              : { peerId: sim.peerId, connected: sim.kind === 'connected' }
+          }
         />
 
         {sim.kind === 'requesting' && (

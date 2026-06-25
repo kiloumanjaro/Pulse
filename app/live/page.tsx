@@ -476,6 +476,11 @@ export default function Live() {
         onView={(g) => {
           glowRef.current = g;
         }}
+        connection={
+          conn.kind === "idle"
+            ? null
+            : { peerId: conn.peerId, connected: conn.kind === "connected" }
+        }
       />
 
       {notice && (

@@ -4,15 +4,60 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ShieldTick } from "iconsax-reactjs";
 import "mapbox-gl/dist/mapbox-gl.css";
-import type { Map as MapboxMap, Marker } from "mapbox-gl";
+import type { Map as MapboxMap, Marker, GeoJSONSource } from "mapbox-gl";
 import type { PeerDot } from "@/lib/types";
 
-const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "pk.eyJ1IjoicHVsc2UtbWFwIiwiYSI6ImNrMDBkZW1vMDAwMDAwMDAifQ.AAAAAAAAAAAAAAAAAAAAAA";
+const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 const LAND_COLOR = "#131313";
 const WATER_COLOR = "#030303";
 const GRATICULE_COLOR = "#2c2c2e";
 const GRATICULE_STEP = 15; // degrees between grid lines
+const LINK_COLOR = "#17181d"; // connection line (dashed pending → solid connected)
+
+// Densely sample the great-circle arc between two lng/lat points so the
+// connection line curves along the globe surface instead of cutting a straight
+// chord through it. Endpoints are slerped as 3D unit vectors and reprojected.
+function greatCircle(
+  a: [number, number],
+  b: [number, number],
+  steps = 64,
+): [number, number][] {
+  const d = Math.PI / 180;
+  const [lng1, lat1, lng2, lat2] = [a[0] * d, a[1] * d, b[0] * d, b[1] * d];
+  const v1 = [
+    Math.cos(lat1) * Math.cos(lng1),
+    Math.cos(lat1) * Math.sin(lng1),
+    Math.sin(lat1),
+  ];
+  const v2 = [
+    Math.cos(lat2) * Math.cos(lng2),
+    Math.cos(lat2) * Math.sin(lng2),
+    Math.sin(lat2),
+  ];
+  const dot = Math.min(1, Math.max(-1, v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]));
+  const omega = Math.acos(dot);
+  if (omega < 1e-6) return [a, b];
+  const sin = Math.sin(omega);
+  const out: [number, number][] = [];
+  let prevLng = a[0];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const s1 = Math.sin((1 - t) * omega) / sin;
+    const s2 = Math.sin(t * omega) / sin;
+    const x = s1 * v1[0] + s2 * v2[0];
+    const y = s1 * v1[1] + s2 * v2[1];
+    const z = s1 * v1[2] + s2 * v2[2];
+    // Unwrap across the antimeridian: keep each step within 180° of the last so
+    // Mapbox doesn't bridge a +179°→-179° jump by sweeping around the globe.
+    let lng = Math.atan2(y, x) / d;
+    while (lng - prevLng > 180) lng -= 360;
+    while (lng - prevLng < -180) lng += 360;
+    prevLng = lng;
+    out.push([lng, Math.atan2(z, Math.sqrt(x * x + y * y)) / d]);
+  }
+  return out;
+}
 
 // Build the globe's graticule as GeoJSON: meridians run pole-to-pole (every
 // GRATICULE_STEP° of longitude), parallels ring the globe (every step° of
@@ -105,12 +150,15 @@ export default function WorldMap({
   onPeerClick,
   canConnect,
   onView,
+  connection,
 }: {
   peers: PeerDot[];
   me: { lat: number; lng: number } | null;
   onPeerClick: (id: string) => void;
   canConnect: boolean;
   onView?: (g: { x: number; y: number; radius: number }) => void;
+  // Active connection to draw a line to: dashed while pending, solid once connected.
+  connection?: { peerId: string; connected: boolean } | null;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapboxMap | null>(null);
@@ -240,9 +288,15 @@ export default function WorldMap({
         const el = document.createElement("div");
         el.className = "pulse-me";
         el.title = "You are here";
-        el.innerHTML = `<span class="pulse-me-label">Me</span>📍`;
-        // anchor "bottom" → the pin's tip sits on the exact coordinate.
-        meMarkerRef.current = new mapboxgl.Marker({ element: el, anchor: "bottom" })
+        el.innerHTML = `<span class="pulse-me-label">you are here</span>`;
+        // Center anchor (like peer dots) sits the dot on the exact coordinate.
+        // pitch/rotation "map" lays it tangent to the globe surface so it tilts
+        // with the sphere instead of billboarding flat at the camera.
+        meMarkerRef.current = new mapboxgl.Marker({
+          element: el,
+          pitchAlignment: "map",
+          rotationAlignment: "map",
+        })
           .setLngLat([me.lng, me.lat])
           .addTo(map);
       } else {
@@ -278,7 +332,13 @@ export default function WorldMap({
             e.stopPropagation();
             if (canConnectRef.current) onPeerClickRef.current(peer.id);
           });
-          marker = new mapboxgl.Marker({ element: el })
+          // pitch/rotation "map" sticks the dot to the globe surface like a
+          // decal — it foreshortens toward the limb instead of facing the camera.
+          marker = new mapboxgl.Marker({
+            element: el,
+            pitchAlignment: "map",
+            rotationAlignment: "map",
+          })
             .setLngLat([peer.lng, peer.lat])
             .addTo(map);
           markers.set(peer.id, marker);
@@ -299,6 +359,54 @@ export default function WorldMap({
       cancelled = true;
     };
   }, [peers, ready]);
+
+  // Draw the arc from "me" to the peer we're connecting with: a broken line
+  // while the connection is pending, snapping to a solid line once connected.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready) return;
+
+    const SRC = "connection-link";
+    const peer = connection
+      ? peers.find((p) => p.id === connection.peerId)
+      : undefined;
+
+    // No active connection (or an endpoint we can't place) → tear the line down.
+    if (!connection || !me || !peer) {
+      if (map.getLayer(SRC)) map.removeLayer(SRC);
+      if (map.getSource(SRC)) map.removeSource(SRC);
+      return;
+    }
+
+    const data: GeoJSON.Feature = {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "LineString",
+        coordinates: greatCircle([me.lng, me.lat], [peer.lng, peer.lat]),
+      },
+    };
+
+    if (!map.getSource(SRC)) {
+      map.addSource(SRC, { type: "geojson", data });
+      map.addLayer({
+        id: SRC,
+        type: "line",
+        source: SRC,
+        layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": LINK_COLOR, "line-width": 2 },
+      });
+    } else {
+      (map.getSource(SRC) as GeoJSONSource).setData(data);
+    }
+
+    // [1, 0] = continuous solid; [2, 2] = dash/gap (broken) in line-width units.
+    map.setPaintProperty(
+      SRC,
+      "line-dasharray",
+      connection.connected ? [1, 0] : [2, 2],
+    );
+  }, [connection, peers, me, ready]);
 
   return (
     <div className="absolute inset-0">

@@ -193,7 +193,7 @@ export default function WorldMap({
         // Open centered on the user if we know where they are, else world view.
         center: me ? [me.lng, me.lat] : [0, 20],
         zoom: me ? 4 : 1.4,
-        attributionControl: true,
+        attributionControl: false,
       });
       map.on("load", () => {
         if (cancelled) return;

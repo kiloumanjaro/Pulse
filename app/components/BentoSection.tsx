@@ -1,4 +1,4 @@
-import { Body, Card, Display, Placeholder, Section } from "./ui";
+import { Body, Card, Display, Placeholder, Section } from "./ds";
 import { BENTO } from "../content/landing";
 
 // Explicit grid placement so the center cell (index 2) is the tall rectangle

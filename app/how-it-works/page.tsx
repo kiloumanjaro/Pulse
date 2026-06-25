@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Body, Eyebrow } from "../components/ui";
+import { Body, Eyebrow } from "../components/ds";
 import PageShell from "../components/PageShell";
 
 const STEPS = [

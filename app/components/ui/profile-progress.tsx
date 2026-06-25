@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckIcon } from '@/components/check-icon';
+import { CheckIcon } from '@/app/components/check-icon';
 import {
   IconCircleCheckFilled,
   IconInfoCircleFilled,
@@ -10,14 +10,14 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+} from '@/app/components/ui/collapsible';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Spinner } from '@/components/ui/spinner';
+} from '@/app/components/ui/tooltip';
+import { Spinner } from '@/app/components/ui/spinner';
 
 export interface ProfileStep {
   title: string;

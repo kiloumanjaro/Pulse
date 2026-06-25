@@ -36,7 +36,7 @@ Copy `.env.example` to `.env` and fill both values before running locally.
 | `tailwindcss` | 4.x | Utility CSS + design tokens/themes (PostCSS plugin; palette in `app/globals.css`) |
 | `class-variance-authority` / `clsx` / `tailwind-merge` | — | Component variants (`cva`) + class merging (`cn` in `lib/utils.ts`) |
 
-**Design tokens** live in `app/globals.css` (`@theme` block) — the near-black canvas, white ink, blue-violet gray ramp (`gray-5`…`gray-94`), and chartreuse accent. UI primitives (`Button`, `Card`, `Display`, `Body`, `Eyebrow`, `Section`, …) are plain Tailwind components in `app/components/ui/index.tsx`.
+**Design tokens** live in `app/globals.css` (`@theme` block) — the near-black canvas, white ink, blue-violet gray ramp (`gray-5`…`gray-94`), and chartreuse accent. UI primitives (`Button`, `Card`, `Display`, `Body`, `Eyebrow`, `Section`, …) are plain Tailwind components in `app/components/ds/index.tsx`.
 
 **Fonts** (`app/layout.tsx`, via `next/font/google`): body = **Inter** (`--font-inter`), mono/labels = **JetBrains Mono** (`--font-jetbrains`), display = **Hanken Grotesk** (`--font-display`, exposed as the `font-heading` utility) as a free substitute for the paid Articulat CF — the `--font-heading` token names `articulat-cf` first so it upgrades automatically if a licensed Typekit kit is added.
 

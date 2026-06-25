@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Body, Button, Display } from "../components/ui";
+import { Body, Button, Display } from "../components/ds";
 import WorldMap from "../components/WorldMap";
 import ConnectionPrompt from "../components/ConnectionPrompt";
 import ChatPanel, { type ChatMessage } from "../components/ChatPanel";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Body, Button, Card, Display } from "./ui";
+import { Body, Button, Card, Display } from "./ds";
 
 // Reusable centered prompt for "someone wants to connect" and
 // "someone wants to start video".

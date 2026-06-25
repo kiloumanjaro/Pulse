@@ -4,7 +4,7 @@
 // dark palette to the panel subtree; the parent owns the active tab.
 
 import { useState } from 'react';
-import { ControlPanel } from '@/components/control-panel';
+import { ControlPanel } from '@/app/components/control-panel';
 
 export default function ControlPanelDemoPage() {
   const [activeTab, setActiveTab] = useState('overlays');

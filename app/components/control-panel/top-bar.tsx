@@ -1,15 +1,19 @@
 'use client';
 
 import { SearchBar } from './search-bar';
-import { LinkBar } from './link-bar';
+import { ChatControls } from './chat-controls';
 import {
   ProfileProgress,
   type ProfileStep,
-} from '@/components/ui/profile-progress';
+} from '@/app/components/ui/profile-progress';
 
 interface TopBarProps {
   activeTab: string;
   onSearch?: (term: string) => void;
+  connected: boolean;
+  videoBusy: boolean;
+  onStartVideo: () => void;
+  onEnd: () => void;
 }
 
 // Placeholder profile steps until real profile data is wired up.
@@ -20,10 +24,17 @@ const PROFILE_STEPS: ProfileStep[] = [
   { title: 'Link', description: 'Link your account', completed: false },
 ];
 
-export function TopBar({ activeTab, onSearch }: TopBarProps) {
+export function TopBar({
+  activeTab,
+  onSearch,
+  connected,
+  videoBusy,
+  onStartVideo,
+  onEnd,
+}: TopBarProps) {
   const showSearchBar = activeTab === 'stats';
   const showProfileProgress = activeTab === 'profile';
-  const showLinkBar = activeTab === 'simulations' || activeTab === 'chatbot';
+  const showChatControls = activeTab === 'chatbot';
 
   return (
     // Top bar chrome — a 1px gray-20 hairline below it, echoing the blueprint
@@ -39,9 +50,14 @@ export function TopBar({ activeTab, onSearch }: TopBarProps) {
         />
       )}
 
-      {showLinkBar && (
+      {showChatControls && (
         <div className="h-8.5 flex-1">
-          <LinkBar link="project-drain.vercel.app/simulation" />
+          <ChatControls
+            connected={connected}
+            videoBusy={videoBusy}
+            onStartVideo={onStartVideo}
+            onEnd={onEnd}
+          />
         </div>
       )}
     </div>

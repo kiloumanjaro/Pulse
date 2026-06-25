@@ -2,9 +2,9 @@
 
 import { Fragment } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "./ui";
+import { Button } from "./ds";
 
 // The essentials only (the site is deliberately tiny): brand → home, three
 // concept pages, and one way in. No e-commerce-style menu.
@@ -15,20 +15,9 @@ const NAV = [
 ];
 
 // Mono UPPERCASE link, gray → white on hover. The signature eyebrow voice (§3).
-function NavLabel({
-  active,
-  children,
-}: {
-  active?: boolean;
-  children: React.ReactNode;
-}) {
+function NavLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span
-      className={cn(
-        "font-mono text-xs leading-[15px] tracking-[0.36px] uppercase cursor-pointer transition-colors duration-200 hover:text-foreground",
-        active ? "text-foreground" : "text-gray-60",
-      )}
-    >
+    <span className="font-sans text-sm font-medium tracking-[-0.35px] text-foreground cursor-pointer transition-colors duration-200">
       {children}
     </span>
   );
@@ -65,7 +54,6 @@ export default function Header({
   className?: string;
 }) {
   const router = useRouter();
-  const pathname = usePathname();
 
   // On the gate, "Enter" runs the geolocation flow; elsewhere it returns home.
   const handleEnter = () => (onEnter ? onEnter() : router.push("/"));
@@ -84,12 +72,12 @@ export default function Header({
       </div>
 
       <div className="hidden sm:flex justify-center pointer-events-auto">
-        <div className="nav-glass flex flex-row items-center h-[42px] gap-[34px] px-[30px] border border-gray-20 bg-glass transition-colors duration-200">
+        <div className="flex flex-row items-center h-11 gap-[34px] px-[30px] border border-foreground bg-black transition-colors duration-200">
           {NAV.map((item, i) => (
             <Fragment key={item.href}>
               {i > 0 && <Sep />}
               <Link href={item.href} className="no-underline">
-                <NavLabel active={pathname === item.href}>{item.label}</NavLabel>
+                <NavLabel>{item.label}</NavLabel>
               </Link>
             </Fragment>
           ))}

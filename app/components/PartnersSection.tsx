@@ -1,4 +1,4 @@
-import { Placeholder, Section } from "./ui";
+import { Placeholder, Section } from "./ds";
 import { PARTNERS } from "../content/landing";
 
 // Future partners — reserved logo grid, empty cells hatched (§8).

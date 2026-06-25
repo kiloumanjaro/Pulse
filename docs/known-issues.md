@@ -33,7 +33,7 @@ Track bugs and fixes here. Add an entry when a problem is found; mark it resolve
 **Phase:** Control panel
 **Symptom:** Clicking the Simulations tab (play icon) in the control panel throws `useSidebar must be used within a SidebarProvider.`
 **Root cause:** `components/simulation-gateway.tsx:25` calls `useSidebar()`, which `throw`s when no provider is mounted. In the original app the whole map page was wrapped in shadcn's `SidebarProvider`; the portable/look-only panel has no such provider (it uses its own custom 44px rail), so the hook is orphaned.
-**Fix:** Added a non-throwing `useSidebarOptional()` to `components/ui/sidebar.tsx` (returns `null` outside a provider) and switched `SimulationGateway` to it, guarding the sidebar-close so it degrades to a no-op instead of crashing.
+**Fix:** Added a non-throwing `useSidebarOptional()` to `app/components/ui/sidebar.tsx` (returns `null` outside a provider) and switched `SimulationGateway` to it, guarding the sidebar-close so it degrades to a no-op instead of crashing.
 
 ---
 

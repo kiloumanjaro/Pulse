@@ -1,6 +1,6 @@
 "use client";
 
-import { Body, Button, Display, Section } from "./ui";
+import { Body, Button, Display, Section } from "./ds";
 import Header from "./Header";
 import Radar from "./Radar";
 import { GITHUB_URL, HERO, RADAR_BACKGROUND, RADAR_COLOR } from "../content/landing";

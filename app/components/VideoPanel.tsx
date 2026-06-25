@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Body, Button } from "./ui";
+import { Body, Button } from "./ds";
 
 export default function VideoPanel({
   localStream,

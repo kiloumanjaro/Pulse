@@ -1,4 +1,4 @@
-import { Body, Display, Section } from "./ui";
+import { Body, Display, Section } from "./ds";
 import { STATEMENT } from "../content/landing";
 
 // The statement — the why-Pulse copy.

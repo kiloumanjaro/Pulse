@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { Body, Button, Display, Eyebrow } from "./ui";
+import { Body, Button, Display, Eyebrow } from "./ds";
 import Header from "./Header";
 
 // Shared chrome for the static concept pages (/about, /how-it-works, /privacy):

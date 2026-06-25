@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/app/components/ui/input';
 
 interface SearchBarProps {
   onSearch: (searchTerm: string) => void;

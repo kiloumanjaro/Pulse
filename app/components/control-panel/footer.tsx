@@ -1,22 +1,89 @@
 'use client';
 
+import { useState } from 'react';
+import { Mic, MicOff, Video, VideoOff, PhoneOff } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import ChatInput from '@/app/components/ChatInput';
+import { Button } from '@/app/components/ds';
+import type { ControlPanelTab, ConnPhase, VideoPhase } from './types';
 
 interface FooterProps {
-  activeTab: string;
-  connected: boolean;
+  activeTab: ControlPanelTab;
+  conn: ConnPhase;
+  video: VideoPhase;
   onSend: (text: string) => void;
+  onAiSend: (text: string) => void;
+  onEndCall: () => void;
 }
 
-// Bottom chrome — the counterpart to TopBar: same band + 1px gray-20 hairline,
-// but optional. Only tabs that need a footer render one; others get nothing.
-export function Footer({ activeTab, connected, onSend }: FooterProps) {
-  const showChatInput = activeTab === 'chatbot';
-  if (!showChatInput) return null;
+// Bottom chrome — optional, mirrors TopBar. Composer for ai/chat tabs; an
+// end-call band for an active call.
+export function Footer({
+  activeTab,
+  conn,
+  video,
+  onSend,
+  onAiSend,
+  onEndCall,
+}: FooterProps) {
+  const [muted, setMuted] = useState(false);
+  const [cameraOff, setCameraOff] = useState(false);
 
-  return (
-    <div className="flex flex-row items-center gap-2 py-3 px-4 border-t border-gray-20">
-      <ChatInput connected={connected} onSend={onSend} />
-    </div>
-  );
+  if (activeTab === 'ai-chat') {
+    return (
+      <div className="flex flex-row items-center gap-2 border-t border-gray-20 px-4 py-3">
+        <ChatInput connected onSend={onAiSend} />
+      </div>
+    );
+  }
+
+  if (activeTab === 'chat') {
+    return (
+      <div className="flex flex-row items-center gap-2 border-t border-gray-20 px-4 py-3">
+        <ChatInput connected={conn === 'connected'} onSend={onSend} />
+      </div>
+    );
+  }
+
+  if (activeTab === 'call' && video === 'active') {
+    return (
+      <div className="flex flex-row items-center justify-center gap-2 border-t border-gray-20 px-4 py-3">
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label={muted ? 'Unmute' : 'Mute'}
+          title={muted ? 'Unmute' : 'Mute'}
+          className={cn('h-9 w-9', muted && 'bg-gray-12')}
+          onClick={() => setMuted((m) => !m)}
+        >
+          {muted ? <MicOff className="h-[18px] w-[18px]" /> : <Mic className="h-[18px] w-[18px]" />}
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label={cameraOff ? 'Turn camera on' : 'Turn camera off'}
+          title={cameraOff ? 'Turn camera on' : 'Turn camera off'}
+          className={cn('h-9 w-9', cameraOff && 'bg-gray-12')}
+          onClick={() => setCameraOff((c) => !c)}
+        >
+          {cameraOff ? (
+            <VideoOff className="h-[18px] w-[18px]" />
+          ) : (
+            <Video className="h-[18px] w-[18px]" />
+          )}
+        </Button>
+        <Button
+          variant="danger"
+          size="md"
+          className="ml-1 gap-2"
+          onClick={onEndCall}
+        >
+          <PhoneOff className="h-[18px] w-[18px]" />
+          End call
+        </Button>
+      </div>
+    );
+  }
+
+  return null;
 }

@@ -2,62 +2,62 @@
 
 import { SearchBar } from './search-bar';
 import { ChatControls } from './chat-controls';
-import {
-  ProfileProgress,
-  type ProfileStep,
-} from '@/app/components/ui/profile-progress';
+import { Badge, Eyebrow } from '@/app/components/ds';
+import type { ControlPanelTab, ConnPhase, VideoPhase } from './types';
 
 interface TopBarProps {
-  activeTab: string;
-  onSearch?: (term: string) => void;
-  connected: boolean;
-  videoBusy: boolean;
+  activeTab: ControlPanelTab;
+  conn: ConnPhase;
+  video: VideoPhase;
+  requestCount: number;
+  onSearch: (term: string) => void;
   onStartVideo: () => void;
   onEnd: () => void;
 }
 
-// Placeholder profile steps until real profile data is wired up.
-const PROFILE_STEPS: ProfileStep[] = [
-  { title: 'Basic Information', description: 'Complete your name', completed: true },
-  { title: 'Profile Picture', description: 'Upload a profile picture', completed: true },
-  { title: 'Verification', description: 'Verify your email address', completed: false },
-  { title: 'Link', description: 'Link your account', completed: false },
-];
+const TITLES: Record<ControlPanelTab, string> = {
+  'ai-chat': 'AI Assistant',
+  people: 'People',
+  requests: 'Requests',
+  chat: 'Chat',
+  call: 'Call',
+  settings: 'Settings',
+};
 
+// Top bar chrome — a 1px gray-20 hairline below it. Each tab gets its own
+// controls; everything else gets a mono eyebrow title.
 export function TopBar({
   activeTab,
+  conn,
+  video,
+  requestCount,
   onSearch,
-  connected,
-  videoBusy,
   onStartVideo,
   onEnd,
 }: TopBarProps) {
-  const showSearchBar = activeTab === 'stats';
-  const showProfileProgress = activeTab === 'profile';
-  const showChatControls = activeTab === 'chatbot';
-
   return (
-    // Top bar chrome — a 1px gray-20 hairline below it, echoing the blueprint
-    // grid (§5, §9). Controls inside are shadcn/Radix.
-    <div className="flex flex-row items-center gap-2 py-3 px-4 border-b border-gray-20">
-      {showSearchBar && <SearchBar onSearch={onSearch ?? (() => {})} />}
-
-      {showProfileProgress && (
-        <ProfileProgress
-          current={PROFILE_STEPS.filter((step) => step.completed).length}
-          total={PROFILE_STEPS.length}
-          steps={PROFILE_STEPS}
-        />
-      )}
-
-      {showChatControls && (
+    <div className="flex h-[58px] flex-row items-center gap-2 border-b border-gray-20 px-4 py-3">
+      {activeTab === 'people' ? (
+        <SearchBar onSearch={onSearch} />
+      ) : activeTab === 'chat' || activeTab === 'call' ? (
         <div className="h-8.5 flex-1">
           <ChatControls
-            connected={connected}
-            videoBusy={videoBusy}
+            connected={conn === 'connected'}
+            videoBusy={video !== 'none'}
             onStartVideo={onStartVideo}
             onEnd={onEnd}
           />
+        </div>
+      ) : (
+        <div className="flex flex-1 flex-row items-center gap-2">
+          <Eyebrow>{TITLES[activeTab]}</Eyebrow>
+          {activeTab === 'requests' && requestCount > 0 && (
+            <Badge className="px-2 py-0.5">
+              <span className="font-mono text-xs text-gray-80">
+                {requestCount}
+              </span>
+            </Badge>
+          )}
         </div>
       )}
     </div>

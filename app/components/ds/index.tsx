@@ -43,6 +43,8 @@ type ButtonProps = VariantProps<typeof button> & {
   className?: string;
   children?: ReactNode;
   href?: string;
+  // When disabled, fill the button with the §8 diagonal hatch (opt-in).
+  hatchDisabled?: boolean;
 } & ComponentPropsWithoutRef<"button"> &
   Pick<ComponentPropsWithoutRef<"a">, "href" | "target" | "rel">;
 
@@ -55,18 +57,30 @@ export function Button({
   children,
   target,
   rel,
+  style,
+  hatchDisabled,
   ...props
 }: ButtonProps) {
   const cls = cn(button({ variant, size, full }), className);
   if (href != null) {
     return (
-      <a href={href} target={target} rel={rel} className={cls}>
+      <a href={href} target={target} rel={rel} className={cls} style={style}>
         {children}
       </a>
     );
   }
+  const hatched = hatchDisabled && props.disabled;
   return (
-    <button type="button" className={cls} {...props}>
+    <button
+      type="button"
+      className={cn(
+        cls,
+        hatched &&
+          "cursor-not-allowed text-gray-50 hover:bg-background active:bg-background",
+      )}
+      style={hatched ? { backgroundImage: HATCH_IMAGE, ...style } : style}
+      {...props}
+    >
       {children}
     </button>
   );

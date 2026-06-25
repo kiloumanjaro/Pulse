@@ -225,7 +225,7 @@ export default function WorldMap({
             color="currentColor"
             className="shrink-0 text-muted-foreground"
           />
-          <p className="text-sm leading-snug text-muted-foreground">
+          <p className="text-xs leading-snug text-muted-foreground">
             Your dot is placed 1–3 km from your real location. Nothing is stored —
             closing the tab ends everything.
           </p>

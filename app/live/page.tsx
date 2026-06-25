@@ -4,13 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import { Body, Button, Display } from "../components/ds";
 import WorldMap from "../components/WorldMap";
 import KineticGrid, { type GlowSource } from "../components/KineticGrid";
-import ConnectionPrompt from "../components/ConnectionPrompt";
-import ChatPanel, { type ChatMessage } from "../components/ChatPanel";
-import VideoPanel from "../components/VideoPanel";
+import { type ChatMessage } from "../components/ChatPanel";
+import { ControlPanel } from "../components/control-panel";
+import type {
+  ControlPanelState,
+  ControlPanelTab,
+  SettingsValues,
+} from "../components/control-panel/types";
 import { join, leave, poll, sendSignal } from "@/lib/api";
 import { PeerSession, type DescType, type PeerControl } from "@/lib/webrtc";
 import { POLL_INTERVAL_MS } from "@/lib/presence";
 import { type PeerDot, type SignalMsg } from "@/lib/types";
+import { haversineKm } from "@/lib/geo";
 import { useBrandColor } from "@/lib/useBrandColor";
 
 type Conn =
@@ -25,6 +30,19 @@ type VideoState = "none" | "requesting" | "incoming" | "active";
 type Geo = "locating" | "error" | "live";
 
 const REQUEST_TIMEOUT_MS = 30_000;
+
+// Settings/AI/requests tabs are hidden in the live panel (no backends yet); the
+// panel state still needs a settings object to satisfy the type.
+const STUB_SETTINGS: SettingsValues = {
+  cameraId: "",
+  micId: "",
+  speakerId: "",
+  soundOnRequest: true,
+  allowVideo: true,
+  appearOnMap: true,
+};
+
+const peerHandle = (id: string) => `Stranger-${id.slice(-3).toUpperCase()}`;
 
 export default function Live() {
   const [geo, setGeo] = useState<Geo>("locating");
@@ -41,11 +59,29 @@ export default function Live() {
   // Brand accent for the canvas grid glow — tracks the `--color-brand` token.
   const brandColor = useBrandColor();
 
+  // Control-panel UI state. The panel is the single live surface: a persistent
+  // rail with a flyout that opens to the relevant tab as the session changes.
+  const [activeTab, setActiveTab] = useState<ControlPanelTab>("people");
+  const [collapsed, setCollapsed] = useState(true);
+  const [muted, setMuted] = useState(false);
+  const [cameraOff, setCameraOff] = useState(false);
+
+  // Open the flyout to where attention is needed. The conn/video setters are the
+  // single choke point every transition (user- or peer-initiated) flows through,
+  // so the tab surfacing lives here rather than in a state-watching effect.
+  const surface = (tab: ControlPanelTab) => {
+    setActiveTab(tab);
+    setCollapsed(false);
+  };
+
   const [conn, _setConn] = useState<Conn>({ kind: "idle" });
   const connRef = useRef<Conn>(conn);
   const setConn = (c: Conn) => {
     connRef.current = c;
     _setConn(c);
+    // A call owns the flyout while it's up; otherwise any connection activity
+    // surfaces the chat tab.
+    if (c.kind !== "idle" && videoRef.current === "none") surface("chat");
   };
 
   const [video, _setVideo] = useState<VideoState>("none");
@@ -53,6 +89,8 @@ export default function Live() {
   const setVideo = (v: VideoState) => {
     videoRef.current = v;
     _setVideo(v);
+    if (v !== "none") surface("call");
+    else if (connRef.current.kind !== "idle") setActiveTab("chat");
   };
 
   const peerRef = useRef<PeerSession | null>(null);
@@ -74,6 +112,8 @@ export default function Live() {
     setLocalStream(null);
     setRemoteStream(null);
     setVideo("none");
+    setMuted(false);
+    setCameraOff(false);
   }
 
   function teardown(message?: string) {
@@ -386,7 +426,35 @@ export default function Live() {
     );
   }
 
-  const inChat = conn.kind === "connecting" || conn.kind === "connected";
+  const toggleMute = () => {
+    const next = !muted;
+    localStream?.getAudioTracks().forEach((t) => (t.enabled = !next));
+    setMuted(next);
+  };
+
+  const toggleCamera = () => {
+    const next = !cameraOff;
+    localStream?.getVideoTracks().forEach((t) => (t.enabled = !next));
+    setCameraOff(next);
+  };
+
+  const panelState: ControlPanelState = {
+    activeTab,
+    conn: conn.kind,
+    video,
+    messages,
+    aiMessages: [],
+    people: peers.map((p) => ({
+      id: p.id,
+      handle: peerHandle(p.id),
+      distanceKm: myLocation
+        ? Math.max(1, Math.round(haversineKm(myLocation, p)))
+        : 0,
+      busy: p.busy,
+    })),
+    requests: [],
+    settings: STUB_SETTINGS,
+  };
 
   return (
     <main className="fixed inset-0 overflow-hidden bg-background">
@@ -421,77 +489,33 @@ export default function Live() {
         </div>
       )}
 
-      {conn.kind === "requesting" && (
-        <div
-          className="absolute left-1/2 top-20 z-30 flex flex-row items-center gap-3 border border-gray-20 bg-gray-8 px-4 py-2"
-          style={{ transform: "translateX(-50%)", backdropFilter: "blur(8px)" }}
-        >
-          <Body size="sm" className="text-foreground">
-            Requesting connection…
-          </Body>
-          <Button
-            variant="outline"
-            onClick={cancelRequest}
-            className="h-[30px] px-3"
-          >
-            Cancel
-          </Button>
-        </div>
-      )}
-
-      {conn.kind === "incoming" && (
-        <ConnectionPrompt
-          title="A stranger wants to connect"
-          acceptLabel="Accept"
-          declineLabel="Decline"
-          onAccept={acceptIncoming}
-          onDecline={declineIncoming}
-        />
-      )}
-
-      {inChat && (
-        <ChatPanel
-          messages={messages}
-          connected={conn.kind === "connected"}
-          videoBusy={video !== "none"}
-          onSend={(text) => {
-            peerRef.current?.sendChat(text);
-            addMessage(true, text);
-          }}
-          onStartVideo={startVideoRequest}
-          onEnd={endConnection}
-        />
-      )}
-
-      {video === "requesting" && (
-        <div
-          className="absolute bottom-24 left-1/2 z-30 flex flex-col border border-gray-20 bg-gray-8 px-4 py-2"
-          style={{ transform: "translateX(-50%)", backdropFilter: "blur(8px)" }}
-        >
-          <Body size="sm" className="text-foreground">
-            Waiting for stranger to accept video…
-          </Body>
-        </div>
-      )}
-
-      {video === "incoming" && (
-        <ConnectionPrompt
-          title="Start video call?"
-          subtitle="The stranger wants to turn on video."
-          acceptLabel="Accept"
-          declineLabel="Decline"
-          onAccept={acceptVideo}
-          onDecline={declineVideo}
-        />
-      )}
-
-      {video === "active" && (
-        <VideoPanel
-          localStream={localStream}
-          remoteStream={remoteStream}
-          onEnd={endVideo}
-        />
-      )}
+      <ControlPanel
+        state={panelState}
+        tabs={["people", "chat", "call"]}
+        collapsed={collapsed}
+        onCollapsedChange={setCollapsed}
+        localStream={localStream}
+        remoteStream={remoteStream}
+        muted={muted}
+        cameraOff={cameraOff}
+        onTabChange={setActiveTab}
+        onSend={(text) => {
+          peerRef.current?.sendChat(text);
+          addMessage(true, text);
+        }}
+        onConnectPeer={requestConnection}
+        onAcceptConnect={acceptIncoming}
+        onDeclineConnect={declineIncoming}
+        onCancelConnect={cancelRequest}
+        onStartVideo={startVideoRequest}
+        onEndChat={endConnection}
+        onAcceptVideo={acceptVideo}
+        onDeclineVideo={declineVideo}
+        onCancelVideo={endVideo}
+        onEndCall={endVideo}
+        onToggleMute={toggleMute}
+        onToggleCamera={toggleCamera}
+      />
     </main>
   );
 }

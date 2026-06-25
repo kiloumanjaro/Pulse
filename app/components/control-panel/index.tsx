@@ -17,11 +17,28 @@ export function ControlPanel({
   autoCollapse = true,
   collapsed: collapsedProp,
   onCollapsedChange,
+  tabs,
+  localStream,
+  remoteStream,
+  muted,
+  cameraOff,
   onTabChange,
   onSend,
   onAiSend,
   onSearch,
   onSettingsChange,
+  onConnectPeer,
+  onAcceptConnect,
+  onDeclineConnect,
+  onCancelConnect,
+  onStartVideo,
+  onEndChat,
+  onAcceptVideo,
+  onDeclineVideo,
+  onCancelVideo,
+  onEndCall,
+  onToggleMute,
+  onToggleCamera,
 }: ControlPanelProps) {
   // Local search term drives the People filter without leaking into domain state.
   const [query, setQuery] = useState('');
@@ -75,6 +92,7 @@ export function ControlPanel({
         onTabChange={handleTabClick}
         requestCount={state.requests.length}
         collapsed={collapsed}
+        tabs={tabs}
       />
 
       {/* Ephemeral flyout: animate only this column's width. The inner frame is
@@ -92,23 +110,36 @@ export function ControlPanel({
             conn={state.conn}
             video={state.video}
             onSearch={handleSearch}
-            onStartVideo={noop}
-            onEnd={noop}
+            onStartVideo={onStartVideo ?? noop}
+            onEnd={onEndChat ?? noop}
           />
           <div className="control-panel-scroll relative flex-1 overflow-x-hidden overflow-y-auto">
             <ContentRenderer
               state={state}
               query={query}
+              localStream={localStream}
+              remoteStream={remoteStream}
               onSettingsChange={onSettingsChange}
+              onConnectPeer={onConnectPeer}
+              onAcceptConnect={onAcceptConnect}
+              onDeclineConnect={onDeclineConnect}
+              onCancelConnect={onCancelConnect}
+              onAcceptVideo={onAcceptVideo}
+              onDeclineVideo={onDeclineVideo}
+              onCancelVideo={onCancelVideo}
             />
           </div>
           <Footer
             activeTab={state.activeTab}
             conn={state.conn}
             video={state.video}
+            muted={muted}
+            cameraOff={cameraOff}
             onSend={onSend ?? noop}
             onAiSend={onAiSend ?? noop}
-            onEndCall={noop}
+            onEndCall={onEndCall ?? noop}
+            onToggleMute={onToggleMute}
+            onToggleCamera={onToggleCamera}
           />
         </div>
       </div>

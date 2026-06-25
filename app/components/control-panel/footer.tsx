@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Mic, MicOff, Video, VideoOff, PhoneOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ChatInput from '@/app/components/ChatInput';
@@ -11,24 +10,30 @@ interface FooterProps {
   activeTab: ControlPanelTab;
   conn: ConnPhase;
   video: VideoPhase;
+  muted?: boolean;
+  cameraOff?: boolean;
   onSend: (text: string) => void;
   onAiSend: (text: string) => void;
   onEndCall: () => void;
+  onToggleMute?: () => void;
+  onToggleCamera?: () => void;
 }
 
 // Bottom chrome — optional, mirrors TopBar. Composer for ai/chat tabs; an
-// end-call band for an active call.
+// end-call band for an active call. Mic/camera reflect the live local track
+// state owned by the parent.
 export function Footer({
   activeTab,
   conn,
   video,
+  muted = false,
+  cameraOff = false,
   onSend,
   onAiSend,
   onEndCall,
+  onToggleMute,
+  onToggleCamera,
 }: FooterProps) {
-  const [muted, setMuted] = useState(false);
-  const [cameraOff, setCameraOff] = useState(false);
-
   if (activeTab === 'ai-chat') {
     return (
       <div className="flex flex-row items-center gap-2 border-t border-gray-20 px-4 py-3">
@@ -54,7 +59,7 @@ export function Footer({
           aria-label={muted ? 'Unmute' : 'Mute'}
           title={muted ? 'Unmute' : 'Mute'}
           className={cn('h-9 w-9', muted && 'bg-gray-12')}
-          onClick={() => setMuted((m) => !m)}
+          onClick={onToggleMute}
         >
           {muted ? <MicOff className="h-[18px] w-[18px]" /> : <Mic className="h-[18px] w-[18px]" />}
         </Button>
@@ -64,7 +69,7 @@ export function Footer({
           aria-label={cameraOff ? 'Turn camera on' : 'Turn camera off'}
           title={cameraOff ? 'Turn camera on' : 'Turn camera off'}
           className={cn('h-9 w-9', cameraOff && 'bg-gray-12')}
-          onClick={() => setCameraOff((c) => !c)}
+          onClick={onToggleCamera}
         >
           {cameraOff ? (
             <VideoOff className="h-[18px] w-[18px]" />

@@ -17,6 +17,8 @@ interface SideNavigationProps {
   activeTab: ControlPanelTab;
   onTabChange: (tab: ControlPanelTab) => void;
   requestCount?: number;
+  // Which tabs to render. Defaults to all six.
+  tabs?: ControlPanelTab[];
 }
 
 interface Tab {
@@ -39,7 +41,10 @@ export function SideNavigation({
   activeTab,
   onTabChange,
   requestCount = 0,
+  tabs,
 }: SideNavigationProps) {
+  const showAi = !tabs || tabs.includes(AI_TAB.id);
+  const bottomTabs = tabs ? TABS.filter((t) => tabs.includes(t.id)) : TABS;
   const renderTab = (tab: Tab) => {
     const Icon = tab.icon;
     const isActive = activeTab === tab.id;
@@ -74,13 +79,15 @@ export function SideNavigation({
   return (
     <div className="flex h-full w-full flex-col items-center pt-1.5">
       {/* AI assistant pinned to the top */}
-      <div className="flex w-full flex-col items-center">{renderTab(AI_TAB)}</div>
+      {showAi && (
+        <div className="flex w-full flex-col items-center">{renderTab(AI_TAB)}</div>
+      )}
 
       {/* Spacer pushes the rest to the bottom */}
       <div className="flex-1" />
 
       <div className="flex w-full flex-col items-center gap-5">
-        {TABS.map((tab) => renderTab(tab))}
+        {bottomTabs.map((tab) => renderTab(tab))}
       </div>
     </div>
   );

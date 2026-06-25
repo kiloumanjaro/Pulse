@@ -9,6 +9,7 @@ interface SidebarProps {
   onTabChange: (tab: ControlPanelTab) => void;
   requestCount?: number;
   collapsed?: boolean;
+  tabs?: ControlPanelTab[];
 }
 
 export function Sidebar({
@@ -16,6 +17,7 @@ export function Sidebar({
   onTabChange,
   requestCount,
   collapsed,
+  tabs,
 }: SidebarProps) {
   return (
     // 58px nav rail (matches the top bar's height) — flat gray-8 (#121317)
@@ -31,6 +33,7 @@ export function Sidebar({
         activeTab={activeTab}
         onTabChange={onTabChange}
         requestCount={requestCount}
+        tabs={tabs}
       />
     </div>
   );

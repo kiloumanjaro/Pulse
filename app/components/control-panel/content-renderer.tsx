@@ -13,25 +13,66 @@ import { SettingsTab } from './tabs/settings';
 interface ContentRendererProps {
   state: ControlPanelState;
   query: string;
+  localStream?: MediaStream | null;
+  remoteStream?: MediaStream | null;
   onSettingsChange?: (patch: Partial<SettingsValues>) => void;
+  onConnectPeer?: (id: string) => void;
+  onAcceptConnect?: () => void;
+  onDeclineConnect?: () => void;
+  onCancelConnect?: () => void;
+  onAcceptVideo?: () => void;
+  onDeclineVideo?: () => void;
+  onCancelVideo?: () => void;
 }
 
 export function ContentRenderer({
   state,
   query,
+  localStream,
+  remoteStream,
   onSettingsChange,
+  onConnectPeer,
+  onAcceptConnect,
+  onDeclineConnect,
+  onCancelConnect,
+  onAcceptVideo,
+  onDeclineVideo,
+  onCancelVideo,
 }: ContentRendererProps) {
   switch (state.activeTab) {
     case 'ai-chat':
       return <AiChatTab messages={state.aiMessages} />;
     case 'people':
-      return <PeopleTab people={state.people} query={query} />;
+      return (
+        <PeopleTab
+          people={state.people}
+          query={query}
+          onConnect={onConnectPeer}
+        />
+      );
     case 'requests':
       return <RequestsTab requests={state.requests} />;
     case 'chat':
-      return <ChatTab conn={state.conn} messages={state.messages} />;
+      return (
+        <ChatTab
+          conn={state.conn}
+          messages={state.messages}
+          onAccept={onAcceptConnect}
+          onDecline={onDeclineConnect}
+          onCancel={onCancelConnect}
+        />
+      );
     case 'call':
-      return <CallTab video={state.video} />;
+      return (
+        <CallTab
+          video={state.video}
+          localStream={localStream}
+          remoteStream={remoteStream}
+          onAccept={onAcceptVideo}
+          onDecline={onDeclineVideo}
+          onCancel={onCancelVideo}
+        />
+      );
     case 'settings':
       return (
         <SettingsTab values={state.settings} onChange={onSettingsChange} />

@@ -1,16 +1,21 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 import { Body, Button } from "./ds";
 
 export default function VideoPanel({
   localStream,
   remoteStream,
   onEnd,
+  embedded = false,
 }: {
   localStream: MediaStream | null;
   remoteStream: MediaStream | null;
   onEnd: () => void;
+  // Embedded fills its parent (the control-panel call tab) with no End button —
+  // the panel footer owns end-call. Standalone is the full-screen overlay.
+  embedded?: boolean;
 }) {
   const localRef = useRef<HTMLVideoElement>(null);
   const remoteRef = useRef<HTMLVideoElement>(null);
@@ -28,9 +33,14 @@ export default function VideoPanel({
   }, [remoteStream]);
 
   return (
-    <div className="absolute inset-0 z-30 flex flex-col bg-background">
+    <div
+      className={cn(
+        "flex flex-col bg-background",
+        embedded ? "h-full w-full" : "absolute inset-0 z-30",
+      )}
+    >
       <div className="relative flex flex-col flex-1">
-        {/* Remote (full screen). */}
+        {/* Remote fills the area. */}
         <video
           ref={remoteRef}
           autoPlay
@@ -48,14 +58,19 @@ export default function VideoPanel({
           autoPlay
           playsInline
           muted
-          className="absolute bottom-4 right-4 h-40 w-28 object-cover border border-gray-20 bg-gray-8"
+          className={cn(
+            "absolute object-cover border border-gray-20 bg-gray-8",
+            embedded ? "bottom-3 right-3 h-28 w-20" : "bottom-4 right-4 h-40 w-28",
+          )}
         />
       </div>
-      <div className="flex flex-row justify-center bg-background p-4">
-        <Button variant="danger" size="md" onClick={onEnd}>
-          End video
-        </Button>
-      </div>
+      {!embedded && (
+        <div className="flex flex-row justify-center bg-background p-4">
+          <Button variant="danger" size="md" onClick={onEnd}>
+            End video
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -72,9 +72,29 @@ export interface ControlPanelProps {
   // Optional controlled collapse: supply both to drive it externally (the lab).
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
+  // Which rail items to render. Defaults to all six.
+  tabs?: ControlPanelTab[];
+  // Live media for the call tab; mic/camera reflect the local track state.
+  localStream?: MediaStream | null;
+  remoteStream?: MediaStream | null;
+  muted?: boolean;
+  cameraOff?: boolean;
   onTabChange: (tab: ControlPanelTab) => void;
   onSend?: (text: string) => void; // chat composer
   onAiSend?: (text: string) => void; // ai composer
   onSearch?: (term: string) => void;
   onSettingsChange?: (patch: Partial<SettingsValues>) => void;
+  // Action handlers. The panel is presentational; the parent owns the logic.
+  onConnectPeer?: (id: string) => void; // People → Connect
+  onAcceptConnect?: () => void; // Chat → incoming Accept
+  onDeclineConnect?: () => void; // Chat → incoming Decline
+  onCancelConnect?: () => void; // Chat → cancel an outgoing request
+  onStartVideo?: () => void; // Chat → escalate to video
+  onEndChat?: () => void; // Chat → end the connection
+  onAcceptVideo?: () => void; // Call → incoming Accept
+  onDeclineVideo?: () => void; // Call → incoming Decline
+  onCancelVideo?: () => void; // Call → cancel an outgoing video request
+  onEndCall?: () => void; // Call → end the active video
+  onToggleMute?: () => void;
+  onToggleCamera?: () => void;
 }

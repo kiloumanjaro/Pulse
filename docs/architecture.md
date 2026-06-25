@@ -96,9 +96,18 @@ page.tsx  (/)            landing — renders EntryGate, no live state
 live/page.tsx  (/live)   (geo: locating → live; conn: idle → requesting → connecting → connected)
 ├── (on mount)           location permission + join
 ├── WorldMap             Mapbox GL, peer dots, click handler
-├── ConnectionPrompt     accept / decline modal
-├── ChatPanel            text input + message history
-└── VideoPanel           local + remote video, call controls
+└── ControlPanel         single UI surface: rail + flyout (people / chat / call)
+                         · live/page maps real state → ControlPanelState
+                           (conn.kind → ConnPhase, PeerDot[] → Stranger[] with
+                            derived handle + haversine distance, video phase,
+                            messages) and wires every action to its existing
+                            handler (requestConnection, acceptIncoming,
+                            startVideoRequest, endVideo, …)
+                         · prompts/spinners/empty-states now live inside the
+                           chat & call tabs; the call tab renders the real
+                           VideoPanel (embedded); footer mic/camera toggle the
+                           local MediaStream tracks
+                         · ai-chat / requests / settings tabs hidden (no backend)
 
 Header        frosted sticky nav: brand → home, About / How it works / Privacy,
               live pill, Enter (→ /live on the landing, otherwise → home)

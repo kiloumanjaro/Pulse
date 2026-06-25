@@ -19,6 +19,7 @@ interface ChatTabProps {
   messages: ChatMessage[];
   onAccept?: () => void;
   onDecline?: () => void;
+  onCancel?: () => void;
   onFindNew?: () => void;
 }
 
@@ -29,6 +30,7 @@ export function ChatTab({
   messages,
   onAccept,
   onDecline,
+  onCancel,
   onFindNew,
 }: ChatTabProps) {
   if (conn === 'connected') {
@@ -69,6 +71,11 @@ export function ChatTab({
         <Body size="sm" tone="muted">
           {conn === 'requesting' ? 'Requesting…' : 'Connecting…'}
         </Body>
+        {conn === 'requesting' && (
+          <Button variant="ghost" size="sm" onClick={() => onCancel?.()}>
+            Cancel
+          </Button>
+        )}
       </div>
     );
   }

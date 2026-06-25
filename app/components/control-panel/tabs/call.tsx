@@ -2,7 +2,7 @@
 
 import { Video } from 'iconsax-reactjs';
 import ConnectionPrompt from '@/app/components/ConnectionPrompt';
-import { Body, Button, Hatch, Placeholder } from '@/app/components/ds';
+import { Body, Button, Hatch } from '@/app/components/ds';
 import { Spinner } from '@/app/components/ui/spinner';
 import type { VideoPhase } from '../types';
 
@@ -76,7 +76,6 @@ export function CallTab({ video, onAccept, onDecline, onCancel }: CallTabProps) 
     // -mr-3.5 offsets the 14px scrollbar gutter so the centered column sits at
     // the panel's true center instead of being pushed left by it.
     <div className="-mr-3.5 flex min-h-full flex-col items-center justify-center gap-4 p-6">
-      <Placeholder label="NO ACTIVE CALL" className="h-28 w-full" />
       <Body size="sm" tone="muted" className="text-center">
         Start a call from an active chat.
       </Body>

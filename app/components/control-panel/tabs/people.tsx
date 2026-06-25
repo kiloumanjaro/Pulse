@@ -34,7 +34,9 @@ export function PeopleTab({ people, query, onConnect }: PeopleTabProps) {
 
   if (rows.length === 0) {
     return (
-      <Empty className="min-h-full justify-center border-none">
+      // -mr-3.5 offsets the 14px scrollbar gutter so the centered content sits at
+      // the panel's true center instead of being pushed left by it.
+      <Empty className="-mr-3.5 min-h-full justify-center border-none">
         <EmptyHeader>
           <EmptyMedia variant="icon" className="bg-gray-12 rounded-none">
             <People size={22} variant="Bold" color="currentColor" />

@@ -8,6 +8,7 @@ import KineticGrid, { type GlowSource } from "../components/KineticGrid";
 import { type ChatMessage } from "../components/ChatPanel";
 import { ControlPanel } from "../components/control-panel";
 import type {
+  ConnectionRequest,
   ControlPanelState,
   ControlPanelTab,
   SettingsValues,
@@ -32,7 +33,7 @@ type Geo = "locating" | "error" | "live";
 
 const REQUEST_TIMEOUT_MS = 30_000;
 
-// Settings/AI/requests tabs are hidden in the live panel (no backends yet); the
+// The Settings tab is hidden in the live panel (no device backend yet); the
 // panel state still needs a settings object to satisfy the type.
 const STUB_SETTINGS: SettingsValues = {
   cameraId: "",
@@ -51,6 +52,7 @@ export default function Live() {
   const [sessionId] = useState(() => crypto.randomUUID());
   const [peers, setPeers] = useState<PeerDot[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [aiMessages, setAiMessages] = useState<ChatMessage[]>([]);
   const [notice, setNotice] = useState<string | null>(null);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
@@ -80,9 +82,12 @@ export default function Live() {
   const setConn = (c: Conn) => {
     connRef.current = c;
     _setConn(c);
-    // A call owns the flyout while it's up; otherwise any connection activity
-    // surfaces the chat tab.
-    if (c.kind !== "idle" && videoRef.current === "none") surface("chat");
+    // A call owns the flyout while it's up. Otherwise the pre-connection
+    // handshake lives in the Requests tab; chat surfaces once the call is up.
+    if (videoRef.current === "none") {
+      if (c.kind === "requesting" || c.kind === "incoming") surface("requests");
+      else if (c.kind === "connecting" || c.kind === "connected") surface("chat");
+    }
   };
 
   const [video, _setVideo] = useState<VideoState>("none");
@@ -447,12 +452,25 @@ export default function Live() {
     setCameraOff(next);
   };
 
+  // The assistant has no backend yet — echo a fixed reply so the UI is alive.
+  const sendAi = (text: string) => {
+    setAiMessages((prev) => [
+      ...prev,
+      { id: msgId.current++, mine: true, text },
+      {
+        id: msgId.current++,
+        mine: false,
+        text: "This is a stubbed reply — the assistant is UI-only for now.",
+      },
+    ]);
+  };
+
   const panelState: ControlPanelState = {
     activeTab,
     conn: conn.kind,
     video,
     messages,
-    aiMessages: [],
+    aiMessages,
     people: peers.map((p) => ({
       id: p.id,
       handle: peerHandle(p.id),
@@ -461,7 +479,24 @@ export default function Live() {
         : 0,
       busy: p.busy,
     })),
-    requests: [],
+    // The single `conn` machine renders as a one-entry request queue: an
+    // outgoing request while we wait, an incoming one awaiting our answer.
+    requests:
+      conn.kind === "incoming" || conn.kind === "requesting"
+        ? [
+            {
+              id: conn.peerId,
+              handle: peerHandle(conn.peerId),
+              direction: conn.kind === "incoming" ? "incoming" : "outgoing",
+              distanceKm: (() => {
+                const p = peers.find((x) => x.id === conn.peerId);
+                return p && myLocation
+                  ? Math.max(1, Math.round(haversineKm(myLocation, p)))
+                  : 0;
+              })(),
+            } satisfies ConnectionRequest,
+          ]
+        : [],
     settings: STUB_SETTINGS,
   };
 
@@ -505,7 +540,7 @@ export default function Live() {
 
       <ControlPanel
         state={panelState}
-        tabs={["people", "chat", "call"]}
+        tabs={["ai-chat", "people", "requests", "chat", "call"]}
         collapsed={collapsed}
         onCollapsedChange={setCollapsed}
         localStream={localStream}
@@ -517,6 +552,7 @@ export default function Live() {
           peerRef.current?.sendChat(text);
           addMessage(true, text);
         }}
+        onAiSend={sendAi}
         onConnectPeer={requestConnection}
         onAcceptConnect={acceptIncoming}
         onDeclineConnect={declineIncoming}

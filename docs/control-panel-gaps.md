@@ -2,31 +2,30 @@
 
 What in the control panel is **non-functional, stubbed, or hidden** today. These are unimplemented/placeholder features, not regressions — the bug tracker is `known-issues.md`.
 
-Scope note: on `/live` the panel renders only `people`, `chat`, `call` (`tabs={['people','chat','call']}` in `app/live/page.tsx`). The other three tabs exist but are **hidden in the live app**; they're only reachable in `/control-panel-demo` and `/control-panel-lab`.
+Scope note: on `/live` the panel renders `ai-chat`, `people`, `requests`, `chat`, `call` (`tabs={['ai-chat','people','requests','chat','call']}` in `app/live/page.tsx`). Only `settings` stays hidden in the live app; it's reachable in `/control-panel-demo` and `/control-panel-lab`.
 
 ---
 
-## Hidden on /live (no backend yet)
+## Hidden / stubbed on /live
 
 | Tab | State |
 |-----|-------|
-| AI Assistant (`ai-chat`) | Hidden. No assistant backend. |
-| Requests | Hidden. No request-queue model. |
+| AI Assistant (`ai-chat`) | Shown. Composer returns a **canned** reply — no assistant backend. |
+| Requests | Shown + functional. Derived from the single `conn` machine (one request at a time). |
 | Settings | Hidden. No persistence / device backend. |
 
 ---
 
 ## AI Assistant tab
 
-- **No backend.** `aiMessages` is always `[]`; the empty state ("Ask Pulse anything…") implies a working assistant that doesn't exist.
-- In `/control-panel-lab` + `/control-panel-demo`, sending produces a **canned** reply ("This is a stubbed reply — the assistant is UI-only for now.").
-- On `/live`, `onAiSend` is not wired, so the composer would be a no-op even if the tab were shown.
+- **No backend.** `onAiSend` on `/live` appends the user line then a fixed **canned** reply ("This is a stubbed reply — the assistant is UI-only for now."), matching the lab/demo harness. There is no real assistant.
+- The empty state ("Ask Pulse anything…") shows before the first send.
 
 ## Requests tab
 
-- **Always empty on /live.** The live page models connections as a single `conn` state machine (one incoming/outgoing at a time), not a queue, so `requests` is hardcoded to `[]` → permanently shows "No pending requests".
-- **Dead buttons.** `RequestsTab` accepts `onAccept`/`onDecline`/`onCancel`/`onDismiss`, but `content-renderer.tsx` passes **none** of them. Even with data, Accept / Decline / Cancel / Dismiss are no-ops.
-- The Requests rail icon's unread **badge** (`requestCount`) therefore never appears.
+- **Functional on /live.** `requests` is derived from the single `conn` state machine: `requesting` → one outgoing row (Cancel), `incoming` → one incoming row (Accept/Decline). The handshake surfaces here (not Chat); Chat opens once `connecting`/`connected`.
+- `onAccept`/`onDecline`/`onCancel` map to the live page's `acceptIncoming`/`declineIncoming`/`cancelRequest` via `content-renderer.tsx` (the per-row `id` is ignored since `conn` is single-peer). `onDismiss` (the `declined` row) is unused — the live page never persists a declined state.
+- The Requests rail icon's unread **badge** (`requestCount`) lights up while a request is pending.
 
 ## Settings tab
 

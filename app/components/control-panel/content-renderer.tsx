@@ -51,7 +51,16 @@ export function ContentRenderer({
         />
       );
     case 'requests':
-      return <RequestsTab requests={state.requests} />;
+      // `conn` is single-peer, so the per-row id is ignored — the handlers
+      // act on the one active request.
+      return (
+        <RequestsTab
+          requests={state.requests}
+          onAccept={onAcceptConnect && (() => onAcceptConnect())}
+          onDecline={onDeclineConnect && (() => onDeclineConnect())}
+          onCancel={onCancelConnect && (() => onCancelConnect())}
+        />
+      );
     case 'chat':
       return (
         <ChatTab

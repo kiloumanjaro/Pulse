@@ -7,40 +7,89 @@ import type { PeerDot } from "@/lib/types";
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "pk.eyJ1IjoicHVsc2UtbWFwIiwiYSI6ImNrMDBkZW1vMDAwMDAwMDAifQ.AAAAAAAAAAAAAAAAAAAAAA";
 
-const LAND_COLOR = "#4b4c4d";
-const WATER_COLOR = "#0b0c0e";
+const LAND_COLOR = "#3a3a3a";
+const WATER_COLOR = "#141414";
+const GRATICULE_COLOR = "#2c2c2e";
+const GRATICULE_STEP = 15; // degrees between grid lines
 
-// Flatten the basemap to a clean two-tone silhouette: recolor land/water,
-// strip every administrative line, and hide all place labels so the first
-// view is an uncluttered globe rather than a wall of city/country names.
+// Build the globe's graticule as GeoJSON: meridians run pole-to-pole (every
+// GRATICULE_STEP° of longitude), parallels ring the globe (every step° of
+// latitude). Densely sampled so each line curves smoothly under projection.
+function graticule(): GeoJSON.FeatureCollection {
+  const features: GeoJSON.Feature[] = [];
+
+  for (let lng = -180; lng <= 180; lng += GRATICULE_STEP) {
+    const coords: [number, number][] = [];
+    for (let lat = -90; lat <= 90; lat += 2) coords.push([lng, lat]);
+    features.push({
+      type: "Feature",
+      properties: {},
+      geometry: { type: "LineString", coordinates: coords },
+    });
+  }
+
+  for (let lat = -75; lat <= 75; lat += GRATICULE_STEP) {
+    const coords: [number, number][] = [];
+    for (let lng = -180; lng <= 180; lng += 2) coords.push([lng, lat]);
+    features.push({
+      type: "Feature",
+      properties: {},
+      geometry: { type: "LineString", coordinates: coords },
+    });
+  }
+
+  return { type: "FeatureCollection", features };
+}
+
+function addGraticule(map: MapboxMap) {
+  if (map.getLayer("graticule")) return;
+  map.addSource("graticule", { type: "geojson", data: graticule() });
+  map.addLayer({
+    id: "graticule",
+    type: "line",
+    source: "graticule",
+    paint: {
+      "line-color": GRATICULE_COLOR,
+      "line-width": 0.5,
+      "line-opacity": 0.8,
+    },
+  });
+}
+
+// Overlay one simplified, solid land polygon per landmass (Natural Earth 50m).
+// Because the basemap underneath is flooded to pure ocean, this single fill is
+// the only land the user sees — so continents read as solid blocks with no
+// inland lakes, rivers, or fragmented coastline cracks, even zoomed in.
+function addLandOverlay(map: MapboxMap) {
+  if (map.getLayer("land-simple")) return;
+  map.addSource("land-simple", {
+    type: "geojson",
+    data: "/land-50m.geojson",
+  });
+  map.addLayer({
+    id: "land-simple",
+    type: "fill",
+    source: "land-simple",
+    paint: { "fill-color": LAND_COLOR },
+  });
+}
+
+// Flood the entire basemap to pure ocean: recolor every land/water fill to the
+// water tone and strip all lines and labels. The simplified land overlay (added
+// separately) then supplies the only landmasses on top of this blank ocean.
 function simplifyBasemap(map: MapboxMap) {
   const layers = map.getStyle()?.layers ?? [];
-  const isWater = (id: string) => /water|river|waterway|ocean|sea/i.test(id);
   for (const layer of layers) {
     const id = layer.id;
     try {
       if (layer.type === "background") {
-        map.setPaintProperty(id, "background-color", LAND_COLOR);
+        map.setPaintProperty(id, "background-color", WATER_COLOR);
       } else if (layer.type === "fill") {
-        map.setPaintProperty(
-          id,
-          "fill-color",
-          isWater(id) ? WATER_COLOR : LAND_COLOR,
-        );
-      } else if (layer.type === "line") {
-        // Strip every line — roads, admin (country/state) borders, boundaries —
-        // leaving only water lines so the coastline silhouette survives.
-        if (isWater(id)) {
-          map.setPaintProperty(id, "line-color", WATER_COLOR);
-        } else {
-          map.setLayoutProperty(id, "visibility", "none");
-        }
-      } else if (layer.type === "symbol") {
-        // Symbol layers carry all the text labels. Keep only country names so
-        // the globe reads as a clean silhouette — hide settlements, roads, POIs.
-        if (!/country/i.test(id)) {
-          map.setLayoutProperty(id, "visibility", "none");
-        }
+        map.setPaintProperty(id, "fill-color", WATER_COLOR);
+      } else if (layer.type === "line" || layer.type === "symbol") {
+        // Strip every line (roads, borders, coastlines) and every text label —
+        // the simplified land overlay defines all the geometry we want.
+        map.setLayoutProperty(id, "visibility", "none");
       }
     } catch {
       // Layer doesn't support the property — skip it.
@@ -103,6 +152,8 @@ export default function WorldMap({
       map.on("load", () => {
         if (cancelled) return;
         simplifyBasemap(map);
+        addLandOverlay(map);
+        addGraticule(map);
         // Make the space + atmosphere around the globe transparent so the
         // layer behind the canvas (KineticGrid) shows through, without
         // touching the globe's land/water surface.

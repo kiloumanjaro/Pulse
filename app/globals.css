@@ -35,7 +35,13 @@
   --color-gray-80: #c7c9d1;
   --color-gray-90: #e3e4e9; /* primary button hover fill */
   --color-gray-94: #eeeff1;
-  --color-yellow: #def135; /* chartreuse accent / brand mark */
+  /* Brand accent — THE single source of truth for the app's accent color.
+   * Change this one value to recolor every accent surface at once: the landing
+   * logo mark, eyebrows, the Live pulse dot, and all interactive UI controls
+   * (primary buttons, switches, checkboxes, sliders, multi-select chips).
+   * Use `bg-brand` / `text-brand` / `border-brand` in components. */
+  --color-brand: #00de11;
+  --color-yellow: var(--color-brand); /* back-compat alias for existing text-yellow utilities */
   --color-yellow-glow: #c29500;
   --color-danger: #ff573d; /* leave/end actions */
   --color-danger-hover: #f87272;

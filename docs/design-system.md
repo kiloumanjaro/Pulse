@@ -39,8 +39,9 @@ The system reads like an **engineering blueprint rendered as a website**: a near
 ### Accent
 | Token | Hex | Usage |
 |---|---|---|
-| `yellow` | `#def135` | **Highlighter `<mark>` fill** (with black text); `text-yellow` |
-| `yellow-glow` | `#c29500` | Darker amber glow behind the highlight |
+| `brand` | `#def135` | **Single source of truth** for the accent. Drives the landing logo mark, eyebrows, Live pulse dot, and all interactive UI (primary buttons, switches, checkboxes, sliders, multi-select). Change this one value to recolor the app. `bg-brand` / `text-brand` / `border-brand` |
+| `yellow` | → `var(--color-brand)` | Back-compat alias for existing `text-yellow` utilities; resolves to `brand` |
+| `yellow-glow` | `#c29500` | Darker amber glow / brand button border |
 
 ### Alpha-modified neutrals (observed in markup)
 | Value | Resolves to | Usage |

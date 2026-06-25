@@ -279,12 +279,19 @@ export default function Live() {
   // Acquire a fresh location on mount, then join the live map. The landing page
   // (/) is pure marketing and never prompts for permission — that happens here.
   useEffect(() => {
-    if (!("geolocation" in navigator)) {
-      setGeo("error");
-      setGeoError("Your browser doesn't support location access.");
-      return;
-    }
     let active = true;
+    if (!("geolocation" in navigator)) {
+      // Defer to a microtask so this isn't a synchronous setState in the effect
+      // body (which would otherwise trigger a cascading render).
+      queueMicrotask(() => {
+        if (!active) return;
+        setGeo("error");
+        setGeoError("Your browser doesn't support location access.");
+      });
+      return () => {
+        active = false;
+      };
+    }
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         if (!active) return;

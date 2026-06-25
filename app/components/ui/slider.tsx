@@ -45,7 +45,7 @@ function Slider({
         <SliderPrimitive.Range
           data-slot="slider-range"
           className={cn(
-            'absolute bg-[#4b72f3] data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full'
+            'absolute bg-brand data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full'
           )}
         />
       </SliderPrimitive.Track>

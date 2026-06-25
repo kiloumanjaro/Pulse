@@ -60,7 +60,7 @@ export function ProfileProgress({
       {/* Progress bar */}
       <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted">
         <div
-          className="absolute top-0 left-0 h-full rounded-full bg-[#def135] transition-all duration-300"
+          className="absolute top-0 left-0 h-full rounded-full bg-brand transition-all duration-300"
           style={{ width: `${calculatedPercentage}%` }}
         />
       </div>
@@ -93,7 +93,7 @@ export function ProfileProgress({
               >
                 <div className="mt-0.5">
                   {step.completed ? (
-                    <IconCircleCheckFilled className="h-4 w-4 text-[#def135]" />
+                    <IconCircleCheckFilled className="h-4 w-4 text-brand" />
                   ) : (
                     <Spinner className="h-4 w-4 text-muted-foreground" />
                   )}
@@ -101,7 +101,7 @@ export function ProfileProgress({
                 <div className="flex flex-1 items-center gap-1.5">
                   <p
                     className={`text-sm transition-colors ${
-                      step.completed ? 'text-[#def135]' : 'text-muted-foreground'
+                      step.completed ? 'text-brand' : 'text-muted-foreground'
                     } group-hover:text-muted-foreground`}
                   >
                     {step.title}

@@ -67,13 +67,17 @@ export default function Live() {
     setMessages((prev) => [...prev, { id: msgId.current++, mine, text }]);
   }
 
+  function resetVideo() {
+    setLocalStream(null);
+    setRemoteStream(null);
+    setVideo("none");
+  }
+
   function teardown(message?: string) {
     if (requestTimer.current) clearTimeout(requestTimer.current);
     peerRef.current?.close();
     peerRef.current = null;
-    setLocalStream(null);
-    setRemoteStream(null);
-    setVideo("none");
+    resetVideo();
     setMessages([]);
     setConn({ kind: "idle" });
     if (message) showNotice(message);
@@ -131,9 +135,7 @@ export default function Live() {
         break;
       case "video-end":
         ps?.stopVideo();
-        setLocalStream(null);
-        setRemoteStream(null);
-        setVideo("none");
+        resetVideo();
         break;
     }
   }
@@ -213,9 +215,7 @@ export default function Live() {
     const ps = peerRef.current;
     ps?.stopVideo();
     ps?.sendControl("video-end");
-    setLocalStream(null);
-    setRemoteStream(null);
-    setVideo("none");
+    resetVideo();
   }
 
   function processSignal(sig: SignalMsg) {

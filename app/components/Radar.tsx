@@ -137,10 +137,13 @@ export default function Radar({
     let targetMouse = [0.5, 0.5];
 
     function handleMouseMove(e: MouseEvent) {
+      // Listen at the window level: the canvas often sits behind an overlay
+      // (e.g. the hero's z-10 content), which would otherwise swallow events.
       const rect = canvas.getBoundingClientRect();
+      const clamp = (v: number) => Math.min(Math.max(v, 0), 1);
       targetMouse = [
-        (e.clientX - rect.left) / rect.width,
-        1.0 - (e.clientY - rect.top) / rect.height,
+        clamp((e.clientX - rect.left) / rect.width),
+        clamp(1.0 - (e.clientY - rect.top) / rect.height),
       ];
     }
 
@@ -191,8 +194,8 @@ export default function Radar({
     container.appendChild(canvas);
 
     if (enableMouseInteraction) {
-      canvas.addEventListener("mousemove", handleMouseMove);
-      canvas.addEventListener("mouseleave", handleMouseLeave);
+      window.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseleave", handleMouseLeave);
     }
 
     let animationFrameId: number;
@@ -220,8 +223,8 @@ export default function Radar({
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", resize);
       if (enableMouseInteraction) {
-        canvas.removeEventListener("mousemove", handleMouseMove);
-        canvas.removeEventListener("mouseleave", handleMouseLeave);
+        window.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseleave", handleMouseLeave);
       }
       if (container.contains(canvas)) container.removeChild(canvas);
       gl.getExtension("WEBGL_lose_context")?.loseContext();

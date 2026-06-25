@@ -3,7 +3,7 @@
 import { MessageRemove } from 'iconsax-reactjs';
 import ChatPanel, { type ChatMessage } from '@/app/components/ChatPanel';
 import ConnectionPrompt from '@/app/components/ConnectionPrompt';
-import { Body, Button, Placeholder } from '@/app/components/ds';
+import { Body, Button } from '@/app/components/ds';
 import { Spinner } from '@/app/components/ui/spinner';
 import {
   Empty,
@@ -38,26 +38,33 @@ export function ChatTab({
         connected
         showHeader={false}
         showInput={false}
+        embedded
       />
     );
   }
 
   if (conn === 'incoming') {
     return (
-      <ConnectionPrompt
-        title="Stranger wants to connect"
-        subtitle="Accept to open a peer-to-peer chat."
-        acceptLabel="Accept"
-        declineLabel="Decline"
-        onAccept={() => onAccept?.()}
-        onDecline={() => onDecline?.()}
-      />
+      // -mr-3.5 offsets the 14px scrollbar gutter so the overlay (and its centered
+      // card) spans the full panel instead of being pushed left by it.
+      <div className="relative -mr-3.5 min-h-full">
+        <ConnectionPrompt
+          title="Stranger wants to connect"
+          subtitle="Accept to open a peer-to-peer chat."
+          acceptLabel="Accept"
+          declineLabel="Decline"
+          onAccept={() => onAccept?.()}
+          onDecline={() => onDecline?.()}
+        />
+      </div>
     );
   }
 
   if (conn === 'requesting' || conn === 'connecting') {
     return (
-      <div className="flex min-h-full flex-col items-center justify-center gap-3 p-6">
+      // -mr-3.5 offsets the 14px scrollbar gutter so the centered column sits at
+      // the panel's true center instead of being pushed left by it.
+      <div className="-mr-3.5 flex min-h-full flex-col items-center justify-center gap-3 p-6">
         <Spinner className="size-5 text-gray-50" />
         <Body size="sm" tone="muted">
           {conn === 'requesting' ? 'Requesting…' : 'Connecting…'}
@@ -68,7 +75,9 @@ export function ChatTab({
 
   if (conn === 'ended') {
     return (
-      <Empty className="min-h-full justify-center border-none">
+      // -mr-3.5 offsets the 14px scrollbar gutter so the centered content sits at
+      // the panel's true center instead of being pushed left by it.
+      <Empty className="-mr-3.5 min-h-full justify-center border-none">
         <EmptyHeader>
           <EmptyMedia variant="icon" className="bg-gray-12 rounded-none">
             <MessageRemove size={22} variant="Bold" color="currentColor" />
@@ -92,8 +101,9 @@ export function ChatTab({
 
   // idle — nothing started yet.
   return (
-    <div className="flex min-h-full flex-col items-center justify-center gap-4 p-6">
-      <Placeholder label="NO ACTIVE CHAT" className="h-28 w-full" />
+    // -mr-3.5 offsets the 14px scrollbar gutter so the centered column sits at
+    // the panel's true center instead of being pushed left by it.
+    <div className="-mr-3.5 flex min-h-full flex-col items-center justify-center gap-4 p-6">
       <Body size="sm" tone="muted" className="text-center">
         Tap a dot on the map to start talking to a stranger.
       </Body>

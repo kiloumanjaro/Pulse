@@ -21,6 +21,10 @@ export default function ChatPanel({
   // control-panel chatbot tab hides both — its top bar and footer host them.
   showHeader = true,
   showInput = true,
+  // Embedded surfaces (the control-panel tabs) live inside the panel's own
+  // styled scroll container, so the panel must not be pinned or own its scroll —
+  // otherwise the messages list spawns a second, unstyled scrollbar.
+  embedded = false,
   videoBusy = false,
   onStartVideo,
   onEnd,
@@ -30,6 +34,7 @@ export default function ChatPanel({
   onSend?: (text: string) => void;
   showHeader?: boolean;
   showInput?: boolean;
+  embedded?: boolean;
   videoBusy?: boolean;
   onStartVideo?: () => void;
   onEnd?: () => void;
@@ -43,7 +48,14 @@ export default function ChatPanel({
   const videoDisabled = !connected || videoBusy;
 
   return (
-    <div className="absolute top-0 bottom-0 right-0 z-20 flex flex-col w-full max-w-[448px] border-l border-gray-20 bg-background">
+    <div
+      className={cn(
+        "flex flex-col bg-background",
+        embedded
+          ? "min-h-full w-full"
+          : "absolute top-0 bottom-0 right-0 z-20 w-full max-w-[448px] border-l border-gray-20",
+      )}
+    >
       {showHeader && (
         // Single-row link bar: "Stranger" anchors the left; Connected/Video/End
         // collapse to icons on the right. Fixed h-16 keeps a stable header height.
@@ -93,7 +105,12 @@ export default function ChatPanel({
         </header>
       )}
 
-      <div className="flex flex-col flex-1 gap-2 p-4 overflow-y-auto">
+      <div
+        className={cn(
+          "flex flex-1 flex-col gap-2 py-4 pl-4",
+          embedded ? "pr-2" : "overflow-y-auto pr-4",
+        )}
+      >
         {messages.length === 0 && (
           <Body size="sm" tone="muted" className="text-center mt-8">
             Say hello. Messages are peer-to-peer and never stored.

@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { Body, Display, Eyebrow, Section } from "../../components/ds";
+import PulseMark from "../../components/PulseMark";
 import { FOOTER } from "../../content/landing";
 
 // Closing band — black canvas, gray-20 top hairline. Laid out as a 2-row grid
@@ -18,7 +19,7 @@ export default function FooterSection() {
         <div className="grid grid-cols-1 gap-x-16 gap-y-6 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:gap-y-5 sm:items-start">
           {/* Row 1 / col 1 — brand lockup */}
           <div className="flex flex-row items-center gap-2.5 sm:col-start-1 sm:row-start-1">
-            <img src="/pulse.svg" alt="" aria-hidden className="h-8 w-auto" />
+            <PulseMark className="h-8 w-auto" />
             <Display as="span" size="lg">
               Pulse
             </Display>

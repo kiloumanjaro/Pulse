@@ -4,9 +4,9 @@
 
 export const GITHUB_URL = "https://github.com/kiloumanjaro/Pulse";
 
-// Radar takes plain color strings (not CSS vars). Keep these in sync with the
-// --color-yellow / --color-background tokens in app/globals.css.
-export const RADAR_COLOR = "#def135";
+// The radar's accent color now tracks the `--color-brand` token at runtime via
+// useBrandColor() (see HeroSection). The background stays a literal — it mirrors
+// the --color-background canvas, which never changes.
 export const RADAR_BACKGROUND = "#040406";
 
 export const HERO = {

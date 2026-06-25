@@ -127,7 +127,7 @@ export default function KineticGrid(props: KineticGridProps) {
     backgroundColor = "transparent",
     gridColor = "#FFFFFF",
     dotColor = "#FFFFFF",
-    hoverColor = "#0073FF",
+    hoverColor = "#00de11", // brand accent; live page overrides via the --color-brand token
     gridSize = 60,
     repulsionStrength = -0.65,
     radius = 350,

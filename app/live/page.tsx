@@ -11,6 +11,7 @@ import { join, leave, poll, sendSignal } from "@/lib/api";
 import { PeerSession, type DescType, type PeerControl } from "@/lib/webrtc";
 import { POLL_INTERVAL_MS } from "@/lib/presence";
 import { type PeerDot, type SignalMsg } from "@/lib/types";
+import { useBrandColor } from "@/lib/useBrandColor";
 
 type Conn =
   | { kind: "idle" }
@@ -37,6 +38,8 @@ export default function Live() {
   const [myLocation, setMyLocation] = useState<{ lat: number; lng: number } | null>(
     null,
   );
+  // Brand accent for the canvas grid glow — tracks the `--color-brand` token.
+  const brandColor = useBrandColor();
 
   const [conn, _setConn] = useState<Conn>({ kind: "idle" });
   const connRef = useRef<Conn>(conn);
@@ -388,6 +391,7 @@ export default function Live() {
   return (
     <main className="fixed inset-0 overflow-hidden bg-background">
       <KineticGrid
+        hoverColor={brandColor}
         glowSourceRef={glowRef}
         glowStrength={2.2}
         glowFalloff={4}

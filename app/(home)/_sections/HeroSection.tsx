@@ -3,10 +3,12 @@
 import { Body, Button, Display, Section } from "../../components/ds";
 import Header from "../../components/Header";
 import Radar from "../../components/Radar";
-import { GITHUB_URL, HERO, RADAR_BACKGROUND, RADAR_COLOR } from "../../content/landing";
+import { GITHUB_URL, HERO, RADAR_BACKGROUND } from "../../content/landing";
+import { useBrandColor } from "@/lib/useBrandColor";
 
 // Full-viewport radar with the floating header over it.
 export default function HeroSection({ onEnter }: { onEnter: () => void }) {
+  const radarColor = useBrandColor();
   return (
     <div className="relative flex flex-col h-screen overflow-hidden border-b border-gray-20">
       <div className="absolute inset-0 flex flex-col">
@@ -20,7 +22,7 @@ export default function HeroSection({ onEnter }: { onEnter: () => void }) {
           sweepSpeed={0.7}
           sweepWidth={2}
           sweepLobes={1}
-          color={RADAR_COLOR}
+          color={radarColor}
           backgroundColor={RADAR_BACKGROUND}
           falloff={3}
           brightness={0.4}

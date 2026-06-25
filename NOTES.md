@@ -10,17 +10,24 @@ A short tour of what I changed, phase by phase. Deeper detail lives in the
 The app had a few things quietly broken. I tested with two browser windows side
 by side and tracked each one down:
 
-- **Dots that never disappeared.** When someone left, their dot stayed on the
-  map forever. The server was accidentally keeping *everyone* marked as "still
-  here." Fixed so it only refreshes the person actually online.
-- **Chat that went nowhere.** Two people could connect, but messages never
-  arrived — the sender and receiver were using two different labels for the same
-  thing. Lined them up.
-- **Stuck after hanging up.** After a call ended, both people stayed flagged as
-  "busy" and couldn't reconnect. Now hanging up properly frees them.
-- **Connections that stalled on "Connecting…".** A brief hiccup talking to the
-  database could quietly drop part of the connection setup. Now those requests
-  retry a few times instead of giving up silently.
+- **Dots that never disappeared.** *Found it* by closing both windows and
+  watching the dots linger — then tracing the poll route, where the heartbeat
+  refreshed *every* presence row instead of just the caller's. The server was
+  accidentally keeping *everyone* marked as "still here." Fixed so it only
+  refreshes the person actually online.
+- **Chat that went nowhere.** *Found it* when two connected windows showed
+  "Connected" but no messages crossed — logging the data channel showed the
+  sender tagging messages one way and the receiver checking for another. The two
+  labels for the same thing never matched. Lined them up.
+- **Stuck after hanging up.** *Found it* by ending a call and watching both dots
+  dim and auto-decline the next request — the "end" signal wasn't clearing the
+  busy flag the way "decline" did, so both people stayed flagged as "busy." Now
+  hanging up properly frees them.
+- **Connections that stalled on "Connecting…".** *Found it* with an automated
+  two-peer test that intermittently hung; peer-connection logging showed SDP
+  reaching a stable state but ICE stalling — a brief database hiccup was
+  silently dropping a signaling message with no retry. Now those requests retry
+  a few times instead of giving up silently.
 
 ---
 
@@ -55,13 +62,14 @@ Partly done — here's the honest state.
 - Nothing sticks around — sessions and leftover data clean themselves up
   automatically.
 
-**Still open (and worth doing next)**
-- **Anyone could pretend to be someone else.** The app trusts whoever a request
-  *says* it's from, so a bad actor could impersonate another user. This is the
-  most important one to fix — by handing out a private session pass the server
-  can verify.
-- No limit on how often someone can hammer the server (spam protection).
-- Location values aren't sanity-checked on the way in.
+**Still open, ranked most to least urgent**
+1. **Impersonation (highest).** The app trusts whoever a request *says* it's
+   from, so a bad actor could pose as another user. Most important to fix — by
+   handing out a private session pass the server can verify on every call.
+2. **No rate limiting.** Nothing stops someone hammering the server with
+   requests; needs per-client throttling to blunt spam and abuse.
+3. **Unvalidated location input (lowest).** Latitude/longitude aren't
+   range-checked on the way in, so out-of-bounds values can slip through.
 
 ---
 

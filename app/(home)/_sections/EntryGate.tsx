@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Divider, Section } from "../../components/ds";
+import Header from "../../components/Header";
 import HeroSection from "./HeroSection";
 import FeaturesSection from "./FeaturesSection";
 import StatementSection from "./StatementSection";
@@ -20,7 +21,8 @@ export default function EntryGate() {
   }
 
   return (
-    <div className="flex flex-col bg-background">
+    <div className="relative flex flex-col bg-background">
+      <Header />
       <HeroSection onEnter={enter} />
       <FeaturesSection />
       <Divider />

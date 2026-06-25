@@ -1,12 +1,11 @@
 "use client";
 
 import { Body, Button, Display, Section } from "../../components/ds";
-import Header from "../../components/Header";
 import Radar from "../../components/Radar";
 import { GITHUB_URL, HERO, RADAR_BACKGROUND } from "../../content/landing";
 import { useBrandColor } from "@/lib/useBrandColor";
 
-// Full-viewport radar with the floating header over it.
+// Full-viewport radar hero (the sticky header sits above it, in EntryGate).
 export default function HeroSection({ onEnter }: { onEnter: () => void }) {
   const radarColor = useBrandColor();
   return (
@@ -31,8 +30,6 @@ export default function HeroSection({ onEnter }: { onEnter: () => void }) {
       </div>
 
       <Section className="flex-1 relative z-10">
-        <Header onEnter={onEnter} className="px-0" />
-
         <div className="flex flex-col flex-1 justify-end pb-8 sm:pb-12">
           <div className="flex flex-row items-end justify-between gap-8 flex-wrap">
             <div className="flex flex-col gap-4 max-w-[480px] shrink">

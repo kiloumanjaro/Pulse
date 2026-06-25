@@ -21,7 +21,7 @@ export default function PageShell({
   const router = useRouter();
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="relative flex flex-col min-h-screen bg-background">
       <Header />
       <div className="flex flex-col flex-1 w-full max-w-[1080px] self-center px-6 pt-28 pb-[120px] gap-12">
         <div className="flex flex-col gap-4 max-w-[680px]">

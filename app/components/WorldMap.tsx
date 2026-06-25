@@ -7,8 +7,8 @@ import type { PeerDot } from "@/lib/types";
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "pk.eyJ1IjoicHVsc2UtbWFwIiwiYSI6ImNrMDBkZW1vMDAwMDAwMDAifQ.AAAAAAAAAAAAAAAAAAAAAA";
 
-const LAND_COLOR = "#0b0c0e";
-const WATER_COLOR = "#040406";
+const LAND_COLOR = "#4b4c4d";
+const WATER_COLOR = "#0b0c0e";
 
 // Flatten the basemap to a clean two-tone silhouette: recolor land/water,
 // strip every administrative line, and hide all place labels so the first
@@ -103,6 +103,16 @@ export default function WorldMap({
       map.on("load", () => {
         if (cancelled) return;
         simplifyBasemap(map);
+        // Make the space + atmosphere around the globe transparent so the
+        // layer behind the canvas (KineticGrid) shows through, without
+        // touching the globe's land/water surface.
+        map.setFog({
+          color: "rgba(0, 0, 0, 0)",
+          "high-color": "rgba(0, 0, 0, 0)",
+          "space-color": "rgba(0, 0, 0, 0)",
+          "horizon-blend": 0,
+          "star-intensity": 0,
+        });
         setReady(true);
       });
       mapRef.current = map;
@@ -199,7 +209,7 @@ export default function WorldMap({
   return (
     <div className="absolute inset-0">
       {/* Mapbox GL owns this node imperatively — must stay a raw <div>. */}
-      <div ref={containerRef} className="h-full w-full bg-background" />
+      <div ref={containerRef} className="h-full w-full" />
 
       {!TOKEN && (
         <div className="absolute inset-0 flex items-center justify-center p-6">

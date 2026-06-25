@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Body, Button, Display } from "../components/ds";
 import WorldMap from "../components/WorldMap";
+import KineticGrid from "../components/KineticGrid";
 import ConnectionPrompt from "../components/ConnectionPrompt";
 import ChatPanel, { type ChatMessage } from "../components/ChatPanel";
 import VideoPanel from "../components/VideoPanel";
@@ -372,7 +373,9 @@ export default function Live() {
   const inChat = conn.kind === "connecting" || conn.kind === "connected";
 
   return (
-    <main className="fixed inset-0 overflow-hidden">
+    <main className="fixed inset-0 overflow-hidden bg-background">
+      <KineticGrid />
+
       <WorldMap
         peers={peers}
         me={myLocation}

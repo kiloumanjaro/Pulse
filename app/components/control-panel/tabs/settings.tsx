@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { ShieldSecurity } from 'iconsax-reactjs';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Body } from '@/app/components/ds';
@@ -48,7 +47,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-3 px-4 py-4">
+    // -mr-3.5 pulls the section over the 14px scrollbar gutter so the right
+    // padding matches the left visually instead of sitting 14px further in.
+    <div className="-mr-3.5 flex flex-col gap-3 px-4 py-4">
       {label && (
         <Body size="sm" tone="muted" className="text-xs">
           {label}
@@ -194,21 +195,6 @@ export function SettingsTab({
           checked={values.soundOnRequest}
           onCheckedChange={(v) => onChange?.({ soundOnRequest: v })}
         />
-      </Section>
-
-      <Section label="Privacy">
-        <div className="flex flex-row items-start gap-3">
-          <ShieldSecurity
-            size={18}
-            variant="Bold"
-            color="currentColor"
-            className="mt-0.5 shrink-0 text-gray-50"
-          />
-          <Body size="sm" tone="muted" className="text-xs">
-            Your dot is randomized 1–3 km from your real location, and re-rolled
-            every session. Exact coordinates are never stored.
-          </Body>
-        </div>
       </Section>
     </div>
   );

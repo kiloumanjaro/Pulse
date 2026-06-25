@@ -30,7 +30,9 @@ export function RequestsTab({
 }: RequestsTabProps) {
   if (requests.length === 0) {
     return (
-      <Empty className="min-h-full justify-center border-none">
+      // -mr-3.5 offsets the 14px scrollbar gutter so the centered content sits at
+      // the panel's true center instead of being pushed left by it.
+      <Empty className="-mr-3.5 min-h-full justify-center border-none">
         <EmptyHeader>
           <EmptyMedia variant="icon" className="bg-gray-12 rounded-none">
             <Notification size={22} variant="Bold" color="currentColor" />
@@ -49,9 +51,11 @@ export function RequestsTab({
   return (
     <ul className="flex flex-col">
       {requests.map((r) => (
+        // -mr-3.5 offsets the 14px scrollbar gutter so the row's right inset
+        // matches its left across every request phase.
         <li
           key={r.id}
-          className="flex flex-col gap-3 px-4 py-3"
+          className="-mr-3.5 flex flex-col gap-3 px-4 py-3"
         >
           {r.direction === 'incoming' && (
             <>
@@ -63,9 +67,7 @@ export function RequestsTab({
                   {r.handle} · ~{r.distanceKm} km away
                 </Body>
               </div>
-              {/* -mr-3.5 offsets the 14px scrollbar-gutter so the Accept
-                  button's right edge aligns with the panel's right inset. */}
-              <div className="-mr-3.5 flex flex-row gap-2">
+              <div className="flex flex-row gap-2">
                 <Button
                   variant="outline"
                   size="sm"

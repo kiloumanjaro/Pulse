@@ -13,19 +13,17 @@ import { SettingsTab } from './tabs/settings';
 interface ContentRendererProps {
   state: ControlPanelState;
   query: string;
-  onAiSend?: (text: string) => void;
   onSettingsChange?: (patch: Partial<SettingsValues>) => void;
 }
 
 export function ContentRenderer({
   state,
   query,
-  onAiSend,
   onSettingsChange,
 }: ContentRendererProps) {
   switch (state.activeTab) {
     case 'ai-chat':
-      return <AiChatTab messages={state.aiMessages} onSuggest={onAiSend} />;
+      return <AiChatTab messages={state.aiMessages} />;
     case 'people':
       return <PeopleTab people={state.people} query={query} />;
     case 'requests':

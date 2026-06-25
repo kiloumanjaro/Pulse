@@ -41,7 +41,6 @@ export function ControlPanel({
           activeTab={state.activeTab}
           conn={state.conn}
           video={state.video}
-          requestCount={state.requests.length}
           onSearch={handleSearch}
           onStartVideo={noop}
           onEnd={noop}
@@ -50,7 +49,6 @@ export function ControlPanel({
           <ContentRenderer
             state={state}
             query={query}
-            onAiSend={onAiSend}
             onSettingsChange={onSettingsChange}
           />
         </div>

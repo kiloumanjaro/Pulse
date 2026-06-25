@@ -93,7 +93,7 @@ test('two real peers connect, chat both ways, and start video', async () => {
     await expect(rowB).toBeVisible({ timeout: 15_000 });
     await rowB.getByRole('button', { name: 'Connect' }).click();
 
-    // B gets the incoming request (auto-surfaced to the chat tab) and accepts.
+    // B gets the incoming request (auto-surfaced to the Requests tab) and accepts.
     await expect(B.getByText(/stranger wants to connect/i)).toBeVisible({ timeout: 25_000 });
     await B.getByRole('button', { name: 'Accept' }).click();
 

@@ -19,7 +19,8 @@ Specs live in `e2e/`:
 |------|--------|
 | `control-panel-demo.spec.ts` | Flyout: starts collapsed, opens on icon click, collapses on outside interaction, tab switching |
 | `control-panel-lab.spec.ts` | Wired tabs via the state lab — chat composer sends a message, call tab renders real `<video>` + controls, incoming accept/decline prompt, people list, collapse toggle |
-| `live.spec.ts` | `/live` integration — geolocation granted + API stubbed; rail shows only people/chat/call, flyout opens and collapses on map interaction |
+| `live.spec.ts` | `/live` integration — geolocation granted + API stubbed; rail shows the wired tabs (ai/people/requests/chat/call, settings hidden), flyout opens/collapses on map interaction, AI tab returns the canned stub reply |
+| `requests-flow.spec.ts` | **Gated** (`RUN_P2P=1`) — two-session Requests-tab handshake: outgoing/incoming rows + unread badge, decline → requester toast, cancel clears, accept moves both to chat. Real signaling, no media. |
 
 Notes:
 - `live.spec.ts` stubs `/api/join`·`/api/poll`·`/api/signal`·`/api/leave` so the page reaches its "live" state instantly (otherwise `setGeo("live")` waits on `join()`).

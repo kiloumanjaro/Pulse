@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Section } from "../../components/ds";
+import { Divider, Section } from "../../components/ds";
 import HeroSection from "./HeroSection";
-import PartnersSection from "./PartnersSection";
+import FeaturesSection from "./FeaturesSection";
 import StatementSection from "./StatementSection";
+import BentoIntroSection from "./BentoIntroSection";
 import BentoSection from "./BentoSection";
 import FooterSection from "./FooterSection";
 import StickyScrollScrub from "./StickyScrollScrub";
@@ -21,11 +22,13 @@ export default function EntryGate() {
   return (
     <div className="flex flex-col bg-background">
       <HeroSection onEnter={enter} />
-      <PartnersSection />
+      <FeaturesSection />
+      <Divider />
       <StatementSection />
       <Section className="pt-24">
         <StickyScrollScrub />
       </Section>
+      <BentoIntroSection />
       <BentoSection />
       <FooterSection />
     </div>

@@ -20,10 +20,15 @@ export const STATEMENT = {
   body: "Stop trading your identity for a conversation. Most apps make you sign up and leave a permanent trail behind. Pulse drops you onto a global radar as an anonymous dot — talk, video-call peer-to-peer, then vanish without a record.",
 };
 
-export const PARTNERS = {
-  count: 4,
-  label: "Logo",
-};
+// What Pulse stands for — a trust strip in place of a partner logo wall. The
+// `icon` key maps to an iconsax-reactjs icon in PartnersSection.
+export const VALUES = [
+  { icon: "Mask", label: "Anonymous" },
+  { icon: "Share", label: "Peer-to-Peer" },
+  { icon: "ShieldSecurity", label: "Encrypted" },
+  { icon: "Timer1", label: "Ephemeral" },
+  { icon: "Global", label: "Global" },
+] as const;
 
 // Footer (FooterSection). Brand mark + tagline on the left, link columns on
 // the right, a hairline-divided bottom row for the legal/meta line. Link `href`

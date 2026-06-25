@@ -1,4 +1,4 @@
-import { Body, Card, Display, Placeholder, Section } from "../../components/ds";
+import { Body, Card, Placeholder, Section } from "../../components/ds";
 import { BENTO } from "../../content/landing";
 
 // Explicit grid placement so the center cell (index 2) is the tall rectangle
@@ -15,12 +15,6 @@ const PLACEMENT = [
 export default function BentoSection() {
   return (
     <Section id="how-it-works" className="py-24 gap-12">
-      <div className="flex flex-col items-center text-center py-20 px-7 sm:px-16 gap-5">
-        <Display as="h2" size="lg" className="max-w-[760px]">
-          {BENTO.headline}
-        </Display>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6">
         {BENTO.cards.map((card, i) => (
           <Card

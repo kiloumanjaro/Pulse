@@ -66,6 +66,12 @@ export interface ControlPanelState {
 // presentational.
 export interface ControlPanelProps {
   state: ControlPanelState;
+  // Rail-only until a tab is clicked, auto-dismiss on outside interaction.
+  // Off (default true) keeps the content pinned open — used by the dev lab.
+  autoCollapse?: boolean;
+  // Optional controlled collapse: supply both to drive it externally (the lab).
+  collapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
   onTabChange: (tab: ControlPanelTab) => void;
   onSend?: (text: string) => void; // chat composer
   onAiSend?: (text: string) => void; // ai composer

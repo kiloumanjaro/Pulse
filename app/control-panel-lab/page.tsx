@@ -124,6 +124,7 @@ export default function ControlPanelLabPage() {
   const [ppl, setPpl] = useState<PeoplePreset>('some');
   const [reqs, setReqs] = useState<RequestPreset>('incoming');
   const [aiThread, setAiThread] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   const patch = (p: Partial<ControlPanelState>) =>
     setState((s) => ({ ...s, ...p }));
@@ -166,6 +167,14 @@ export default function ControlPanelLabPage() {
             Dev-only. Drives every panel state.
           </Body>
         </div>
+        <Divider />
+
+        <Field label="Panel">
+          <label className="flex flex-row items-center justify-between text-sm text-gray-80">
+            Collapsed
+            <Switch checked={collapsed} onCheckedChange={setCollapsed} />
+          </label>
+        </Field>
         <Divider />
 
         <Field label="Tab">
@@ -280,6 +289,9 @@ export default function ControlPanelLabPage() {
       <div className="relative flex-1">
         <ControlPanel
           state={state}
+          autoCollapse={false}
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
           onTabChange={(activeTab) => patch({ activeTab })}
           onSend={onSend}
           onAiSend={onAiSend}

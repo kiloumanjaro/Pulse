@@ -383,7 +383,6 @@ export default function KineticGrid(props: KineticGridProps) {
     canvas.width = width;
     canvas.height = height;
     initDots();
-    let lastTime = performance.now();
 
     const getHoverIntensity = (x: number, y: number) => {
       const mouse = mousePosRef.current;
@@ -467,8 +466,6 @@ export default function KineticGrid(props: KineticGridProps) {
     };
 
     const animate = () => {
-      const now = performance.now();
-      lastTime = now;
       const currentColors = colorsRef.current;
       const hoverColorParsed = parseColor(currentColors.hoverColor);
       const gridColorParsed = parseColor(currentColors.gridColor);

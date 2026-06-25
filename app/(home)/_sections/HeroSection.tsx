@@ -25,7 +25,8 @@ export default function HeroSection({ onEnter }: { onEnter: () => void }) {
           backgroundColor={RADAR_BACKGROUND}
           falloff={3}
           brightness={0.4}
-          enableMouseInteraction={false}
+          enableMouseInteraction={true}
+          mouseInfluence={0.015}
         />
       </div>
 

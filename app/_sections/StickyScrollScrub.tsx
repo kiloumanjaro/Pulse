@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Body, Display, Hatch, Placeholder } from "./ds";
+import { Body, Display, Hatch, Placeholder } from "../components/ds";
 
 // Sticky-scroll scrub (design-system.md). A bordered box whose full-width step
 // nav pins to the top and highlights the active section as the left-column copy

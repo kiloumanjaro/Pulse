@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { Body, Display, Eyebrow, Section } from "./ds";
+import { Body, Display, Eyebrow, Section } from "../components/ds";
 import { FOOTER } from "../content/landing";
 
 // Closing band — black canvas, gray-20 top hairline. Laid out as a 2-row grid

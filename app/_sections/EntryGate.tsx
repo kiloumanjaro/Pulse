@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Section } from "./ds";
+import { Section } from "../components/ds";
 import HeroSection from "./HeroSection";
 import PartnersSection from "./PartnersSection";
 import StatementSection from "./StatementSection";

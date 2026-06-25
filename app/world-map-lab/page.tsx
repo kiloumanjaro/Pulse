@@ -233,7 +233,7 @@ export default function WorldMapLabPage() {
 
         {sim.kind === 'requesting' && (
           <div
-            className="absolute left-1/2 top-20 z-30 flex flex-row items-center gap-3 border border-gray-20 bg-gray-8 px-4 py-2"
+            className="absolute left-1/2 top-20 z-30 flex flex-row items-center gap-6 border border-gray-20 bg-gray-8 p-4"
             style={{ transform: 'translateX(-50%)', backdropFilter: 'blur(8px)' }}
           >
             <Body size="sm" className="text-foreground">

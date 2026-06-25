@@ -19,6 +19,15 @@ Track bugs and fixes here. Add an entry when a problem is found; mark it resolve
 
 ## Open Issues
 
+### [ISSUE-6] WebRTC handshake stalls on a transient API failure — signals sent once, no retry
+**Status:** Fixed (commit pending)
+**Phase:** 1
+**Symptom:** Two users connect but get stuck on "Connecting…" (data channel never opens); intermittent and network/DB-dependent. Reproduced with an automated two-peer test (`e2e/two-peer.spec.ts`) against the live Neon DB.
+**Root cause:** `lib/api.ts` — `sendSignal` did `await fetch(...)` once and never checked `res.ok`; `join` likewise. The WebRTC handshake (request/accept/offer/answer + each trickled ICE candidate) rides these POSTs, so a single transient Neon 5xx silently dropped a candidate and the connection never completed. Confirmed via `RTCPeerConnection` logging: SDP negotiation reached `stable`, but ICE stalled because candidates were lost.
+**Fix:** Added `postJSON()` with bounded retry + backoff (network error / 5xx only; never retries 4xx) and routed `join`/`sendSignal` through it. Note: this mitigates transient blips, not a sustained DB outage — when Neon is heavily degraded, the polled signaling is both lossy and slow and the handshake can still fail (see also the STUN-only limitation in `README.md`).
+
+---
+
 ### [ISSUE-5] Active scrub tab renders mid-gray — `$gray8` token collides with theme gray8
 **Status:** Fixed (commit pending)
 **Phase:** Landing

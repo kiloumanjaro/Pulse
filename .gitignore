@@ -22,7 +22,16 @@
 
 # misc
 .DS_Store
+Thumbs.db
+Desktop.ini
 *.pem
+
+# editors
+.idea/
+*.swp
+
+# logs
+*.log
 
 # debug
 npm-debug.log*
@@ -41,5 +50,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Tamagui compiler output (generated on build)
-/.tamagui/
+# claude instructions (local only)
+CLAUDE.md
+.claude/settings.local.json

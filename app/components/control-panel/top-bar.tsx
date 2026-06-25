@@ -2,14 +2,13 @@
 
 import { SearchBar } from './search-bar';
 import { ChatControls } from './chat-controls';
-import { Badge, Eyebrow } from '@/app/components/ds';
+import { Eyebrow } from '@/app/components/ds';
 import type { ControlPanelTab, ConnPhase, VideoPhase } from './types';
 
 interface TopBarProps {
   activeTab: ControlPanelTab;
   conn: ConnPhase;
   video: VideoPhase;
-  requestCount: number;
   onSearch: (term: string) => void;
   onStartVideo: () => void;
   onEnd: () => void;
@@ -30,7 +29,6 @@ export function TopBar({
   activeTab,
   conn,
   video,
-  requestCount,
   onSearch,
   onStartVideo,
   onEnd,
@@ -42,6 +40,7 @@ export function TopBar({
       ) : activeTab === 'chat' || activeTab === 'call' ? (
         <div className="h-8.5 flex-1">
           <ChatControls
+            mode={activeTab === 'call' ? 'call' : 'chat'}
             connected={conn === 'connected'}
             videoBusy={video !== 'none'}
             onStartVideo={onStartVideo}
@@ -51,13 +50,6 @@ export function TopBar({
       ) : (
         <div className="flex flex-1 flex-row items-center gap-2">
           <Eyebrow>{TITLES[activeTab]}</Eyebrow>
-          {activeTab === 'requests' && requestCount > 0 && (
-            <Badge className="px-2 py-0.5">
-              <span className="font-mono text-xs text-gray-80">
-                {requestCount}
-              </span>
-            </Badge>
-          )}
         </div>
       )}
     </div>
